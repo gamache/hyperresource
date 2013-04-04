@@ -1,3 +1,3 @@
-module HyperResource
+class HyperResource
   VERSION = '0.0.1'
 end

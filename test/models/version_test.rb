@@ -1,4 +1,4 @@
-require './test/minitest_helper'
+require 'test_helper'
 
 describe HyperResource::VERSION do
   it 'should be above zero' do

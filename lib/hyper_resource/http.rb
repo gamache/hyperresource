@@ -1,0 +1,3 @@
+class HyperResource::HTTP
+
+end
