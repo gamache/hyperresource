@@ -1,5 +1,4 @@
 require 'hyper_resource/version'
-require 'hyper_resource/http'
 require 'hyper_resource/attributes'
 require 'hyper_resource/links'
 require 'hyper_resource/link'
@@ -11,12 +10,15 @@ require 'hyper_resource/utils'
 
 require 'net/http'
 require 'uri'
+require 'json'
+
+require 'pp'
 
 class HyperResource
 
-  inheritable_attr :root
-  inheritable_attr :auth
-  inheritable_attr :headers
+  class_attribute :root
+  class_attribute :auth
+  class_attribute :headers
 
   attr_accessor    :root,
                    :href,
@@ -30,16 +32,20 @@ class HyperResource
                    :links,
                    :objects
 
+  DEFAULT_HEADERS = {
+    'Accept' => 'application/json'
+  }
 
   def initialize(opts={})
     self.root    = opts[:root] || self.class.root
+    self.href    = opts[:href] || ''
+    self.auth    = (self.class.auth || {}).merge(opts[:auth] || {})
+    self.headers = DEFAULT_HEADERS.merge(self.class.headers || {}).
+                                   merge(opts[:headers]     || {})
 
-    self.auth    = (self.class.auth   ||{}).merge(opts[:auth]   ||{})
-    self.headers = (self.class.headers||{}).merge(opts[:headers]||{})
-
-    self.attributes = Attributes.new
+    self.attributes = Attributes.new(self)
     self.links      = Links.new(self)
-    self.objects    = Objects.new
+    self.objects    = Objects.new(self)
   end
 
   ## Returns a new HyperResource based on the given HAL document.
@@ -63,16 +69,22 @@ class HyperResource
 
   ## Loads the resource pointed to by +href+.
   def get
-    uri = URI.join(self.root, self.href)
+    uri = URI.join(self.root, self.href||'')
     req = Net::HTTP::Get.new(uri)
-    if ba=self[:auth][:basic]
+    if ba=self.auth[:basic]
       req.basic_auth *ba
     end
+    (self.headers || {}).each {|k,v| req[k] = v }
+
+    req.each {|h,v| puts "#{h}: #{v}"}
+    puts "AND THEN"
     resp = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)
     end
 
-    self.response = Response[ JSON.parse(response.body) ]
+    resp.each {|h,v| puts "#{h}: #{v}"}
+
+    self.response = Response[ JSON.parse(resp.body) ]
     init_from_response!
   end
 
@@ -80,9 +92,9 @@ class HyperResource
   ## +response+.
   def init_from_response!
     raise ArgumentError, "response is empty!" unless self.response
-    self.attributes.init_from_hal(self.response);
-    self.links.init_from_hal(self.response);
     self.objects.init_from_hal(self.response);
+    self.links.init_from_hal(self.response);
+    self.attributes.init_from_hal(self.response);
     self
   end
 

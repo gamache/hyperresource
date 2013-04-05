@@ -20,4 +20,14 @@ describe HyperResource::Link do
       link2.href.must_equal '/foo?blarg=22'
     end
   end
+
+  describe '#resource' do
+    it 'resource creates a new HyperResource instance' do
+      @link.resource.must_be_instance_of HyperResource
+    end
+
+    it 'returned resource has not been loaded yet' do
+      @link.resource.response.must_be_nil
+    end
+  end
 end
