@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.8.7'
 
   s.add_dependency 'uri_template'
+  s.add_dependency 'faraday'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'minitest'

@@ -1,4 +1,4 @@
-class HyperResource
+module HyperResource::Modules
   module Utils
 
     def self.included(base)

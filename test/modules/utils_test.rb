@@ -5,7 +5,7 @@ describe HyperResource do
     describe 'class_attribute' do
       it 'inherits properly' do
         class A
-          include HyperResource::Utils
+          include HyperResource::Modules::Utils
           class_attribute :a
         end
         class B < A; end

@@ -5,7 +5,8 @@ require 'hyper_resource/link'
 require 'hyper_resource/objects'
 require 'hyper_resource/response'
 
-require 'hyper_resource/utils'
+require 'hyper_resource/modules/utils'
+require 'hyper_resource/modules/http'
 
 require 'net/http'
 require 'uri'
@@ -14,7 +15,8 @@ require 'json'
 require 'pp'
 
 class HyperResource
-  include HyperResource::Utils
+  include HyperResource::Modules::Utils
+  include HyperResource::Modules::HTTP
 
   class_attribute :root
   class_attribute :auth
@@ -65,24 +67,6 @@ class HyperResource
                           :auth    => self.auth,
                           :headers => self.headers,
                           :href    => href)
-  end
-
-  ## Loads the resource pointed to by +href+.
-  def get
-    uri = URI.join(self.root, self.href||'')
-    req = Net::HTTP::Get.new(uri)
-    if ba=self.auth[:basic]
-      req.basic_auth *ba
-    end
-    (self.headers || {}).each {|k,v| req[k] = v }
-
-    resp = Net::HTTP.start(uri.hostname, uri.port) do |http|
-      http.request(req)
-    end
-
-    self.request  = req
-    self.response = Response[ JSON.parse(resp.body) ]
-    init_from_response!
   end
 
   ## Populates +attributes+, +links+, and +objects+ from the contents of
