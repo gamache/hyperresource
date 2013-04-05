@@ -20,17 +20,17 @@ class HyperResource
   class_attribute :auth
   class_attribute :headers
 
-  attr_accessor    :root,
-                   :href,
-                   :auth,
-                   :headers,
+  attr_accessor   :root,
+                  :href,
+                  :auth,
+                  :headers,
 
-                   :request,
-                   :response,
+                  :request,
+                  :response,
 
-                   :attributes,
-                   :links,
-                   :objects
+                  :attributes,
+                  :links,
+                  :objects
 
   DEFAULT_HEADERS = {
     'Accept' => 'application/json'
@@ -50,10 +50,10 @@ class HyperResource
 
   ## Returns a new HyperResource based on the given HAL document.
   def new_from_hal_response(obj)
-    rsrc = self.class.new(root: self.root,
-                          auth: self.auth,
-                          headers: self.headers,
-                          href: obj['_links']['self']['href'])
+    rsrc = self.class.new(:root    => self.root,
+                          :auth    => self.auth,
+                          :headers => self.headers,
+                          :href    => obj['_links']['self']['href'])
     rsrc.response = Response[obj]
     rsrc.init_from_response!
     rsrc
@@ -61,10 +61,10 @@ class HyperResource
 
   ## Returns a new HyperResource based on the given link href.
   def new_from_link(href)
-    rsrc = self.class.new(root: self.root,
-                          auth: self.auth,
-                          headers: self.headers,
-                          href: href)
+    rsrc = self.class.new(:root    => self.root,
+                          :auth    => self.auth,
+                          :headers => self.headers,
+                          :href    => href)
   end
 
   ## Loads the resource pointed to by +href+.
@@ -76,14 +76,11 @@ class HyperResource
     end
     (self.headers || {}).each {|k,v| req[k] = v }
 
-    req.each {|h,v| puts "#{h}: #{v}"}
-    puts "AND THEN"
     resp = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)
     end
 
-    resp.each {|h,v| puts "#{h}: #{v}"}
-
+    self.request  = req
     self.response = Response[ JSON.parse(resp.body) ]
     init_from_response!
   end

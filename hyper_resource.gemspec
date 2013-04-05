@@ -4,7 +4,7 @@ require 'hyper_resource/version'
 Gem::Specification.new do |s|
   s.name    = 'hyperresource'
   s.version = HyperResource::VERSION
-  s.date    = '2013-03-07'
+  s.date    = HyperResource::VERSION_DATE
   s.summary = 'Extensible hypermedia client for Ruby'
   s.authors = ['Pete Gamache']
   s.email   = 'pete@gamache.org'
