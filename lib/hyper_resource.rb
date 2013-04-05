@@ -3,7 +3,6 @@ require 'hyper_resource/attributes'
 require 'hyper_resource/links'
 require 'hyper_resource/link'
 require 'hyper_resource/objects'
-require 'hyper_resource/request'
 require 'hyper_resource/response'
 
 require 'hyper_resource/utils'
@@ -15,6 +14,7 @@ require 'json'
 require 'pp'
 
 class HyperResource
+  include HyperResource::Utils
 
   class_attribute :root
   class_attribute :auth
