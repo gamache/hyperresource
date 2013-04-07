@@ -59,7 +59,7 @@ jdoe_user.response_body
 #            'last_name' => 'Doe',
 #            '_links' => {
 #              'self' => {'href' => '/users/1'},
-#              'comments' => {'href' => '/users/1/comments{?forum,date}, 'templated' => true}
+#              'comments' => {'href' => '/users/1/comments{?forum,date}', 'templated' => true}
 #            }
 #          }
 #        ]
@@ -115,6 +115,10 @@ user = api.users.where(email: 'jdoe@example.com').first
 user.full_name
 # => "John Doe"
 ```
+
+Don't worry if your API uses some other method to indicate resource data
+type; you can override the +data_type_name+ method and implement your
+own logic.
 
 ## Current Status
 
