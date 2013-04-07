@@ -23,7 +23,7 @@ private
   end
 
   def self._hr_attributes
-    %w( root href auth headers
+    %w( root href auth headers namespace
         request response response_body
         attributes links objects ).map(&:to_sym)
   end
@@ -43,11 +43,12 @@ public
       return
     end
 
-    self.root    = opts[:root] || self.class.root
-    self.href    = opts[:href] || ''
-    self.auth    = (self.class.auth || {}).merge(opts[:auth] || {})
-    self.headers = DEFAULT_HEADERS.merge(self.class.headers || {}).
-                                   merge(opts[:headers]     || {})
+    self.root       = opts[:root] || self.class.root
+    self.href       = opts[:href] || ''
+    self.auth       = (self.class.auth || {}).merge(opts[:auth] || {})
+    self.namespace  = opts[:namespace] || self.class.namespace
+    self.headers    = DEFAULT_HEADERS.merge(self.class.headers || {}).
+                                      merge(opts[:headers]     || {})
 
     self.attributes = Attributes.new(self)
     self.links      = Links.new(self)
@@ -57,7 +58,7 @@ public
   ## Returns a new HyperResource based on the given HyperResource object.
   def new_from_resource(rsrc); self.class.new_from_resource(rsrc) end
   def self.new_from_resource(rsrc)
-    new_rsrc = self.new
+    new_rsrc = self.new 
     _hr_attributes.each do |attr|
       new_rsrc.send("#{attr}=".to_sym, rsrc.send(attr))
     end
@@ -69,6 +70,7 @@ public
     rsrc = self.class.new(:root    => self.root,
                           :auth    => self.auth,
                           :headers => self.headers,
+                          :namespace => self.namespace,
                           :href    => obj['_links']['self']['href'])
     rsrc.response_body = Response[obj]
     rsrc.init_from_response_body!
@@ -80,6 +82,7 @@ public
     rsrc = self.class.new(:root    => self.root,
                           :auth    => self.auth,
                           :headers => self.headers,
+                          :namespace => self.namespace,
                           :href    => href)
   end
 
@@ -112,6 +115,12 @@ public
       end
     end
     super
+  end
+
+
+  def inspect
+    "#<#{self.class}:0x#{"%x" % self.object_id} @root=#{self.root.inspect} "+
+    "@href=#{self.href.inspect} @namespace=#{self.namespace.to_s.inspect} ...>"
   end
 
 end

@@ -1,18 +1,15 @@
 module HyperResource::Modules::Bless
-  def self.included(base)
-    base.extend(ClassMethods)
-  end
 
   ## Returns this resource as an instance of +self.resource_class+.
   ## The returned object will share structure with the source object;
   ## beware.
   def blessed
-    return self unless self.class.namespace
+    return self unless self.namespace
     self.resource_class.new(self)
   end
 
   ## Returns the class into which this resource should be cast.
-  ## If the object is not loaded yet, or if +self.class.namespace+ is
+  ## If the object is not loaded yet, or if +self.namespace+ is
   ## not set, returns +self.class+.
   ##
   ## Otherwise, +resource_class+ looks at the returned content-type, and 
@@ -21,9 +18,9 @@ module HyperResource::Modules::Bless
   ## "application/vnd.foocorp.fooapi.v1+json;type=User", this should
   ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
   def resource_class
-    return self.class unless self.class.namespace
+    return self.class unless self.namespace
     return self.class unless type_name = self.data_type_name
-    class_name = "#{self.class.namespace}::#{type_name}".
+    class_name = "#{self.namespace}::#{type_name}".
                    gsub(/[^_0-9A-Za-z:]/, '')
 
     ## Return data type class if it exists
@@ -32,13 +29,13 @@ module HyperResource::Modules::Bless
 
     ## Data type class didn't exist -- create namespace (if necessary),
     ## then the data type class
-    if self.class.namespace != ''
-      nsc = eval(self.class.namespace) rescue :bzzzzzt
+    if self.namespace != ''
+      nsc = eval(self.namespace) rescue :bzzzzzt
       unless nsc.is_a?(Class)
-        Object.module_eval "class #{self.class.namespace} < #{self.class}; end"
+        Object.module_eval "class #{self.namespace} < #{self.class}; end"
       end
     end
-    Object.module_eval "class #{class_name} < #{self.class.namespace}; end"
+    Object.module_eval "class #{class_name} < #{self.namespace}; end"
     eval(class_name)
   end
 
@@ -56,10 +53,5 @@ module HyperResource::Modules::Bless
     m[:type][0].upcase + m[:type][1..-1]
   end
 
-  ## Returns the proper class for this response to be cast into.
-  ## Fall back to +self.class+.
 
-  module ClassMethods
-
-  end
 end
