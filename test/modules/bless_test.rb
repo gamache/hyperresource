@@ -7,7 +7,7 @@ describe HyperResource::Modules::Bless do
     resp = Net::HTTPResponse.new(nil, nil, nil)
     resp['content-type'] = 'application/vnd.example+json;type=Foo'
     @hr = HyperResource.new
-    @hr.class.namespace = 'Barf'
+    @hr.namespace = 'Barf'
     @hr.response = resp
   end
 
@@ -31,12 +31,12 @@ describe HyperResource::Modules::Bless do
 
     it 'returns self.class when unsure of data type name' do
       @hr.stubs(:data_type_name).returns(nil)
-      @hr.class.namespace = nil
+      @hr.namespace = nil
       @hr.resource_class.must_equal @hr.class
     end
 
-    it "returns class in global namespace when self.class.namespace==''" do 
-      @hr.class.namespace = ''
+    it "returns class in global namespace when self.namespace==''" do 
+      @hr.namespace = ''
       @hr.resource_class.must_equal ::Foo
     end
   end
@@ -50,7 +50,7 @@ describe HyperResource::Modules::Bless do
     end
 
     it 'allows extension of an object' do
-      class Barf::Foo; def blarg; 1 end end
+      class Barf; class Foo; def blarg; 1 end end end # :nodoc
       bhr = @hr.blessed
       bhr.must_respond_to :blarg
       bhr.blarg.must_equal 1
