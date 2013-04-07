@@ -17,4 +17,15 @@ class HyperResource::Objects < Hash
       end
     end
   end
+
+  ## Returns the first item in the first collection in +self+.
+  alias_method :first_orig, :first
+  def first
+    self.first_orig[1][0]
+  end
+
+  ## Returns the ith item in the first collection in +self+.
+  def [](i)
+    self.first_orig[1][i]
+  end
 end

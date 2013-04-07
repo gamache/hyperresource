@@ -25,7 +25,7 @@ private
   def self._hr_attributes
     %w( root href auth headers namespace
         request response response_body
-        attributes links objects ).map(&:to_sym)
+        attributes links objects loaded).map(&:to_sym)
   end
 
 public
@@ -33,10 +33,24 @@ public
   _hr_class_attributes.each {|attr| class_attribute attr}
   _hr_attributes.each       {|attr| attr_accessor   attr}
 
+  # :nodoc:
   DEFAULT_HEADERS = {
     'Accept' => 'application/json'
   }
 
+  ## Create a new HyperResource, given a hash of options.  These options
+  ## include:
+  ##
+  ## [root]  The root URL of the resource.
+  ##
+  ## [auth]  Authentication information.  Currently only +{basic:
+  ##         ['key', 'secret']}+ is supported.
+  ##
+  ## [namespace] Class or class name, into which resources should be
+  ##             instantiated.
+  ##
+  ## [headers] Headers to send along with requests for this resource (as
+  ##           well as its eventual child resources, if any).
   def initialize(opts={})
     if opts.is_a?(HyperResource)
       self.class._hr_attributes.each {|attr| self.send("#{attr}=".to_sym, opts.send(attr))}
@@ -53,6 +67,7 @@ public
     self.attributes = Attributes.new(self)
     self.links      = Links.new(self)
     self.objects    = Objects.new(self)
+    self.loaded     = false
   end
 
   ## Returns a new HyperResource based on the given HyperResource object.
@@ -87,19 +102,31 @@ public
   end
 
   ## Populates +attributes+, +links+, and +objects+ from the contents of
-  ## +response+.
+  ## +response+. Sets +loaded = true+.
   def init_from_response_body!
     return unless self.response_body
     self.objects.   init_from_hal(self.response_body);
     self.links.     init_from_hal(self.response_body);
     self.attributes.init_from_hal(self.response_body);
+    self.loaded = true
     self
   end
 
-  ## method_missing will attempt to delegate to +attributes+, then +objects+,
+  ## Returns the first object in the first collection of objects embedded
+  ## in this resource.  Equivalent to +self.objects.first+.
+  def first; self.objects.first end
+
+  ## Returns the *i*th object in the first collection of objects embedded
+  ## in this resource.  Equivalent to +self.objects[i]+.
+  def [](i); self.objects[i]    end
+
+
+  ## method_missing will load this resource if not yet loaded, then 
+  ## attempt to delegate to +attributes+, then +objects+,
   ## then +links+.  When it finds a match, it will define a method class-wide
   ## if self.class != HyperResource, instance-wide otherwise.
   def method_missing(method, *args)
+    self.get unless self.loaded
     [:attributes, :objects, :links].each do |field|
       if self.send(field).respond_to?(method)
         if self.class == HyperResource
@@ -118,9 +145,10 @@ public
   end
 
 
-  def inspect
+  def inspect # :nodoc:
     "#<#{self.class}:0x#{"%x" % self.object_id} @root=#{self.root.inspect} "+
-    "@href=#{self.href.inspect} @namespace=#{self.namespace.to_s.inspect} ...>"
+    "@href=#{self.href.inspect} @loaded=#{self.loaded} "+
+    "@namespace=#{self.namespace.inspect} ...>"
   end
 
 end

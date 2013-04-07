@@ -5,100 +5,75 @@
 
 HyperResource is a client library for hypermedia web services.  It
 is usable with no configuration other than API root endpoint, but
-also allows incoming data types to be extended with ruby code.
+also allows incoming data types to be extended with Ruby code.
 
 Currently HyperResource supports only the HAL+JSON hypermedia format.
 HAL is discussed here: http://stateless.co/hal_specification.html
 
-## This Shit Be Out of Date
-
-These docs were an idea about how HyperResource might work. It now works
-a little, and a little differently from this.  The docs'll catch up
-eventually.
-
-## Standalone API Consumption
+## Quick Tour
 
 Set up API connection:
 
 ```ruby
-api = HyperResource.new(:url    => 'https://api.example.com',
-                        :accept => 'application/vnd.example.com.v1+json')
-# => #<HyperResource:0xABCD1234 ... >
+api = HyperResource.new(root: 'https://api.example.com',
+                        headers: {'Accept' => 'application/vnd.example.com.v1+json'},
+                        auth: {basic: ['username', 'password']})
+# => #<HyperResource:0xABCD1234 @root="https://api.example.com" @href="" @namespace=nil ... >
 ```
 
-HyperResources are lazy-loaded.  You can force (re)loading like this:
+Now we can get the API's root resource, the gateway to everything else
+on the API.
 
 ```ruby
-api.load
-# => #<HyperResource:0xABCD1234 ... @type="Root">
+root = api.get
+# => #<HyperResource:0xABCD1234 @root="https://api.example.com" @href="" @namespace=nil ... >
 ```
 
-But you generally will not need to.
-
-Let's see what we got back from the API.
+What'd we get back?
 
 ```ruby
-api.response.content_type
-# => "application/vnd.example.com.v1+json;type=Root"
+root.response_body
+# => { 'message' => 'Welcome to the Example.com API',
+#      'version' => 1,
+#      '_links' => {
+#        'self' => {'href' => '/'},
+#        'users' => {'href' => '/users{?email,last_name}', 'templated' => true},
+#        'forums' => {'href' => '/forums{?title}', 'templated' => true}
+#      }
+#    }
 ```
 
-```ruby
-api.response.body
-# => '{ "name": "Example API",
-#       "version": 1,
-#       "_links": {
-#         {"users": {"href": "/users/{?last_name,email}", "templated": true},
-#         {"forums": {"href": "/forums/{?date,title,tags}", "templated": true}
-#         {"self":  {"href": "/"}}
-#       }
-#     }'
-```
-
-Let's find a user by their email.
+Lovely.  Let's find a user by their email.
     
 ```ruby
-users = api.users.where(:email => "jdoe@example.com")
-users = api.users(:email => "jdoe@example.com") # same thing
+jdoe_user = api.users.where(email: "jdoe@example.com").first
 # => #<HyperResource:0x12312312 ...>
+
+jdoe_user.response_body
+# => { '_links' => {
+#        'self' => {'href' => '/users?email=jdoe@example.com'}
+#      },
+#      '_embedded' => {
+#        'users' => [
+#          { 'first_name' => 'John',
+#            'last_name' => 'Doe',
+#            '_links' => {
+#              'self' => {'href' => '/users/1'},
+#              'comments' => {'href' => '/users/1/comments{?forum,date}, 'templated' => true}
+#            }
+#          }
+#        ]
+#      }
+#    }
 ```
 
-Nothing has really happened yet.  Lazy loading, remember?
+Some things happened magically here.  First, the +users+ link has been
+added as a method on the +api+ object.  Then, calling +first+ on a
+not-yet-loaded object -- the +users+ link -- loaded it automatically.
+Finally, calling +first+ on the object is a shorthand for returning the
+first object in the first collection in the +_embedded+ field (and,
+therefore, the +self.objects+ hash.
 
-```ruby
-users.response.body
-# => '{ "version": 1,
-#       "_links": {"self": {"href": "/users/?email=jdoe@example.com"}},
-#       "_embedded": {
-#         "users": [ ... array of resources ]
-#       }
-#     }'
-```
-
-````ruby
-jdoe_user = users.first
-# => #<HyperResource:0xDEFABC12 ... @type="User">
-############# TODO: figure out how to get data type from an embedded
-#############          resource, since they don't come with a 
-############           content-type. perhaps just load obj.self
-```
-
-When you call 'first' from a link called 'users' like that, you'd 
-better sure that the API's going to return a collection of
-something called 'users', inside the '_embedded' object.
-That'll be in the human-readable API docs.
-
-```ruby
-jdoe_user.response.body
-# => '{ "version": 1,
-#       "first_name": "John",
-#       "last_name": "Doe",
-#       "email": "jdoe@example.com",
-#       "_links": {
-#         "self": {"href": "/users/1"},
-#         "comments": {"href": "/users/1/comments{?forum,date}", "templated": true}
-#       }
-#     }'
-```
 
 Now let's put it together.  Johnny ran his mouth in the
 'Politics' forum last Monday and somehow managed to piss off the
@@ -106,13 +81,11 @@ entire Internet.  Let's try and satisfy the DDoSing horde by
 amending his tone.
 
 ```ruby
-forum = api.forums(:title => 'Politics').first
-jdoe_user.comments(:date => '2013-03-11', :forum => forum).each do |comment|
+forum = api.forums(title: 'Politics').first
+jdoe_user.comments(date: '2013-04-01', forum: forum).each do |comment|
   comment.text = "OMG PUPPIES!!"
   comment.save!
 end
-
-#### could also use forum.href
 ```
 
 ## Extending Data Types
@@ -126,30 +99,29 @@ returned with a custom media type bearing a 'type=User' modifier.  We
 will extend the User class with a few convenience methods.
 
 ```ruby
-module ExampleApi
-  class User < HyperResource
+class ExampleAPI < HyperResource
+  class User < ExampleAPI
     def full_name
       first_name + ' ' + last_name
-    end
-  
-    def self.political_comments
-      comments.where(:forum => root.forums(:title => 'Politics').first.href)
     end
   end
 end
 
 api.namespace = ExampleApi
 
-user = api.users(:email => 'jdoe@example.com').first
+user = api.users.where(email: 'jdoe@example.com').first
 # => #<ExampleApi::User:0xffffffff ...>
 
 user.full_name
 # => "John Doe"
-
-user.political_comments.where(:date => '2012-03-11').first.text
-# => "OMG PUPPIES!!"
 ```
 
+## Current Status
+
+* Way alpha
+
+* Read-only, at the moment (TODO: +save+, +save!+, +post+, +put+,
+  +patch+).
     
 
 ## Authorship and License
