@@ -13,7 +13,9 @@ class HyperResource::Objects < Hash
         define_singleton_method(name.to_sym) { self[name] }
       end
       unless self.parent_resource.respond_to?(name.to_sym)
-        self.parent_resource.define_singleton_method(name.to_sym) {self[name]}
+        self.parent_resource.define_singleton_method(name.to_sym) do
+          self.objects[name]
+        end
       end
     end
   end
@@ -21,11 +23,11 @@ class HyperResource::Objects < Hash
   ## Returns the first item in the first collection in +self+.
   alias_method :first_orig, :first
   def first
-    self.first_orig[1][0]
+    self.first_orig[1][0] rescue caller
   end
 
   ## Returns the ith item in the first collection in +self+.
-  def [](i)
-    self.first_orig[1][i]
+  def ith(i)
+    self.first_orig[1][i] rescue caller
   end
 end

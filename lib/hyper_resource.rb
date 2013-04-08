@@ -118,8 +118,7 @@ public
 
   ## Returns the *i*th object in the first collection of objects embedded
   ## in this resource.  Equivalent to +self.objects[i]+.
-  def [](i); self.objects[i]    end
-
+  def [](i); self.objects.ith(i) end
 
   ## method_missing will load this resource if not yet loaded, then 
   ## attempt to delegate to +attributes+, then +objects+,
