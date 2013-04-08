@@ -44,7 +44,7 @@ root.response_body
 ```
 
 Lovely.  Let's find a user by their email.
-    
+
 ```ruby
 jdoe_user = api.users.where(email: "jdoe@example.com").first
 # => #<HyperResource:0x12312312 ...>
@@ -72,7 +72,7 @@ added as a method on the +api+ object.  Then, calling +first+ on a
 not-yet-loaded object -- the +users+ link -- loaded it automatically.
 Finally, calling +first+ on the object is a shorthand for returning the
 first object in the first collection in the +_embedded+ field (and,
-therefore, the +self.objects+ hash.
+therefore, the +self.objects+ hash).
 
 
 Now let's put it together.  Johnny ran his mouth in the
@@ -126,14 +126,14 @@ own logic.
 
 * Read-only, at the moment (TODO: +save+, +save!+, +post+, +put+,
   +patch+).
-    
+
 
 ## Authorship and License
 
 Copyright 2013 Pete Gamache,
-[pete@gamache.org](mailto:pete@gamache.org). 
+[pete@gamache.org](mailto:pete@gamache.org).
 
 If you got this far, you
-should probably follow me on Twitter.  [@gamache](https://twitter.com/gamache) 
+should probably follow me on Twitter.  [@gamache](https://twitter.com/gamache)
 
 Released under the MIT License.  See LICENSE.txt.
