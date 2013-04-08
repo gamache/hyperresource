@@ -1,0 +1,2 @@
+require 'hyper_resource'
+
