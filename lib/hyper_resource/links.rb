@@ -1,22 +1,31 @@
 class HyperResource
- class Links < Hash
-   attr_accessor :resource
+  class Links < Hash
+    attr_accessor :resource
 
-   def initialize(resource=nil)
+    def initialize(resource=nil)
      self.resource = resource || HyperResource.new
-   end
+    end
 
     # Initialize links from a HAL response.
     def init_from_hal(hal_resp)
       return unless hal_resp['_links']
       hal_resp['_links'].each do |rel, link_spec|
-        self[rel] = HyperResource::Link.new(resource, link_spec)
-        unless self.respond_to?(rel.to_sym)
-          define_singleton_method(rel.to_sym) { self[rel] }
-        end
-        unless self.resource.respond_to?(rel.to_sym)
-          self.resource.define_singleton_method(rel.to_sym) {self.links[rel]}
-        end
+        self[rel] = new_link_from_spec(link_spec)
+        create_methods_for_link_rel(rel) unless self.respond_to?(rel.to_sym)
+      end
+    end
+
+  protected
+
+    def new_link_from_spec(link_spec) # :nodoc:
+      HyperResource::Link.new(resource, link_spec)
+    end
+
+    def create_methods_for_link_rel(rel) # :nodoc:
+      link = self[rel]
+      define_singleton_method(rel.to_sym) do |*args|
+        return link if args.empty?
+        link.where(*args)
       end
     end
 

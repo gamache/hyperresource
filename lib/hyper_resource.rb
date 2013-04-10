@@ -126,6 +126,7 @@ public
   ## if self.class != HyperResource, instance-wide otherwise.
   def method_missing(method, *args)
     self.get unless self.loaded
+
     [:attributes, :objects, :links].each do |field|
       if self.send(field).respond_to?(method)
         if self.class == HyperResource

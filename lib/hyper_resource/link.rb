@@ -10,9 +10,9 @@ class HyperResource::Link
 
   def initialize(resource=nil, link_spec={})
     self.parent_resource = resource || HyperResource.new
-    self.base_href  = link_spec['href']
-    self.templated  = !!link_spec['templated']
-    self.params     = link_spec['params'] || {}
+    self.base_href = link_spec['href']
+    self.templated = !!link_spec['templated']
+    self.params    = link_spec['params'] || {}
   end
 
   ## Returns this link's href, applying any URI template params.
