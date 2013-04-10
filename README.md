@@ -81,7 +81,6 @@ entire Internet.  Let's try and satisfy the DDoSing horde by
 amending his tone.
 
 ```ruby
-## WARNING: this is a speculation on syntax and does not work yet -- sit tight!
 forum = api.forums(title: 'Politics').first
 jdoe_user.comments(date: '2013-04-01', forum: forum).each do |comment|
   comment.text = "OMG PUPPIES!!"
