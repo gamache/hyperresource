@@ -46,7 +46,9 @@ root.response_body
 Lovely.  Let's find a user by their email.
 
 ```ruby
-jdoe_user = api.users.where(email: "jdoe@example.com").first
+jdoe_user = api.users.where(email: "jdoe@example.com").first   # or,
+jdoe_user = api.users(email: "jdoe@example.com").first         # same thing; .where is called implicitly 
+                                                               # when accessing links
 # => #<HyperResource:0x12312312 ...>
 
 jdoe_user.response_body
@@ -67,12 +69,12 @@ jdoe_user.response_body
 #    }
 ```
 
-Some things happened magically here.  First, the +users+ link has been
-added as a method on the +api+ object.  Then, calling +first+ on a
-not-yet-loaded object -- the +users+ link -- loaded it automatically.
-Finally, calling +first+ on the object is a shorthand for returning the
-first object in the first collection in the +_embedded+ field (and,
-therefore, the +self.objects+ hash).
+Some things happened magically here.  First, the `users` link has been
+added as a method on the `api` object.  Then, calling `first` on a
+not-yet-loaded object -- the `users` link -- loaded it automatically.
+Finally, calling `first` on the object is a shorthand for returning the
+first object in the first collection in the `_embedded` field (and,
+therefore, the `self.objects` hash).
 
 
 Now let's put it together.  Johnny ran his mouth in the
@@ -84,7 +86,7 @@ amending his tone.
 forum = api.forums(title: 'Politics').first
 jdoe_user.comments(date: '2013-04-01', forum: forum).each do |comment|
   comment.text = "OMG PUPPIES!!"
-  comment.save!
+  comment.save
 end
 ```
 
@@ -117,15 +119,14 @@ user.full_name
 ```
 
 Don't worry if your API uses some other method to indicate resource data
-type; you can override the +data_type_name+ method and implement your
+type; you can override the `data_type_name` method and implement your
 own logic.
 
 ## Current Status
 
 * Way alpha
 
-* Read-only, at the moment (TODO: +save+, +save!+, +post+, +put+,
-  +patch+).
+* Read-only, at the moment (TODO: `save`, `post`, `put`, `patch`).
 
 
 ## Authorship and License
