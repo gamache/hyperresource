@@ -42,7 +42,7 @@ private
     elsif status / 100 == 5
       raise HyperResource::ServerError, status.to_s
     else ## 1xx? really?
-      raise HyperResource::Exception, "Got status #{status}, wtf?"
+      raise HyperResource::ResponseError, "Got status #{status}, wtf?"
     end
   end
 
