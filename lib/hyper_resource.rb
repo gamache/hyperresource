@@ -4,6 +4,7 @@ require 'hyper_resource/links'
 require 'hyper_resource/link'
 require 'hyper_resource/objects'
 require 'hyper_resource/response'
+require 'hyper_resource/exceptions'
 
 require 'hyper_resource/modules/utils'
 require 'hyper_resource/modules/http'
