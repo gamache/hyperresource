@@ -122,6 +122,12 @@ Don't worry if your API uses some other method to indicate resource data
 type; you can override the `data_type_name` method and implement your
 own logic.
 
+## Error Handling
+
+HyperResource raises a `HyperResource::ClientError` on 4xx responses,
+and `HyperResource::ServerError` on 5xx responses.  Catch one or both
+(`HyperResource::ResponseError`).
+
 ## Current Status
 
 * Way alpha
