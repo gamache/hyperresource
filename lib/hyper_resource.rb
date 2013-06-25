@@ -9,6 +9,7 @@ require 'hyper_resource/exceptions'
 require 'hyper_resource/modules/utils'
 require 'hyper_resource/modules/http'
 require 'hyper_resource/modules/bless'
+require 'hyper_resource/modules/changed'
 
 require 'pp'
 
@@ -16,6 +17,7 @@ class HyperResource
   include HyperResource::Modules::Utils
   include HyperResource::Modules::HTTP
   include HyperResource::Modules::Bless
+  include HyperResource::Modules::Changed
 
 private
 
@@ -95,11 +97,11 @@ public
 
   ## Returns a new HyperResource based on the given link href.
   def new_from_link(href)
-    rsrc = self.class.new(:root    => self.root,
-                          :auth    => self.auth,
-                          :headers => self.headers,
-                          :namespace => self.namespace,
-                          :href    => href)
+    self.class.new(:root    => self.root,
+                   :auth    => self.auth,
+                   :headers => self.headers,
+                   :namespace => self.namespace,
+                   :href    => href)
   end
 
   ## Populates +attributes+, +links+, and +objects+ from the contents of
@@ -131,12 +133,12 @@ public
     [:attributes, :objects, :links].each do |field|
       if self.send(field).respond_to?(method)
         if self.class == HyperResource
-          define_singleton_method(method) do |*args|
-            self.send(field).send(method, *args)
+          define_singleton_method(method) do |*argz|
+            self.send(field).send(method, *argz)
           end
         else
-          self.class.send(:define_method, method) do |*args|
-            self.send(field).send(method, *args)
+          self.class.send(:define_method, method) do |*argz|
+            self.send(field).send(method, *argz)
           end
         end
         return self.send(field).send(method, *args)
