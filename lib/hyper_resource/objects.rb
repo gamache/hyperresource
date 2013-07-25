@@ -6,8 +6,12 @@ class HyperResource::Objects < Hash
   def init_from_hal(hal_resp)
     return unless hal_resp['_embedded']
     hal_resp['_embedded'].each do |name, collection|
-      self[name] = collection.map do |obj|
-        self.parent_resource.new_from_hal(obj)
+      if collection.is_a? Hash
+        self[name] = self.parent_resource.new_from_hal(collection)
+      else
+        self[name] = collection.map do |obj|
+          self.parent_resource.new_from_hal(obj)
+        end
       end
       unless self.respond_to?(name.to_sym)
         define_singleton_method(name.to_sym) { self[name] }
