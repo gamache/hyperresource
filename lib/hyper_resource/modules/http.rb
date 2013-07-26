@@ -38,11 +38,11 @@ private
     elsif status / 100 == 3
       ## TODO redirect logic?
     elsif status / 100 == 4
-      raise HyperResource::ClientError, status.to_s
+      raise HyperResource::ClientError.new(self.response), status.to_s
     elsif status / 100 == 5
-      raise HyperResource::ServerError, status.to_s
+      raise HyperResource::ServerError.new(self.response), status.to_s
     else ## 1xx? really?
-      raise HyperResource::ResponseError, "Got status #{status}, wtf?"
+      raise HyperResource::ResponseError.new(self.response), "Got status #{status}, wtf?"
     end
   end
 
