@@ -14,6 +14,10 @@ describe HyperResource::Links do
     it 'creates all links as HyperResource::Link or subclass' do
       @links.self.must_be_kind_of HyperResource::Link
     end
+
+    it 'handles link arrays' do
+      @links.foobars.must_be_kind_of Array
+    end
   end
 
   describe 'implicit .where' do
