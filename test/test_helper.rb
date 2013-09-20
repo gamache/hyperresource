@@ -8,7 +8,13 @@ HAL_BODY = {
   'attr1' => 'val1',
   'attr2' => 'val2',
   '_links' => {
-    'self' => {'href' => '/obj1/'}
+    'self' => {'href' => '/obj1/'},
+    'foobars' => [
+      { 'name' => 'foobar',
+        'templated' => true,
+        'href' => 'http://example.com/foobars/{foobar}'
+      }
+    ]
   },
   '_embedded' => {
     'obj1s' => [
