@@ -2,6 +2,7 @@ require 'uri_template'
 
 class HyperResource::Link
   attr_accessor :base_href,
+                :name,
                 :templated,
                 :params,
                 :parent_resource
@@ -11,6 +12,7 @@ class HyperResource::Link
   def initialize(resource=nil, link_spec={})
     self.parent_resource = resource || HyperResource.new
     self.base_href = link_spec['href']
+    self.name = link_spec['name']
     self.templated = !!link_spec['templated']
     self.params    = link_spec['params'] || {}
   end
@@ -29,6 +31,7 @@ class HyperResource::Link
   def where(params)
     self.class.new(self.parent_resource,
                    'href' => self.base_href,
+                   'name' => self.name,
                    'templated' => self.templated,
                    'params' => self.params.merge(params))
   end
