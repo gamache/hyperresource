@@ -1,11 +1,11 @@
 require 'test_helper'
-
+__END__
 describe HyperResource::Attributes do
 
-  describe '#init_from_hal' do
+  describe 'accessors' do
     before do
       @attribs = HyperResource::Attributes.new
-      @attribs.init_from_hal(HAL_BODY)
+      @attribs.response_body = HAL_BODY
     end
 
     it "creates accessors for all attributes" do

@@ -1,4 +1,5 @@
 require 'test_helper'
+__END__
 
 describe HyperResource::Links do
   before do

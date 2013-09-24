@@ -2,7 +2,8 @@ require 'test_helper'
 
 describe HyperResource do
   before do
-    @rsrc = HyperResource.new.new_from_hal(HAL_BODY)
+    @rsrc = HyperResource.new
+    @rsrc.adapter.apply(HAL_BODY, @rsrc)
   end
   describe 'changed' do
     it 'marks attributes as changed' do

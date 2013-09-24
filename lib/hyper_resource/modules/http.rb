@@ -8,6 +8,7 @@ module HyperResource::Modules::HTTP
   ## resource will be blessed into its "proper" class, if
   ## +self.class.namespace != nil+.
   def get
+    pp self.href
     self.response = faraday_connection.get(self.href || '')
     finish_up
   end
@@ -30,11 +31,12 @@ module HyperResource::Modules::HTTP
 private
 
   def finish_up
+    self.loaded = true
     status = self.response.status
+    self.response_body = self.adapter.deserialize(self.response.body) rescue nil
+
     if status / 100 == 2
-      self.response_body = JSON.parse(self.response.body)
-      self.init_from_response_body!
-      self.blessed
+      return self.to_response_class
     elsif status / 100 == 3
       ## TODO redirect logic?
     elsif status / 100 == 4

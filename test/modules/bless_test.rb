@@ -1,6 +1,6 @@
 require 'test_helper'
 require 'net/http'
-
+__END__
 describe HyperResource::Modules::Bless do
   before do
     Kernel.module_eval "class Foo; end"

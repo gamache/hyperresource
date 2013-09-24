@@ -1,42 +1,43 @@
-class HyperResource::Attributes < Hash
-  attr_accessor :parent_resource
+class HyperResource
+  class Attributes < Hash
+    attr_accessor :_resource
 
-  def initialize(resource=nil)
-    self.parent_resource = resource || HyperResource.new
-  end
+    def initialize(resource=nil)
+      self._resource = resource || HyperResource.new
+    end
 
-  ## Initialize attributes from a HAL response.
-  def init_from_hal(hal_resp)
-    (hal_resp.keys - ['_links', '_embedded']).map(&:to_s).each do |attr|
-      self[attr] = hal_resp[attr]
+    ## Creates accessor methods in self.class and self._resource.class.
+    ## Protects against method creation into HyperResource::Attributes and
+    ## HyperResource classes.  Just subclasses, please!
+    def create_methods!(opts={})
+      return if self.class.to_s == 'HyperResource::Attributes' ||
+                self._resource.class.to_s == 'HyperResource'
 
-      attr_sym = attr.to_sym
-      attr_eq_sym = "#{attr}=".to_sym
+      self.keys.each do |attr|
+        attr_sym = attr.to_sym
+        attr_eq_sym = "#{attr}=".to_sym
 
-      ## Define rsrc.attributes.foo and rsrc.attributes.foo=
-      unless self.respond_to?(attr_sym)
-        define_singleton_method(attr_sym) do
+        self.class.send(:define_method, attr_sym) do
           self[attr]
         end
-        define_singleton_method(attr_eq_sym) do |v|
-          self.parent_resource._hr_mark_changed(attr_sym)
-          self[attr] = v
+        self.class.send(:define_method, attr_eq_sym) do |val|
+          self[attr] = val
+        end
+
+        ## Don't stomp on _resource's methods
+        unless _resource.respond_to?(attr_sym)
+          _resource.class.send(:define_method, attr_sym) do
+            attributes.send(attr_sym)
+          end
+        end
+        unless _resource.respond_to?(attr_eq_sym)
+          _resource.class.send(:define_method, attr_eq_sym) do |val|
+            attributes.send(attr_eq_sym, val)
+          end
         end
       end
-
-      ## Define rsrc.foo and rsrc.foo=
-      unless self.parent_resource.respond_to?(attr_sym)
-        self.parent_resource.define_singleton_method(attr_sym) do
-          self.attributes.send(attr_sym)
-        end
-        self.parent_resource.define_singleton_method(attr_eq_sym) do |v|
-          self.attributes.send(attr_eq_sym, v)
-        end
-      end
-
     end
+
   end
-
-
-
 end
+
