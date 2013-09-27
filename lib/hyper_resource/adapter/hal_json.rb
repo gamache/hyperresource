@@ -81,13 +81,15 @@ class HyperResource
 
         def apply_attributes(resp, rsrc)
           rsrc.attributes = rsrc.get_response_class::Attributes.new(rsrc)
-          attrs = rsrc.attributes
 
-          (resp.keys - ['_links', '_embedded']).map(&:to_s).each do |attr|
-            attrs[attr] = resp[attr]
+          given_attrs = resp.reject{|k,v| %w(_links _embedded).include?(k)}
+          filtered_attrs = rsrc.incoming_filter(given_attrs)
+
+          filtered_attrs.keys.each do |attr|
+            rsrc.attributes[attr] = filtered_attrs[attr]
           end
 
-          attrs.create_methods!
+          rsrc.attributes.create_methods!
         end
 
       end
