@@ -49,9 +49,11 @@ private
     elsif status / 100 == 3
       ## TODO redirect logic?
     elsif status / 100 == 4
-      raise HyperResource::ClientError.new(status.to_s, :response => self.response)
+      raise HyperResource::ClientError.new(status.to_s,
+                                           :response => self.response)
     elsif status / 100 == 5
-      raise HyperResource::ServerError.new(status.to_s, :response => self.response)
+      raise HyperResource::ServerError.new(status.to_s,
+                                           :response => self.response)
     else ## 1xx? really?
       raise HyperResource::ResponseError.new("Got status #{status}, wtf?",
                                              :response => self.response)

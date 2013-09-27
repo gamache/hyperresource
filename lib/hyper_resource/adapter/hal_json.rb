@@ -83,7 +83,7 @@ class HyperResource
           rsrc.attributes = rsrc.get_response_class::Attributes.new(rsrc)
 
           given_attrs = resp.reject{|k,v| %w(_links _embedded).include?(k)}
-          filtered_attrs = rsrc.incoming_filter(given_attrs)
+          filtered_attrs = rsrc.incoming_body_filter(given_attrs)
 
           filtered_attrs.keys.each do |attr|
             rsrc.attributes[attr] = filtered_attrs[attr]

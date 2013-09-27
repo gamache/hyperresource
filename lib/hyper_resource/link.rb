@@ -20,7 +20,8 @@ class HyperResource::Link
   ## Returns this link's href, applying any URI template params.
   def href
     if self.templated?
-      URITemplate.new(self.base_href).expand(params)
+      filtered_params = self.parent_resource.outgoing_uri_filter(params)
+      URITemplate.new(self.base_href).expand(filtered_params)
     else
       self.base_href
     end
@@ -29,6 +30,7 @@ class HyperResource::Link
   ## Returns a new scope with the given params; that is, returns a copy of
   ## itself with the given params applied.
   def where(params)
+    params = Hash[ params.map{|(k,v)| [k.to_s, v]} ]
     self.class.new(self.parent_resource,
                    'href' => self.base_href,
                    'name' => self.name,

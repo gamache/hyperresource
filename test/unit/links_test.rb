@@ -27,7 +27,7 @@ describe HyperResource::Links do
     it 'link accessor calls .where when called with args' do
       link = @links.self(:blarg => 1)
       link.must_be_kind_of HyperResource::Link
-      link.params[:blarg].must_equal 1
+      link.params['blarg'].must_equal 1
     end
   end
 end

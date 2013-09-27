@@ -15,7 +15,6 @@ require 'hyper_resource/adapter/hal_json'
 require 'pp'
 
 ## TODO:
-## incoming_filter, outgoing_filter
 ## as_json, to_json (in adapter?)
 ## save, update, create, delete
 
@@ -148,15 +147,31 @@ public
     response_class.new(self)
   end
 
-  def incoming_filter(attr_hash)
+
+  ## +incoming_body_filter+ filters a hash of attribute keys and values
+  ## on their way from a response body to a HyperResource.  Override this
+  ## in a subclass of HyperResource to implement filters on incoming data.
+  def incoming_body_filter(attr_hash)
     attr_hash
   end
 
-  def outgoing_filter(attr_hash)
+  ## +outgoing_body_filter+ filters a hash of attribute keys and values
+  ## on their way from a HyperResource to a request body.  Override this
+  ## in a subclass of HyperResource to implement filters on outgoing data.
+  def outgoing_body_filter(attr_hash)
     attr_hash
   end
 
-  def get_response_class
+  ## +outgoing_uri_filter+ filters a hash of attribute keys and values
+  ## on their way from a HyperResource to a URL.  Override this
+  ## in a subclass of HyperResource to implement filters on outgoing URI
+  ## parameters.
+  def outgoing_uri_filter(attr_hash)
+    attr_hash
+  end
+
+
+  def get_response_class # :nodoc:
     self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
     self.class.get_response_class(self.response, self.namespace)
   end
