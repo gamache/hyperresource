@@ -16,14 +16,18 @@ class HyperResource
       self.keys.each do |attr|
         attr_sym = attr.to_sym
 
-        self.class.send(:define_method, attr_sym) do
-          self[attr]
+        self.class.send(:define_method, attr_sym) do |*args|
+          if args.count > 0
+            self[attr].where(*args)
+          else
+            self[attr]
+          end
         end
 
         ## Don't stomp on _resource's methods
         unless _resource.respond_to?(attr_sym)
-          _resource.class.send(:define_method, attr_sym) do
-            links.send(attr_sym)
+          _resource.class.send(:define_method, attr_sym) do |*args|
+            links.send(attr_sym, *args)
           end
         end
       end

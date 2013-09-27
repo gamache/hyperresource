@@ -153,6 +153,7 @@ public
   end
 
   def get_response_class
+    self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
     self.class.get_response_class(self.response, self.namespace)
   end
 
