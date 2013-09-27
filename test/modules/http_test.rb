@@ -79,29 +79,32 @@ stub_connection = Faraday.new do |builder|
 end
 
 describe HyperResource::Modules::HTTP do
+  class DummyAPI < HyperResource; end
+
   before do
-    HyperResource.any_instance.
-      stubs(:faraday_connection).returns(stub_connection)
+    DummyAPI.any_instance.stubs(:faraday_connection).returns(stub_connection)
   end
 
   describe 'GET' do
     it 'works at a basic level' do
-      hr = HyperResource.new(root: '/')
+      hr = DummyAPI.new(root: '/')
       root = hr.get
       root.wont_be_nil
       root.must_be_kind_of HyperResource
+      root.must_be_instance_of DummyAPI::Root
+      root.links.must_be_instance_of DummyAPI::Root::Links
       root.links.must_respond_to :dummies
     end
 
     it 'raises client error' do
-      hr = HyperResource.new(root: '/', href: '404')
+      hr = DummyAPI.new(root: '/', href: '404')
       assert_raises HyperResource::ClientError do
         hr.get
       end
     end
 
     it 'raises server error' do
-      hr = HyperResource.new(root: '/', href: '500')
+      hr = DummyAPI.new(root: '/', href: '500')
       assert_raises HyperResource::ServerError do
         hr.get
       end

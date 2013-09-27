@@ -38,7 +38,7 @@ class HyperResource::Link
 
   ## Returns a HyperResource representing this link
   def resource
-    parent_resource.new_from_link(self.href)
+    parent_resource._new_from_link(self.href)
   end
 
   ## Returns a HyperResource representing this link, and fetches it.

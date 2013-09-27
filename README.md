@@ -32,7 +32,7 @@ root = api.get
 What'd we get back?
 
 ```ruby
-root.response_body
+root.response_object
 # => { 'message' => 'Welcome to the Example.com API',
 #      'version' => 1,
 #      '_links' => {
@@ -51,7 +51,7 @@ jdoe_user = api.users(email: "jdoe@example.com").first         # same thing; .wh
                                                                # when accessing links
 # => #<HyperResource:0x12312312 ...>
 
-jdoe_user.response_body
+jdoe_user.response_object
 # => { '_links' => {
 #        'self' => {'href' => '/users?email=jdoe@example.com'}
 #      },
