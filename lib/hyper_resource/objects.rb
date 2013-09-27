@@ -1,37 +1,59 @@
-class HyperResource::Objects < Hash
-  attr_accessor :parent_resource
-  def initialize(parent_resource=nil)
-    self.parent_resource = parent_resource || HyperResource.new
-  end
-  def init_from_hal(hal_resp)
-    return unless hal_resp['_embedded']
-    hal_resp['_embedded'].each do |name, collection|
-      if collection.is_a? Hash
-        self[name] = self.parent_resource.new_from_hal(collection)
-      else
-        self[name] = collection.map do |obj|
-          self.parent_resource.new_from_hal(obj)
+class HyperResource
+  class Objects < Hash
+    attr_accessor :_resource
+
+    def initialize(resource=nil)
+      self._resource = resource || HyperResource.new
+    end
+
+    ## Creates accessor methods in self.class and self._resource.class.
+    ## Protects against method creation into HyperResource::Objects and
+    ## HyperResource classes.  Just subclasses, please!
+    def create_methods!(opts={})
+      return if self.class.to_s == 'HyperResource::Objects' ||
+                self._resource.class.to_s == 'HyperResource'
+
+      self.keys.each do |attr|
+        attr_sym = attr.to_sym
+
+        self.class.send(:define_method, attr_sym) do
+          self[attr]
         end
-      end
-      unless self.respond_to?(name.to_sym)
-        define_singleton_method(name.to_sym) { self[name] }
-      end
-      unless self.parent_resource.respond_to?(name.to_sym)
-        self.parent_resource.define_singleton_method(name.to_sym) do
-          self.objects[name]
+
+        ## Don't stomp on _resource's methods
+        unless _resource.respond_to?(attr_sym)
+          _resource.class.send(:define_method, attr_sym) do
+            objects.send(attr_sym)
+          end
         end
       end
     end
-  end
 
-  ## Returns the first item in the first collection in +self+.
-  alias_method :first_orig, :first
-  def first
-    self.first_orig[1][0] rescue caller
-  end
+    ## Returns the first item in the first collection in +self+.
+    alias_method :first_orig, :first
+    def first
+      self.first_orig[1][0] rescue caller
+    end
 
-  ## Returns the ith item in the first collection in +self+.
-  def ith(i)
-    self.first_orig[1][i] rescue caller
+    ## Returns the ith item in the first collection in +self+.
+    def ith(i)
+      self.first_orig[1][i] rescue caller
+    end
+
+    def []=(attr, value) # :nodoc:
+      super(attr.to_s, value)
+    end
+
+    def [](key) # :nodoc:
+      return super(key.to_s) if self.has_key?(key.to_s)
+      return super(key.to_sym) if self.has_key?(key.to_sym)
+      nil
+    end
+
+    def method_missing(method, *args) # :nodoc:
+      return self[method] if self[method]
+      raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
+    end
+
   end
 end

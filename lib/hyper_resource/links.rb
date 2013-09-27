@@ -1,41 +1,53 @@
 class HyperResource
   class Links < Hash
-    attr_accessor :resource
+    attr_accessor :_resource
 
     def initialize(resource=nil)
-     self.resource = resource || HyperResource.new
+     self._resource = resource || HyperResource.new
     end
 
-    # Initialize links from a HAL response.
-    def init_from_hal(hal_resp)
-      return unless hal_resp['_links']
-      hal_resp['_links'].each do |rel, link_spec|
-        if link_spec.is_a? Array
-          self[rel] = link_spec.map do |link|
-            new_link_from_spec(link)
+    ## Creates accessor methods in self.class and self._resource.class.
+    ## Protects against method creation into HyperResource::Links and
+    ## HyperResource classes.  Just subclasses, please!
+    def create_methods!(opts={})
+      return if self.class.to_s == 'HyperResource::Links' ||
+                self._resource.class.to_s == 'HyperResource'
+
+      self.keys.each do |attr|
+        attr_sym = attr.to_sym
+
+        self.class.send(:define_method, attr_sym) do |*args|
+          if args.count > 0
+            self[attr].where(*args)
+          else
+            self[attr]
           end
-        else
-          self[rel] = new_link_from_spec(link_spec)
         end
-        create_methods_for_link_rel(rel) unless self.respond_to?(rel.to_sym)
+
+        ## Don't stomp on _resource's methods
+        unless _resource.respond_to?(attr_sym)
+          _resource.class.send(:define_method, attr_sym) do |*args|
+            links.send(attr_sym, *args)
+          end
+        end
       end
     end
 
-  protected
-
-    def new_link_from_spec(link_spec) # :nodoc:
-      HyperResource::Link.new(resource, link_spec)
+    def []=(attr, value) # :nodoc:
+      super(attr.to_s, value)
     end
 
-    def create_methods_for_link_rel(rel) # :nodoc:
-      link = self[rel]
-      define_singleton_method(rel.to_sym) do |*args|
-        return link if args.empty?
-        link.where(*args)
-      end
+    def [](key) # :nodoc:
+      return super(key.to_s) if self.has_key?(key.to_s)
+      return super(key.to_sym) if self.has_key?(key.to_sym)
+      nil
+    end
+
+    def method_missing(method, *args) # :nodoc:
+      return self[method] if self[method]
+      raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
     end
 
   end
 end
-
 

@@ -30,11 +30,13 @@ module HyperResource::Modules::HTTP
 private
 
   def finish_up
+    self.loaded = true
+    self.response_object = self.adapter.deserialize(self.response.body)
+    self.adapter.apply(self.response_object, self)
+
     status = self.response.status
     if status / 100 == 2
-      self.response_body = JSON.parse(self.response.body)
-      self.init_from_response_body!
-      self.blessed
+      return self.to_response_class
     elsif status / 100 == 3
       ## TODO redirect logic?
     elsif status / 100 == 4

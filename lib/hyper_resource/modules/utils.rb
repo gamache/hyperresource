@@ -23,6 +23,22 @@ module HyperResource::Modules
         end
       end
 
+      ## Instance attributes which fall back to class attributes.
+      def fallback_attribute(*names)
+        names.map(&:to_sym).each do |name|
+          class_eval <<-EOT
+            def #{name}=(val)
+              @#{name} = val
+            end
+            def #{name}
+              return @#{name} if defined?(@#{name})
+              return self.class.#{name} if self.class.respond_to?(:#{name})
+              nil
+            end
+          EOT
+        end
+      end
+
     end # module ClassMethods
 
   end
