@@ -1,12 +1,16 @@
-class HyperResource::Exception < Exception
-end
+class HyperResource
+  class Exception < ::Exception
+    attr_accessor :response  # response object which led to this exception
+    attr_accessor :cause     # internal exception which led to this exception
 
-class HyperResource::ResponseError < HyperResource::Exception
-end
+    def initialize(message, opts={})
+      self.response = opts[:response]
+      self.cause = opts[:cause]
+      super(message)
+    end
+  end
 
-class HyperResource::ClientError < HyperResource::ResponseError
+  class ResponseError < Exception; end
+  class ClientError   < Exception; end
+  class ServerError   < Exception; end
 end
-
-class HyperResource::ServerError < HyperResource::ResponseError
-end
-

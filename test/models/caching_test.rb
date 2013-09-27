@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe 'HyperResource caching' do
   class TestAPI < HyperResource; end
-  
+
   before do
     @rsrc = TestAPI.new
     @rsrc.adapter.apply(HAL_BODY, @rsrc)

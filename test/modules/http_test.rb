@@ -75,6 +75,12 @@ stub_connection = Faraday.new do |builder|
       {'Content-type' => 'application/vnd.dummy.v1+hal+json;type=Error'},
       '{"error": "Internal server error", "_links": {"root":"/"}}'
     ]}
+
+    stub.get('/garbage') {[
+      200,
+      {'Content-type' => 'application/json'},
+      '!@#$%!@##%$!@#$%^  (This is very invalid JSON)'
+    ]}
   end
 end
 
@@ -98,16 +104,34 @@ describe HyperResource::Modules::HTTP do
 
     it 'raises client error' do
       hr = DummyAPI.new(root: '/', href: '404')
-      assert_raises HyperResource::ClientError do
+      begin
         hr.get
+        assert false # shouldn't get here
+      rescue HyperResource::ClientError => e
+        e.response.wont_be_nil
       end
     end
 
     it 'raises server error' do
       hr = DummyAPI.new(root: '/', href: '500')
-      assert_raises HyperResource::ServerError do
+      begin
         hr.get
+        assert false # shouldn't get here
+      rescue HyperResource::ServerError => e
+        e.response.wont_be_nil
       end
     end
+
+    it 'raises response error' do
+      hr = DummyAPI.new(root: '/', href: 'garbage')
+      begin
+        hr.get
+        assert false # shouldn't get here
+      rescue HyperResource::ResponseError => e
+        e.response.wont_be_nil
+        e.cause.must_be_kind_of Exception
+      end
+    end
+
   end
 end

@@ -30,9 +30,18 @@ module HyperResource::Modules::HTTP
 private
 
   def finish_up
-    self.loaded = true
-    self.response_object = self.adapter.deserialize(self.response.body)
+    begin
+      self.response_object = self.adapter.deserialize(self.response.body)
+    rescue Exception => e
+      raise HyperResource::ResponseError.new(
+        "Error when deserializing response body",
+        :response => self.response,
+        :cause => e
+      )
+    end
+
     self.adapter.apply(self.response_object, self)
+    self.loaded = true
 
     status = self.response.status
     if status / 100 == 2
@@ -40,11 +49,12 @@ private
     elsif status / 100 == 3
       ## TODO redirect logic?
     elsif status / 100 == 4
-      raise HyperResource::ClientError, status.to_s
+      raise HyperResource::ClientError.new(status.to_s, :response => self.response)
     elsif status / 100 == 5
-      raise HyperResource::ServerError, status.to_s
+      raise HyperResource::ServerError.new(status.to_s, :response => self.response)
     else ## 1xx? really?
-      raise HyperResource::ResponseError, "Got status #{status}, wtf?"
+      raise HyperResource::ResponseError.new("Got status #{status}, wtf?",
+                                             :response => self.response)
     end
   end
 
