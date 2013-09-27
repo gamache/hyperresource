@@ -42,7 +42,6 @@ class HyperResource
       _hr_clear_changed
     end
 
-
     ## Returns +true+ if the given attribute has been changed since creation
     ## time, +false+ otherwise.
     ## If no attribute is given, return whether any attributes have been
@@ -55,7 +54,18 @@ class HyperResource
 
     def []=(attr, value) # :nodoc:
       _hr_mark_changed(attr)
-      super
+      super(attr.to_s, value)
+    end
+
+    def [](key) # :nodoc:
+      return super(key.to_s) if self.has_key?(key.to_s)
+      return super(key.to_sym) if self.has_key?(key.to_sym)
+      nil
+    end
+
+    def method_missing(method, *args) # :nodoc:
+      return self[method] if self[method]
+      raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
     end
 
   private

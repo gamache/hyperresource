@@ -33,6 +33,21 @@ class HyperResource
       end
     end
 
+    def []=(attr, value) # :nodoc:
+      super(attr.to_s, value)
+    end
+
+    def [](key) # :nodoc:
+      return super(key.to_s) if self.has_key?(key.to_s)
+      return super(key.to_sym) if self.has_key?(key.to_sym)
+      nil
+    end
+
+    def method_missing(method, *args) # :nodoc:
+      return self[method] if self[method]
+      raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
+    end
+
   end
 end
 

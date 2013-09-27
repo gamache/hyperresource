@@ -240,9 +240,9 @@ public
     if method[-1] == '='
       return attributes[method[0..-2]] = args.first if attributes[method[0..-2]]
     else
-      return attributes[method] if attributes[method]
-      return objects[method] if objects[method]
-      return links[method] if links[method]
+      return attributes[method] if attributes && attributes[method]
+      return objects[method] if objects && objects[method]
+      return links[method] if links && links[method]
     end
 
     raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
