@@ -1,10 +1,12 @@
 require 'test_helper'
-__END__
 
 describe HyperResource::Links do
+  class TestAPI < HyperResource; end
+
   before do
-    @links = HyperResource::Links.new
-    @links.init_from_hal(HAL_BODY)
+    @rsrc = TestAPI.new
+    @rsrc.adapter.apply(HAL_BODY, @rsrc)
+    @links = @rsrc.links
   end
 
   describe '#init_from_hal' do
