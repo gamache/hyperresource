@@ -40,7 +40,7 @@ private
 
       :request,
       :response,
-      :response_body,
+      :response_object,
 
       :attributes,
       :links,
@@ -168,8 +168,15 @@ public
   ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
 
   def self.get_response_class(response, namespace)
-    return self unless namespace
-    return self unless type_name = self.get_response_data_type(response)
+    if self.to_s == 'HyperResource'
+      return self unless namespace
+    end
+
+    namespace ||= self.to_s
+
+    type_name = self.get_response_data_type(response)
+    return self unless type_name
+
     class_name = "#{namespace}::#{type_name}"
     class_name.gsub!(/[^_0-9A-Za-z:]/, '')  ## sanitize class_name
 
@@ -238,5 +245,8 @@ public
     "@href=#{self.href.inspect} @loaded=#{self.loaded} "+
     "@namespace=#{self.namespace.inspect} ...>"
   end
+
+  ## +response_body+ is deprecated in favor of +response_object+.
+  def response_body; response_object end
 
 end

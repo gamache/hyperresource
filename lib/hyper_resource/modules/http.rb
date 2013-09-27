@@ -31,8 +31,8 @@ private
 
   def finish_up
     self.loaded = true
-    self.response_body = self.adapter.deserialize(self.response.body)
-    self.adapter.apply(self.response_body, self)
+    self.response_object = self.adapter.deserialize(self.response.body)
+    self.adapter.apply(self.response_object, self)
 
     status = self.response.status
     if status / 100 == 2

@@ -91,6 +91,8 @@ describe HyperResource::Modules::HTTP do
       root = hr.get
       root.wont_be_nil
       root.must_be_kind_of HyperResource
+      root.must_be_instance_of DummyAPI::Root
+      root.links.must_be_instance_of DummyAPI::Root::Links
       root.links.must_respond_to :dummies
     end
 
