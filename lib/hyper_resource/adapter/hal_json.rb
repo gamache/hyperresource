@@ -10,7 +10,7 @@ class HyperResource
         end
 
         def deserialize(string)
-          JSON.parse(object)
+          JSON.parse(string)
         end
 
         def apply(response, resource, opts={})

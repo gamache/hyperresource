@@ -8,7 +8,6 @@ module HyperResource::Modules::HTTP
   ## resource will be blessed into its "proper" class, if
   ## +self.class.namespace != nil+.
   def get
-    pp self.href
     self.response = faraday_connection.get(self.href || '')
     finish_up
   end
@@ -32,9 +31,10 @@ private
 
   def finish_up
     self.loaded = true
-    status = self.response.status
-    self.response_body = self.adapter.deserialize(self.response.body) rescue nil
+    self.response_body = self.adapter.deserialize(self.response.body)
+    self.adapter.apply(self.response_body, self)
 
+    status = self.response.status
     if status / 100 == 2
       return self.to_response_class
     elsif status / 100 == 3

@@ -8,7 +8,6 @@ require 'hyper_resource/exceptions'
 
 require 'hyper_resource/modules/utils'
 require 'hyper_resource/modules/http'
-require 'hyper_resource/modules/changed'
 
 require 'hyper_resource/adapter'
 require 'hyper_resource/adapter/hal_json'
@@ -19,7 +18,6 @@ require 'pp'
 class HyperResource
   include HyperResource::Modules::Utils
   include HyperResource::Modules::HTTP
-  include HyperResource::Modules::Changed
 
 private
 
@@ -127,6 +125,10 @@ private
 
 public
 
+  def changed?(*args)
+    attributes.changed?(*args)
+  end
+
   ## Returns a new HyperResource based on the given link href.
   def _new_from_link(href)
     self.class.new(:root    => self.root,
@@ -220,8 +222,6 @@ public
   ## method_missing will load this resource if not yet loaded, then 
   ## attempt to delegate to +attributes+, then +objects+, then +links+.
   def method_missing(method, *args)
-    p "method missing: #{method}"
-    pp caller[0..5]
     self.get unless self.loaded
 
     [:attributes, :objects, :links].each do |field|

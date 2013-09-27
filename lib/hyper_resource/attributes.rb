@@ -1,8 +1,9 @@
 class HyperResource
   class Attributes < Hash
-    attr_accessor :_resource
 
-    def initialize(resource=nil)
+    attr_accessor :_resource # :nodoc:
+
+    def initialize(resource=nil) # :nodoc:
       self._resource = resource || HyperResource.new
     end
 
@@ -36,6 +37,37 @@ class HyperResource
           end
         end
       end
+
+      ## This is a good time to mark this object as not-changed
+      _hr_clear_changed
+    end
+
+
+    ## Returns +true+ if the given attribute has been changed since creation
+    ## time, +false+ otherwise.
+    ## If no attribute is given, return whether any attributes have been
+    ## changed.
+    def changed?(attr=nil)
+      @_hr_changed ||= Hash.new(false)
+      return @_hr_changed[attr.to_sym] if attr
+      return @_hr_changed.keys.count > 0
+    end
+
+    def []=(attr, value) # :nodoc:
+      _hr_mark_changed(attr)
+      super
+    end
+
+  private
+
+    def _hr_mark_changed(attr, is_changed=true) # :nodoc:
+      attr = attr.to_sym
+      @_hr_changed ||= Hash.new(false)
+      @_hr_changed[attr] = is_changed
+    end
+
+    def _hr_clear_changed
+      @_hr_changed = nil
     end
 
   end

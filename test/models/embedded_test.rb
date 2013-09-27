@@ -13,7 +13,7 @@ describe "Embedded Resources" do
   end
 
   it 'supports a single embedded resource' do
-    hyper = HyperResource.new(namespace: 'TestAPI')
+    hyper = TestAPI.new
     hyper.adapter.apply({"_embedded" => {"foo" => {"_links" => {"self" => {"href" => "http://example.com/"}}}}},
                         hyper)
     hyper.foo.href.must_equal 'http://example.com/'
