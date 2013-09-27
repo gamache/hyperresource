@@ -14,6 +14,10 @@ require 'hyper_resource/adapter/hal_json'
 
 require 'pp'
 
+## TODO:
+## incoming_filter, outgoing_filter
+## as_json, to_json (in adapter?)
+## save, update, create, delete
 
 class HyperResource
   include HyperResource::Modules::Utils
