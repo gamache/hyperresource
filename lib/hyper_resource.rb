@@ -236,12 +236,16 @@ public
   def method_missing(method, *args)
     self.get unless self.loaded
 
-    [:attributes, :objects, :links].each do |field|
-      if self.send(field).respond_to?(method)
-        return self.send(field).send(method, *args)
-      end
+    method = method.to_s
+    if method[-1] == '='
+      return attributes[method[0..-2]] = args.first if attributes[method[0..-2]]
+    else
+      return attributes[method] if attributes[method]
+      return objects[method] if objects[method]
+      return links[method] if links[method]
     end
-    super
+
+    raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
   end
 
 
