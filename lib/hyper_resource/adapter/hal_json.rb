@@ -58,7 +58,7 @@ class HyperResource
 
         def apply_links(resp, rsrc)
           return unless resp['_links']
-          rsrc.links = rsrc.get_response_class::Links.new(rsrc)
+          rsrc.links = rsrc._get_response_class::Links.new(rsrc)
           links = rsrc.links
 
           resp['_links'].each do |rel, link_spec|
@@ -80,7 +80,7 @@ class HyperResource
 
 
         def apply_attributes(resp, rsrc)
-          rsrc.attributes = rsrc.get_response_class::Attributes.new(rsrc)
+          rsrc.attributes = rsrc._get_response_class::Attributes.new(rsrc)
 
           given_attrs = resp.reject{|k,v| %w(_links _embedded).include?(k)}
           filtered_attrs = rsrc.incoming_body_filter(given_attrs)

@@ -128,25 +128,11 @@ private
 
 public
 
+  ## Returns true if one or more of this object's attributes has been
+  ## reassigned.
   def changed?(*args)
     attributes.changed?(*args)
   end
-
-  ## Returns a new HyperResource based on the given link href.
-  def _new_from_link(href)
-    self.class.new(:root    => self.root,
-                   :auth    => self.auth,
-                   :headers => self.headers,
-                   :namespace => self.namespace,
-                   :href    => href)
-  end
-
-  def to_response_class
-    response_class = self.get_response_class
-    return self if self.class == response_class
-    response_class.new(self)
-  end
-
 
   ## +incoming_body_filter+ filters a hash of attribute keys and values
   ## on their way from a response body to a HyperResource.  Override this
@@ -171,73 +157,6 @@ public
   end
 
 
-  def get_response_class # :nodoc:
-    self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
-    self.class.get_response_class(self.response, self.namespace)
-  end
-
-  ## Returns the class into which the given response should be cast.
-  ## If the object is not loaded yet, or if +opts[:namespace]+ is
-  ## not set, returns +self+.
-  ##
-  ## Otherwise, +get_response_class+ uses +get_response_data_type+ to
-  ## determine subclass name, glues it to the given namespace, and
-  ## creates the class if it's not there yet. E.g., given a namespace of
-  ## +FooAPI+ and a response content-type of
-  ## "application/vnd.foocorp.fooapi.v1+json;type=User", this should
-  ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
-
-  def self.get_response_class(response, namespace)
-    if self.to_s == 'HyperResource'
-      return self unless namespace
-    end
-
-    namespace ||= self.to_s
-
-    type_name = self.get_response_data_type(response)
-    return self unless type_name
-
-    class_name = "#{namespace}::#{type_name}"
-    class_name.gsub!(/[^_0-9A-Za-z:]/, '')  ## sanitize class_name
-
-    ## Return data type class if it exists
-    klass = eval(class_name) rescue :sorry_dude
-    return klass if klass.is_a?(Class)
-
-    ## Data type class didn't exist -- create namespace (if necessary),
-    ## then the data type class
-    if namespace != ''
-      nsc = eval(namespace) rescue :bzzzzzt
-      unless nsc.is_a?(Class)
-        Object.module_eval "class #{namespace} < #{self}; end"
-      end
-    end
-    Object.module_eval "class #{class_name} < #{namespace}; end"
-    eval(class_name)
-  end
-
-
-  def get_response_data_type
-    self.class.get_response_data_type(self.response)
-  end
-
-  ## Inspects the given response, and returns a string describing this
-  ## resource's data type.
-  ##
-  ## By default, this method looks for a +type=...+ modifier in the
-  ## response's +Content-type+ and returns that value, capitalized.
-  ##
-  ## Override this method in a subclass to alter HyperResource's behavior.
-
-  def self.get_response_data_type(response)
-    return nil unless response
-    return nil unless content_type = response['content-type']
-    return nil unless m=content_type.match(/;\s* type=(?<type> [0-9A-Za-z:]+)/x)
-    m[:type][0].upcase + m[:type][1..-1]
-  end
-
-
-
   ## Returns the first object in the first collection of objects embedded
   ## in this resource.  Equivalent to +self.objects.first+.
   def first; self.objects.first end
@@ -248,6 +167,7 @@ public
 
   ## method_missing will load this resource if not yet loaded, then 
   ## attempt to delegate to +attributes+, then +objects+, then +links+.
+  ## Override with care.
   def method_missing(method, *args)
     self.get unless self.loaded
 
@@ -271,6 +191,94 @@ public
   end
 
   ## +response_body+ is deprecated in favor of +response_object+.
-  def response_body; response_object end
+  def response_body; response_object end # :nodoc:
+
+
+  #######################################################################
+  ####   Underscored functions are not meant to be used outside of   ####
+  ####   HyperResource machinery.  You have been warned.             ####
+
+
+  ## Return a new HyperResource based on this object and a given href.
+  def _new_from_link(href) # :nodoc:
+    self.class.new(:root    => self.root,
+                   :auth    => self.auth,
+                   :headers => self.headers,
+                   :namespace => self.namespace,
+                   :href    => href)
+  end
+
+  ## Return this object, "cast" into its proper response class.
+  def _to_response_class # :nodoc:
+    response_class = self._get_response_class
+    return self if self.class == response_class
+    response_class.new(self)
+  end
+
+
+  ## Returns the class into which the given response should be cast.
+  ## If the object is not loaded yet, or if +opts[:namespace]+ is
+  ## not set, returns +self+.
+  ##
+  ## Otherwise, +_get_response_class+ uses +_get_response_data_type+ to
+  ## determine subclass name, glues it to the given namespace, and
+  ## creates the class if it's not there yet. E.g., given a namespace of
+  ## +FooAPI+ and a response content-type of
+  ## "application/vnd.foocorp.fooapi.v1+json;type=User", this should
+  ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
+
+  def self._get_response_class(response, namespace) # :nodoc:
+    if self.to_s == 'HyperResource'
+      return self unless namespace
+    end
+
+    namespace ||= self.to_s
+
+    type_name = self._get_response_data_type(response)
+    return self unless type_name
+
+    class_name = "#{namespace}::#{type_name}"
+    class_name.gsub!(/[^_0-9A-Za-z:]/, '')  ## sanitize class_name
+
+    ## Return data type class if it exists
+    klass = eval(class_name) rescue :sorry_dude
+    return klass if klass.is_a?(Class)
+
+    ## Data type class didn't exist -- create namespace (if necessary),
+    ## then the data type class
+    if namespace != ''
+      nsc = eval(namespace) rescue :bzzzzzt
+      unless nsc.is_a?(Class)
+        Object.module_eval "class #{namespace} < #{self}; end"
+      end
+    end
+    Object.module_eval "class #{class_name} < #{namespace}; end"
+    eval(class_name)
+  end
+
+  def _get_response_class # :nodoc:
+    self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
+    self.class._get_response_class(self.response, self.namespace)
+  end
+
+
+  ## Inspects the given response, and returns a string describing this
+  ## resource's data type.
+  ##
+  ## By default, this method looks for a +type=...+ modifier in the
+  ## response's +Content-type+ and returns that value, capitalized.
+  ##
+  ## Override this method in a subclass to alter HyperResource's behavior.
+
+  def self._get_response_data_type(response) # :nodoc:
+    return nil unless response
+    return nil unless content_type = response['content-type']
+    return nil unless m=content_type.match(/;\s* type=(?<type> [0-9A-Za-z:]+)/x)
+    m[:type][0].upcase + m[:type][1..-1]
+  end
+
+  def _get_response_data_type # :nodoc:
+    self.class._get_response_data_type(self.response)
+  end
 
 end

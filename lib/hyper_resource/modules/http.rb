@@ -45,7 +45,7 @@ private
 
     status = self.response.status
     if status / 100 == 2
-      return self.to_response_class
+      return self._to_response_class
     elsif status / 100 == 3
       ## TODO redirect logic?
     elsif status / 100 == 4
