@@ -1,22 +1,7 @@
-require 'hyper_resource/version'
-require 'hyper_resource/attributes'
-require 'hyper_resource/links'
-require 'hyper_resource/link'
-require 'hyper_resource/objects'
-require 'hyper_resource/response'
-require 'hyper_resource/exceptions'
-
-require 'hyper_resource/modules/utils'
-require 'hyper_resource/modules/http'
-
-require 'hyper_resource/adapter'
-require 'hyper_resource/adapter/hal_json'
+this_dir = File.dirname(File.absolute_path(__FILE__))
+Dir.glob(this_dir + '/hyper_resource/**/*.rb') {|f| require f}
 
 require 'pp'
-
-## TODO:
-## as_json, to_json (in adapter?)
-## save, update, create, delete
 
 class HyperResource
   include HyperResource::Modules::Utils
