@@ -1,8 +1,8 @@
-require 'hyper_resource'
-
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'mocha/setup'
+
+require 'hyper_resource'
 
 HAL_BODY = {
   'attr1' => 'val1',
