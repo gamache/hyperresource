@@ -117,14 +117,6 @@ public
                       HyperResource::Adapter::HAL_JSON
   end
 
-private
-
-  def init_from_resource(resource)
-    (self.class._hr_attributes - [:attributes, :links, :objects]).each do |attr|
-      self.send("#{attr}=".to_sym, resource.send(attr))
-    end
-    self.adapter.apply(self.response_object, self)
-  end
 
 public
 
@@ -208,13 +200,6 @@ public
                    :href    => href)
   end
 
-  ## Return this object, "cast" into its proper response class.
-  def _to_response_class # :nodoc:
-    response_class = self._get_response_class
-    return self if self.class == response_class
-    response_class.new(self)
-  end
-
 
   ## Returns the class into which the given response should be cast.
   ## If the object is not loaded yet, or if +opts[:namespace]+ is
@@ -279,6 +264,22 @@ public
 
   def _get_response_data_type # :nodoc:
     self.class._get_response_data_type(self.response)
+  end
+
+private
+
+  ## Return this object, "cast" into its proper response class.
+  def to_response_class # :nodoc:
+    response_class = self._get_response_class
+    return self if self.class == response_class
+    response_class.new(self)
+  end
+
+  def init_from_resource(resource)
+    (self.class._hr_attributes - [:attributes, :links, :objects]).each do |attr|
+      self.send("#{attr}=".to_sym, resource.send(attr))
+    end
+    self.adapter.apply(self.response_object, self)
   end
 
 end
