@@ -1,5 +1,9 @@
-this_dir = File.dirname(File.absolute_path(__FILE__))
+this_dir = File.dirname(__FILE__)
 Dir.glob(this_dir + '/hyper_resource/**/*.rb') {|f| require f}
+
+if RUBY_VERSION[0..2] == '1.8'
+  require 'rubygems'
+end
 
 require 'pp'
 
@@ -149,7 +153,7 @@ public
     self.get unless self.loaded
 
     method = method.to_s
-    if method[-1] == '='
+    if method[-1,1] == '='
       return attributes[method[0..-2]] = args.first if attributes[method[0..-2]]
     else
       return attributes[method] if attributes && attributes[method]
@@ -249,8 +253,8 @@ public
   def self._get_response_data_type(response) # :nodoc:
     return nil unless response
     return nil unless content_type = response['content-type']
-    return nil unless m=content_type.match(/;\s* type=(?<type> [0-9A-Za-z:]+)/x)
-    m[:type][0].upcase + m[:type][1..-1]
+    return nil unless m=content_type.match(/;\s* type=([0-9A-Za-z:]+)/x)
+    m[1][0,1].upcase + m[1][1..-1]
   end
 
   def _get_response_data_type # :nodoc:
