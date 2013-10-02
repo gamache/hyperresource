@@ -154,7 +154,13 @@ public
     else
       return attributes[method] if attributes && attributes[method]
       return objects[method] if objects && objects[method]
-      return links[method] if links && links[method]
+      if links && links[method]
+        if args.count > 0
+          return links[method].where(*args)
+        else
+          return links[method]
+        end
+      end
     end
 
     raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
