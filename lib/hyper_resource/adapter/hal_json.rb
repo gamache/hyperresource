@@ -1,7 +1,4 @@
-if RUBY_VERSION[0..2] == '1.8'
-  puts "hi mom"
-  require 'rubygems'
-end
+require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
 require 'json'
 
 class HyperResource
