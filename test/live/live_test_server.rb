@@ -42,17 +42,17 @@ class LiveTestServer < Sinatra::Base
     params = JSON.parse(request.env["rack.input"].read)
     if params["name"] != 'Awesome Widget dood'
       headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Error'
-      [422, JSON.dump({error: "Name was wrong; you sent #{params.inspect}"})]
+      [422, JSON.dump({:error => "Name was wrong; you sent #{params.inspect}"})]
     else
       headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Widget'
-      JSON.dump(
-        { name: params["name"],
-          _links: {
-            self: {href: "/widgets/1"},
-            widgets: {href: "/widgets"}
+      <<-EOT
+        { "name": "#{params["name"]}",
+          "_links": {
+            "self": {"href": "/widgets/1"},
+            "widgets": {"href": "/widgets"}
           }
         }
-      )
+      EOT
     end
   end
 
@@ -60,7 +60,7 @@ class LiveTestServer < Sinatra::Base
     params = JSON.parse(request.env["rack.input"].read)
     if params["name"] != 'Cool Widget brah'
       headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Error'
-      [422, JSON.dump({error: "Name was wrong; you sent #{params.inspect}"})]
+      [422, JSON.dump(:error => "Name was wrong; you sent #{params.inspect}")]
     else
       headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Widget'
       [201, headers, <<-EOT ]
