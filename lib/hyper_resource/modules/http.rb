@@ -13,12 +13,6 @@ class HyperResource
       finish_up
     end
 
-    def save
-      return self unless changed?
-      return put if loaded
-      return post
-    end
-
     def create(*args); post(*args) end
     def post(params=nil)
       params ||= self.attributes

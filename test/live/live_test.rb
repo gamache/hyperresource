@@ -59,11 +59,11 @@ describe HyperResource do
         #root.widgets.first.class.must_equal 'WhateverAPI::Widget'  ## TODO!
       end
 
-      it 'can save with PUT' do
+      it 'can update' do
         root = @api.get
         widget = root.widgets.first
         widget.name = "Awesome Widget dood"
-        resp = widget.save
+        resp = widget.update
         resp.attributes.must_equal widget.attributes
         resp.wont_equal widget
       end
