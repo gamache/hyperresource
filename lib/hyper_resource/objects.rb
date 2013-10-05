@@ -32,12 +32,12 @@ class HyperResource
     ## Returns the first item in the first collection in +self+.
     alias_method :first_orig, :first
     def first
-      self.first_orig[1][0] rescue caller
+      self.first_orig[1][0] # rescue caller
     end
 
     ## Returns the ith item in the first collection in +self+.
     def ith(i)
-      self.first_orig[1][i] rescue caller
+      self.first_orig[1][i] # rescue caller
     end
 
     def []=(attr, value) # :nodoc:

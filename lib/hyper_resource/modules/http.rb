@@ -2,8 +2,8 @@ require 'faraday'
 require 'uri'
 require 'json'
 
-module HyperResource::Modules
-  module HTTP
+class HyperResource
+  module Modules; module HTTP
 
     ## Loads and returns the resource pointed to by +href+.  The returned
     ## resource will be blessed into its "proper" class, if
@@ -13,7 +13,22 @@ module HyperResource::Modules
       finish_up
     end
 
-    ## Returns a per-thread Faraday connection for this object.
+    def save
+      return self unless changed?
+      return put if loaded
+      return post
+    end
+
+    def put
+      self.response = faraday_connection.put do |req|
+        req.url (self.href)
+        req.body = adapter.serialize(attributes.changed_attributes)
+      end
+      finish_up
+    end
+
+    ## Returns a raw Faraday connection to this resource's URL, with proper
+    ## headers (including auth).
     def faraday_connection(url=nil)
       url ||= self.root
       key = "faraday_connection_#{url}"
@@ -33,7 +48,7 @@ module HyperResource::Modules
     def finish_up
       begin
         self.response_object = self.adapter.deserialize(self.response.body)
-      rescue Exception => e
+      rescue StandardError => e
         raise HyperResource::ResponseError.new(
           "Error when deserializing response body",
           :response => self.response,
@@ -51,16 +66,21 @@ module HyperResource::Modules
         ## TODO redirect logic?
       elsif status / 100 == 4
         raise HyperResource::ClientError.new(status.to_s,
-                                             :response => self.response)
+                                             :response => self.response,
+                                             :response_object => self.response_object)
       elsif status / 100 == 5
         raise HyperResource::ServerError.new(status.to_s,
-                                             :response => self.response)
+                                             :response => self.response,
+                                             :response_object => self.response_object)
+
       else ## 1xx? really?
         raise HyperResource::ResponseError.new("Got status #{status}, wtf?",
-                                               :response => self.response)
+                                               :response => self.response,
+                                               :response_object => self.response_object)
+
       end
     end
 
-  end
+  end end
 end
 
