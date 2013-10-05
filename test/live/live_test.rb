@@ -68,6 +68,21 @@ describe HyperResource do
         resp.wont_equal widget
       end
 
+      it 'can create' do
+        widget_set = @api.widgets.get
+        new_widget = widget_set.create(:name => "Cool Widget brah")
+        new_widget.class.to_s.must_equal 'WhateverAPI::Widget'
+        new_widget.name.must_equal "Cool Widget brah"
+      end
+
+      it 'can delete' do
+        root = @api.get
+        widget = root.widgets.first
+        del = widget.delete
+        del.class.to_s.must_equal 'WhateverAPI::Message'
+        del.message.must_equal "Deleted widget."
+      end
+
     end # describe 'live tests'
 
   end # if

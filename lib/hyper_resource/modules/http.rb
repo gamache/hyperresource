@@ -19,18 +19,33 @@ class HyperResource
       return post
     end
 
-    def put
-      self.response = faraday_connection.put do |req|
-        req.url (self.href)
-        req.body = adapter.serialize(attributes.changed_attributes)
+    def create(*args); post(*args) end
+    def post(params=nil)
+      params ||= self.attributes
+      self.response = faraday_connection.post do |req|
+        req.body = adapter.serialize(params)
       end
+      finish_up
+    end
+
+    def update(*args); put(*args) end
+    def put(params=nil)
+      params ||= self.attributes.changed_attributes
+      self.response = faraday_connection.put do |req|
+        req.body = adapter.serialize(params)
+      end
+      finish_up
+    end
+
+    def delete
+      self.response = faraday_connection.delete
       finish_up
     end
 
     ## Returns a raw Faraday connection to this resource's URL, with proper
     ## headers (including auth).
     def faraday_connection(url=nil)
-      url ||= self.root
+      url ||= URI.join(self.root, self.href)
       key = "faraday_connection_#{url}"
       return Thread.current[key] if Thread.current[key]
 
