@@ -128,12 +128,11 @@ HyperResource raises a `HyperResource::ClientError` on 4xx responses,
 and `HyperResource::ServerError` on 5xx responses.  Catch one or both
 (`HyperResource::ResponseError`).
 
-## Current Status
+## Recent Changes
 
-* Way alpha
-
-* Read-only, at the moment (TODO: `save`, `post`, `put`, `patch`).
-
+* Full GET/POST/PUT/DELETE support
+* Supports object caching through +Marshal.load+/+.unload+
+* Refactoring to allow Adapter classes
 
 ## Authorship and License
 
