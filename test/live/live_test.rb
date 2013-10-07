@@ -17,10 +17,12 @@ describe HyperResource do
       @port = ENV['HR_TEST_PORT'] || (20000 + rand(10000))
 
       @server_thread = Thread.new do
-        Rack::Handler::WEBrick.run(LiveTestServer.new,
-                                   :Port => @port,
-                                   :AccessLog => [],
-                                   :Logger => WEBrick::Log::new("/dev/null", 7))
+        Rack::Handler::WEBrick.run(
+          LiveTestServer.new,
+          :Port => @port,
+          :AccessLog => [],
+          :Logger => WEBrick::Log::new("/dev/null", 7)
+        )
       end
 
       @api = WhateverAPI.new(:root => "http://localhost:#{@port}/")
