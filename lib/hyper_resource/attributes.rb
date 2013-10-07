@@ -52,6 +52,12 @@ class HyperResource
       return @_hr_changed.keys.count > 0
     end
 
+    ## Returns a hash of the attributes and values which have been changed
+    ## since creation time.
+    def changed_attributes
+      @_hr_changed.select{|k,v| v}.keys.inject({}) {|h,k| h[k]=self[k]; h}
+    end
+
     def []=(attr, value) # :nodoc:
       _hr_mark_changed(attr)
       super(attr.to_s, value)
