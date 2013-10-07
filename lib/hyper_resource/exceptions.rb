@@ -6,10 +6,11 @@ class HyperResource
 
     def initialize(message, opts={})
       self.response = opts[:response]
+      self.response_object = opts[:response_object]
       self.cause = opts[:cause]
 
       ## Try to help out with the message
-      if self.response_object = opts[:response_object]
+      if self.response_object
         if error = self.response_object['error']
           message = "#{message} (#{error})"
         end
