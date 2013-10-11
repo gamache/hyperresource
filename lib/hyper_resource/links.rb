@@ -44,8 +44,15 @@ class HyperResource
     end
 
     def method_missing(method, *args) # :nodoc:
-      return self[method] if self[method]
-      raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
+      unless self[method]
+        raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
+      end
+
+      if args.count > 0
+        self[method].where(*args)
+      else
+        self[method]
+      end
     end
 
   end
