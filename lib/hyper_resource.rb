@@ -32,7 +32,7 @@ private
 
       :request,
       :response,
-      :response_object,
+      :deserialized_response,
 
       :attributes,
       :links,
@@ -44,9 +44,9 @@ private
 
 public
 
-  _hr_class_attributes.each                    {|attr| class_attribute    attr}
-  (_hr_attributes & _hr_class_attributes).each {|attr| fallback_attribute attr}
-  (_hr_attributes - _hr_class_attributes).each {|attr| attr_accessor      attr}
+  _hr_class_attributes.each                    {|attr| _hr_class_attribute    attr}
+  (_hr_attributes & _hr_class_attributes).each {|attr| _hr_fallback_attribute attr}
+  (_hr_attributes - _hr_class_attributes).each {|attr| attr_accessor          attr}
 
   # :nodoc:
   DEFAULT_HEADERS = {
@@ -177,8 +177,18 @@ public
     "@namespace=#{self.namespace.inspect} ...>"
   end
 
-  ## +response_body+ is deprecated in favor of +response_object+.
-  def response_body; response_object end # :nodoc:
+  ## +response_body+ and +response_object+ are deprecated in favor of
+  ## +deserialized_response+.  (Sorry. Naming things is hard.)
+  def response_body #:nodoc:
+    _hr_deprecate('HyperResource#response_body is deprecated. Please use '+
+                  'HyperResource#deserialized_response instead.')
+    deserialized_response
+  end
+  def response_object #:nodoc:
+    _hr_deprecate('HyperResource#response_object is deprecated. Please use '+
+                  'HyperResource#deserialized_response instead.')
+    deserialized_response
+  end
 
 
   #######################################################################
@@ -274,7 +284,7 @@ private
     (self.class._hr_attributes - [:attributes, :links, :objects]).each do |attr|
       self.send("#{attr}=".to_sym, resource.send(attr))
     end
-    self.adapter.apply(self.response_object, self)
+    self.adapter.apply(self.deserialized_response, self)
   end
 
 end

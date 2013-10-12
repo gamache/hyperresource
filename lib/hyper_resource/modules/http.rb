@@ -56,7 +56,7 @@ class HyperResource
 
     def finish_up
       begin
-        self.response_object = self.adapter.deserialize(self.response.body)
+        self.deserialized_response = self.adapter.deserialize(self.response.body)
       rescue StandardError => e
         raise HyperResource::ResponseError.new(
           "Error when deserializing response body",
@@ -65,7 +65,7 @@ class HyperResource
         )
       end
 
-      self.adapter.apply(self.response_object, self)
+      self.adapter.apply(self.deserialized_response, self)
       self.loaded = true
 
       status = self.response.status
@@ -76,16 +76,16 @@ class HyperResource
       elsif status / 100 == 4
         raise HyperResource::ClientError.new(status.to_s,
                                              :response => self.response,
-                                             :response_object => self.response_object)
+                                             :deserialized_response => self.deserialized_response)
       elsif status / 100 == 5
         raise HyperResource::ServerError.new(status.to_s,
                                              :response => self.response,
-                                             :response_object => self.response_object)
+                                             :deserialized_response => self.deserialized_response)
 
       else ## 1xx? really?
         raise HyperResource::ResponseError.new("Got status #{status}, wtf?",
                                                :response => self.response,
-                                               :response_object => self.response_object)
+                                               :deserialized_response => self.deserialized_response)
 
       end
     end

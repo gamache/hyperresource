@@ -1,31 +1,36 @@
 class HyperResource
   class Exception < ::StandardError
-    attr_accessor :cause            # Internal exception which led to this
+    ## The internal exception which led to this one, if any.
+    attr_accessor :cause
 
-    def initialize(message, opts={})
-      self.cause = opts[:cause]
-      super
+    def initialize(message, attrs={}) #:nodoc:
+      self.cause = attrs[:cause]
+      super(message)
     end
   end
 
   class ResponseError < Exception
-    attr_accessor :response         # Response body which led to this
-    attr_accessor :response_object  # Response object which led to this
+    ## The +Faraday::Response+ object which led to this exception.
+    attr_accessor :response
 
-    def initialize(message, opts={})
-      self.response = opts[:response]
-      self.response_object = opts[:response_object]
+    ## The deserialized response body which led to this exception.
+    ## May be blank, e.g. in case of deserialization errors.
+    attr_accessor :deserialized_response
+
+    def initialize(message, attrs={}) #:nodoc:
+      self.response = attrs[:response]
+      self.deserialized_response = attrs[:deserialized_response]
 
       ## Try to help out with the message
-      if self.response_object
-        if error = self.response_object['error']
+      if self.deserialized_response
+        if error = self.deserialized_response['error']
           message = "#{message} (#{error})"
         end
       elsif self.response
         message = "#{message} (\"#{self.response.inspect}\")"
       end
 
-      super(message, opts)
+      super(message, attrs)
     end
   end
 

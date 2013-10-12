@@ -42,18 +42,18 @@ class HyperResource
           resp['_embedded'].each do |name, collection|
             if collection.is_a? Hash
               r = rc.new(:root => rsrc.root, :namespace => rsrc.namespace)
-              r.response_object = collection
+              r.deserialized_response = collection
               objs[name] = apply(collection, r)
             else
               objs[name] = collection.map do |obj|
                 r = rc.new(:root => rsrc.root, :namespace => rsrc.namespace)
-                r.response_object = obj
+                r.deserialized_response = obj
                 apply(obj, r)
               end
             end
           end
 
-          objs.create_methods!
+          objs._hr_create_methods!
         end
 
 
@@ -72,7 +72,7 @@ class HyperResource
             end
           end
 
-          links.create_methods!
+          links._hr_create_methods!
         end
 
         def new_link_from_spec(resource, link_spec) # :nodoc:
@@ -90,7 +90,7 @@ class HyperResource
             rsrc.attributes[attr] = filtered_attrs[attr]
           end
 
-          rsrc.attributes.create_methods!
+          rsrc.attributes._hr_create_methods!
         end
 
       end
