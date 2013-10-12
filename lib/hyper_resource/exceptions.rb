@@ -1,5 +1,5 @@
 class HyperResource
-  class Exception < ::Exception
+  class Exception < ::StandardError
     attr_accessor :response         # Response body which led to this
     attr_accessor :response_object  # Response object which led to this
     attr_accessor :cause            # Internal exception which led to this
@@ -23,6 +23,6 @@ class HyperResource
   end
 
   class ResponseError < Exception; end
-  class ClientError   < Exception; end
-  class ServerError   < Exception; end
+  class ClientError   < ResponseError; end
+  class ServerError   < ResponseError; end
 end
