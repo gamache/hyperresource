@@ -9,7 +9,7 @@ class HyperResource
     ## Creates accessor methods in self.class and self._resource.class.
     ## Protects against method creation into HyperResource::Objects and
     ## HyperResource classes.  Just subclasses, please!
-    def _hr_create_methods!(opts={})
+    def _hr_create_methods!(opts={}) # @private
       return if self.class.to_s == 'HyperResource::Objects' ||
                 self._resource.class.to_s == 'HyperResource'
 
@@ -29,28 +29,39 @@ class HyperResource
       end
     end
 
-    ## Returns the first item in the first collection in +self+.
-    alias_method :first_orig, :first
+    alias_method :first_orig, :first #:nodoc
+
+    ## Returns the first item in the first collection in +self+, or nil if
+    ## none is present.
     def first
-      self.first_orig[1][0]
+      self.first_orig[1][0] rescue nil
     end
 
-    ## Returns the ith item in the first collection in +self+.
+    ## Returns the ith item in the first collection in +self+, or nil if none
+    ## is present.
     def ith(i)
-      self.first_orig[1][i]
+      self.first_orig[1][i] rescue nil
     end
 
-    def []=(attr, value) # :nodoc:
+    def []=(attr, value) # @private
       super(attr.to_s, value)
     end
 
-    def [](key) # :nodoc:
-      return super(key.to_s) if self.has_key?(key.to_s)
-      return super(key.to_sym) if self.has_key?(key.to_sym)
+    ## When +key+ is a string, returns the array of objects under that name.
+    ## When +key+ is a number, returns +ith(key)+. Returns nil on lookup
+    ## failure.
+    def [](key)
+      case key
+      when String, Symbol
+        return super(key.to_s) if self.has_key?(key.to_s)
+        return super(key.to_sym) if self.has_key?(key.to_sym)
+      when Fixnum
+        return ith(key)
+      end
       nil
     end
 
-    def method_missing(method, *args) # :nodoc:
+    def method_missing(method, *args) # @private
       return self[method] if self[method]
       raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
     end

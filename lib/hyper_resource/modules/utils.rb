@@ -40,13 +40,14 @@ module HyperResource::Modules
       end
 
       ## Show a deprecation message.
-      def _hr_deprecate(message)
+      def _hr_deprecate(message) # @private
         STDERR.puts "#{message} (called from #{caller[2]})"
       end
 
     end # module ClassMethods
 
 
+    # @private
     def _hr_deprecate(*args); self.class._hr_deprecate(*args) end
 
   end

@@ -13,7 +13,7 @@ class HyperResource
 
 private
 
-  def self._hr_class_attributes
+  def self._hr_class_attributes # @private
     [ :root,             ## e.g. 'https://example.com/api/v1'
       :auth,             ## e.g. {:basic => ['username', 'password']}
       :headers,          ## e.g. {'Accept' => 'application/vnd.example+json'}
@@ -22,7 +22,7 @@ private
     ]
   end
 
-  def self._hr_attributes
+  def self._hr_attributes # @private
     [ :root,
       :href,
       :auth,
@@ -48,7 +48,7 @@ public
   (_hr_attributes & _hr_class_attributes).each {|attr| _hr_fallback_attribute attr}
   (_hr_attributes - _hr_class_attributes).each {|attr| attr_accessor          attr}
 
-  # :nodoc:
+  # @private
   DEFAULT_HEADERS = {
     'Accept' => 'application/json'
   }
@@ -171,7 +171,7 @@ public
   end
 
 
-  def inspect # :nodoc:
+  def inspect # @private
     "#<#{self.class}:0x#{"%x" % self.object_id} @root=#{self.root.inspect} "+
     "@href=#{self.href.inspect} @loaded=#{self.loaded} "+
     "@namespace=#{self.namespace.inspect} ...>"
@@ -179,12 +179,12 @@ public
 
   ## +response_body+ and +response_object+ are deprecated in favor of
   ## +deserialized_response+.  (Sorry. Naming things is hard.)
-  def response_body #:nodoc:
+  def response_body # @private
     _hr_deprecate('HyperResource#response_body is deprecated. Please use '+
                   'HyperResource#deserialized_response instead.')
     deserialized_response
   end
-  def response_object #:nodoc:
+  def response_object # @private
     _hr_deprecate('HyperResource#response_object is deprecated. Please use '+
                   'HyperResource#deserialized_response instead.')
     deserialized_response
@@ -197,7 +197,7 @@ public
 
 
   ## Return a new HyperResource based on this object and a given href.
-  def _new_from_link(href) # :nodoc:
+  def _new_from_link(href) # @private
     self.class.new(:root    => self.root,
                    :auth    => self.auth,
                    :headers => self.headers,
@@ -217,7 +217,7 @@ public
   ## "application/vnd.foocorp.fooapi.v1+json;type=User", this should
   ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
 
-  def self._get_response_class(response, namespace) # :nodoc:
+  def self._get_response_class(response, namespace) # @private
     if self.to_s == 'HyperResource'
       return self unless namespace
     end
@@ -246,7 +246,7 @@ public
     eval(class_name)
   end
 
-  def _get_response_class # :nodoc:
+  def _get_response_class # @private
     self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
     self.class._get_response_class(self.response, self.namespace)
   end
@@ -260,21 +260,21 @@ public
   ##
   ## Override this method in a subclass to alter HyperResource's behavior.
 
-  def self._get_response_data_type(response) # :nodoc:
+  def self._get_response_data_type(response)
     return nil unless response
     return nil unless content_type = response['content-type']
     return nil unless m=content_type.match(/;\s* type=([0-9A-Za-z:]+)/x)
     m[1][0,1].upcase + m[1][1..-1]
   end
 
-  def _get_response_data_type # :nodoc:
+  def _get_response_data_type
     self.class._get_response_data_type(self.response)
   end
 
 private
 
   ## Return this object, "cast" into its proper response class.
-  def to_response_class # :nodoc:
+  def to_response_class
     response_class = self._get_response_class
     return self if self.class == response_class
     response_class.new(self)

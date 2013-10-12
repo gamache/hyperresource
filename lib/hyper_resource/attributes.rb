@@ -1,9 +1,9 @@
 class HyperResource
   class Attributes < Hash
 
-    attr_accessor :_resource # :nodoc:
+    attr_accessor :_resource # @private
 
-    def initialize(resource=nil) # :nodoc:
+    def initialize(resource=nil) # @private
       self._resource = resource || HyperResource.new
     end
 
@@ -58,25 +58,25 @@ class HyperResource
       @_hr_changed.select{|k,v| v}.keys.inject({}) {|h,k| h[k]=self[k]; h}
     end
 
-    def []=(attr, value) # :nodoc:
+    def []=(attr, value) # @private
       _hr_mark_changed(attr)
       super(attr.to_s, value)
     end
 
-    def [](key) # :nodoc:
+    def [](key) # @private
       return super(key.to_s) if self.has_key?(key.to_s)
       return super(key.to_sym) if self.has_key?(key.to_sym)
       nil
     end
 
-    def method_missing(method, *args) # :nodoc:
+    def method_missing(method, *args) # @private
       return self[method] if self[method]
       raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
     end
 
   private
 
-    def _hr_mark_changed(attr, is_changed=true) # :nodoc:
+    def _hr_mark_changed(attr, is_changed=true) # @private
       attr = attr.to_sym
       @_hr_changed ||= Hash.new(false)
       @_hr_changed[attr] = is_changed

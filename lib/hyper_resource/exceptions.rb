@@ -3,7 +3,7 @@ class HyperResource
     ## The internal exception which led to this one, if any.
     attr_accessor :cause
 
-    def initialize(message, attrs={}) #:nodoc:
+    def initialize(message, attrs={}) # @private
       self.cause = attrs[:cause]
       super(message)
     end
@@ -17,7 +17,7 @@ class HyperResource
     ## May be blank, e.g. in case of deserialization errors.
     attr_accessor :deserialized_response
 
-    def initialize(message, attrs={}) #:nodoc:
+    def initialize(message, attrs={}) # @private
       self.response = attrs[:response]
       self.deserialized_response = attrs[:deserialized_response]
 

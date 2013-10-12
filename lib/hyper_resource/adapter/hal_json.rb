@@ -75,7 +75,7 @@ class HyperResource
           links._hr_create_methods!
         end
 
-        def new_link_from_spec(resource, link_spec) # :nodoc:
+        def new_link_from_spec(resource, link_spec) # @private
           resource.class::Link.new(resource, link_spec)
         end
 
