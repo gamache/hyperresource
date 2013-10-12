@@ -1,13 +1,20 @@
 class HyperResource
   class Exception < ::StandardError
+    attr_accessor :cause            # Internal exception which led to this
+
+    def initialize(message, opts={})
+      self.cause = opts[:cause]
+      super
+    end
+  end
+
+  class ResponseError < Exception
     attr_accessor :response         # Response body which led to this
     attr_accessor :response_object  # Response object which led to this
-    attr_accessor :cause            # Internal exception which led to this
 
     def initialize(message, opts={})
       self.response = opts[:response]
       self.response_object = opts[:response_object]
-      self.cause = opts[:cause]
 
       ## Try to help out with the message
       if self.response_object
@@ -18,11 +25,11 @@ class HyperResource
         message = "#{message} (\"#{self.response.inspect}\")"
       end
 
-      super(message)
+      super(message, opts)
     end
   end
 
-  class ResponseError < Exception; end
-  class ClientError   < ResponseError; end
-  class ServerError   < ResponseError; end
+  class ClientError < ResponseError; end
+  class ServerError < ResponseError; end
 end
+
