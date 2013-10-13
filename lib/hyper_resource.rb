@@ -7,52 +7,17 @@ end
 
 require 'pp'
 
+## HyperResource is the main resource base class
 class HyperResource
   include HyperResource::Modules::Utils
   include HyperResource::Modules::HTTP
+  include HyperResource::Modules::InternalAttributes
   include Enumerable
 
 private
-
-  def self._hr_class_attributes # @private
-    [ :root,             ## e.g. 'https://example.com/api/v1'
-      :auth,             ## e.g. {:basic => ['username', 'password']}
-      :headers,          ## e.g. {'Accept' => 'application/vnd.example+json'}
-      :namespace,        ## e.g. 'ExampleAPI', or the class ExampleAPI itself
-      :adapter           ## subclass of HR::Adapter
-    ]
-  end
-
-  def self._hr_attributes # @private
-    [ :root,
-      :href,
-      :auth,
-      :headers,
-      :namespace,
-      :adapter,
-
-      :request,
-      :response,
-      :deserialized_response,
-
-      :attributes,
-      :links,
-      :objects,
-
-      :loaded
-    ]
-  end
+  DEFAULT_HEADERS = { 'Accept' => 'application/json' }
 
 public
-
-  _hr_class_attributes.each                    {|attr| _hr_class_attribute    attr}
-  (_hr_attributes & _hr_class_attributes).each {|attr| _hr_fallback_attribute attr}
-  (_hr_attributes - _hr_class_attributes).each {|attr| attr_accessor          attr}
-
-  # @private
-  DEFAULT_HEADERS = {
-    'Accept' => 'application/json'
-  }
 
   ## Create a new HyperResource, given a hash of options.  These options
   ## include:
@@ -108,13 +73,14 @@ public
   end
 
 
-public
-
   ## Returns true if one or more of this object's attributes has been
   ## reassigned.
   def changed?(*args)
     attributes.changed?(*args)
   end
+
+
+  #### Filters
 
   ## +incoming_body_filter+ filters a hash of attribute keys and values
   ## on their way from a response body to a HyperResource.  Override this
@@ -155,6 +121,7 @@ public
     self.objects.first[1].each(&block) rescue nil
   end
 
+  #### Magic
 
   ## method_missing will load this resource if not yet loaded, then 
   ## attempt to delegate to +attributes+, then +objects+, then +links+.
@@ -199,11 +166,6 @@ public
                   'HyperResource#deserialized_response instead.')
     deserialized_response
   end
-
-
-  #######################################################################
-  ####   Underscored functions are not meant to be used outside of   ####
-  ####   HyperResource machinery.  You have been warned.             ####
 
 
   ## Return a new HyperResource based on this object and a given href.
@@ -269,7 +231,6 @@ public
   ## response's +Content-type+ and returns that value, capitalized.
   ##
   ## Override this method in a subclass to alter HyperResource's behavior.
-
   def self.get_data_type_from_response(response)
     return nil unless response
     return nil unless content_type = response['content-type']
