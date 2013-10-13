@@ -166,9 +166,9 @@ Travis CI!</a>
 ## Authorship and License
 
 Copyright 2013 Pete Gamache,
-[pete@gamache.org](mailto:pete@gamache.org).
+<a href="mailto:pete@gamache.org" target="_blank">pete@gamache.org</a>.
 
-If you got this far, you
-should probably follow me on Twitter.  [@gamache](https://twitter.com/gamache)
+If you got this far, you should probably follow me on Twitter.
+<a href="https://twitter.com/gamache" target="_blank">@gamache</a>
 
 Released under the MIT License.  See LICENSE.txt.
