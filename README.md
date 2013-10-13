@@ -1,5 +1,4 @@
-#  HyperResource
-## a hypermedia client library for Ruby
+#  HyperResource - a self-inflating client for hypermedia APIs
 
 ## About
 
@@ -7,8 +6,10 @@ HyperResource is a client library for hypermedia web services.  It
 is usable with no configuration other than API root endpoint, but
 also allows incoming data types to be extended with Ruby code.
 
-Currently HyperResource supports only the HAL+JSON hypermedia format.
-HAL is discussed here: http://stateless.co/hal_specification.html
+HyperResource supports the 
+<a href="http://stateless.co/hal_specification.html" target="_blank">
+HAL+JSON hypermedia format</a>, with support for
+other hypermedia formats planned.
 
 ## Quick Tour
 
@@ -25,14 +26,14 @@ Now we can get the API's root resource, the gateway to everything else
 on the API.
 
 ```ruby
-root = api.get
+api.get
 # => #<HyperResource:0xABCD1234 @root="https://api.example.com" @href="" @namespace=nil ... >
 ```
 
 What'd we get back?
 
 ```ruby
-root.response_object
+api.deserialized_response
 # => { 'message' => 'Welcome to the Example.com API',
 #      'version' => 1,
 #      '_links' => {
@@ -46,47 +47,48 @@ root.response_object
 Lovely.  Let's find a user by their email.
 
 ```ruby
-jdoe_user = api.users.where(email: "jdoe@example.com").first   # or,
-jdoe_user = api.users(email: "jdoe@example.com").first         # same thing; .where is called implicitly 
-                                                               # when accessing links
+jdoe_user = api.users(email: "jdoe@example.com").first
 # => #<HyperResource:0x12312312 ...>
-
-jdoe_user.response_object
-# => { '_links' => {
-#        'self' => {'href' => '/users?email=jdoe@example.com'}
-#      },
-#      '_embedded' => {
-#        'users' => [
-#          { 'first_name' => 'John',
-#            'last_name' => 'Doe',
-#            '_links' => {
-#              'self' => {'href' => '/users/1'},
-#              'comments' => {'href' => '/users/1/comments{?forum,date}', 'templated' => true}
-#            }
-#          }
-#        ]
-#      }
-#    }
 ```
 
-Some things happened magically here.  First, the `users` link has been
-added as a method on the `api` object.  Then, calling `first` on a
-not-yet-loaded object -- the `users` link -- loaded it automatically.
-Finally, calling `first` on the object is a shorthand for returning the
-first object in the first collection in the `_embedded` field (and,
-therefore, the `self.objects` hash).
+HyperResource has performed some behind-the-scenes expansions here.
+
+First, the `users` link was
+added as a method on the `api` object at the time the resource was
+loaded with `api.get`.
+
+Then, calling `first` on the `users` link
+followed the link and loaded it automatically.
+
+Finally, calling `first` on the resource containing one set of
+embedded objects -- like this one -- delegates the method to
+`.objects.first`, which returns the first object in the resource.
+
+Here are some equivalent expressions to the above.  HyperResource offers
+a very short, expressive syntax as its primary interface,
+but you can always fall back to explicit syntax if you like or need to.
 
 
-Now let's put it together.  Johnny ran his mouth in the
-'Politics' forum last Monday and somehow managed to piss off the
+```
+api.users(email: "jdoe@example.com").first
+api.get.users(email: "jdoe@example.com").first
+api.get.links.users(email: "jdoe@example.com").first
+api.get.links['users'].where(email: "jdoe@example.com").first
+api.get.links['users'].where(email: "jdoe@example.com").get.first
+api.get.links['users'].where(email: "jdoe@example.com").get.objects.first[1][0]
+```
+
+Now let's put it together, with our theoretical API.
+Let's say Johnny ran his mouth in the
+'Politics' forum one particular day and somehow managed to piss off the
 entire Internet.  Let's try and satisfy the DDoSing horde by
 amending his tone.
 
 ```ruby
 forum = api.forums(title: 'Politics').first
-jdoe_user.comments(date: '2013-04-01', forum: forum).each do |comment|
+jdoe_user.comments(date: '2013-04-01', forum: forum.href).each do |comment|
   comment.text = "OMG PUPPIES!!"
-  comment.save
+  comment.update
 end
 ```
 

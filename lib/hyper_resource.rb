@@ -10,6 +10,7 @@ require 'pp'
 class HyperResource
   include HyperResource::Modules::Utils
   include HyperResource::Modules::HTTP
+  include Enumerable
 
 private
 
@@ -138,13 +139,22 @@ public
   end
 
 
-  ## Returns the first object in the first collection of objects embedded
-  ## in this resource.  Equivalent to +self.objects.first+.
-  def first; self.objects.first end
+  #### Enumerable support
 
   ## Returns the *i*th object in the first collection of objects embedded
-  ## in this resource.  Equivalent to +self.objects[i]+.
-  def [](i); self.objects.ith(i) end
+  ## in this resource.  Returns nil on failure.
+  def [](i)
+    get unless loaded
+    self.objects.first[1][i] rescue nil
+  end
+
+  ## Iterates over the objects in the first collection of embedded objects
+  ## in this resource.
+  def each(&block)
+    get unless loaded
+    self.objects.first[1].each(&block) rescue nil
+  end
+
 
   ## method_missing will load this resource if not yet loaded, then 
   ## attempt to delegate to +attributes+, then +objects+, then +links+.
@@ -266,6 +276,10 @@ public
     return nil unless m=content_type.match(/;\s* type=([0-9A-Za-z:]+)/x)
     m[1][0,1].upcase + m[1][1..-1]
   end
+
+  ## Uses +HyperResource.get_response_data_type+ to determine the proper
+  ## data type for this object.  Override to change behavior.
+
 
   def _get_response_data_type
     self.class._get_response_data_type(self.response)

@@ -29,20 +29,6 @@ class HyperResource
       end
     end
 
-    alias_method :first_orig, :first #:nodoc
-
-    ## Returns the first item in the first collection in +self+, or nil if
-    ## none is present.
-    def first
-      self.first_orig[1][0] rescue nil
-    end
-
-    ## Returns the ith item in the first collection in +self+, or nil if none
-    ## is present.
-    def ith(i)
-      self.first_orig[1][i] rescue nil
-    end
-
     def []=(attr, value) # @private
       super(attr.to_s, value)
     end
