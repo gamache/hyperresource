@@ -139,8 +139,8 @@ user.full_name
 ```
 
 Don't worry if your API uses some other method to indicate resource data
-type; you can override the `get_resource_data_type` method and implement your
-own logic.
+type; you can override the `.get_data_type_from_response` method and
+implement your own logic.
 
 ## Error Handling
 
@@ -151,11 +151,17 @@ and `HyperResource::ServerError` on 5xx responses.  Catch one or both
 (`Faraday::Response` object), and `deserialized_response` (the response
 as a `Hash`) as is possible at the time.
 
-## Recent Changes
+## Compatibility and Dependencies
 
-* Full GET/POST/PUT/DELETE support
-* Supports object caching through +Marshal.load+/+.unload+
-* Refactoring to allow Adapter classes
+HyperResource requires the 
+<a href="https://github.com/hannesg/uri_template" target="_blank">uri_template</a>
+and <a href="https://github.com/lostisland/faraday" target="_blank">Faraday</a>
+gems.  
+
+HyperResource is tested to support MRI Ruby 1.8.7 to present, and JRuby
+in 1.8 mode or above.  Thanks,
+<a href="https://travis-ci.org/gamache/hyperresource" target="_blank">
+Travis CI!</a>
 
 ## Authorship and License
 

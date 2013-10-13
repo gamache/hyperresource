@@ -220,7 +220,7 @@ public
   ## If the object is not loaded yet, or if +opts[:namespace]+ is
   ## not set, returns +self+.
   ##
-  ## Otherwise, +_hr_response_class+ uses +_get_response_data_type+ to
+  ## Otherwise, +_hr_response_class+ uses +get_data_type_from_response+ to
   ## determine subclass name, glues it to the given namespace, and
   ## creates the class if it's not there yet. E.g., given a namespace of
   ## +FooAPI+ and a response content-type of
@@ -234,7 +234,7 @@ public
 
     namespace ||= self.to_s
 
-    type_name = self._get_response_data_type(response)
+    type_name = self.get_data_type_from_response(response)
     return self unless type_name
 
     class_name = "#{namespace}::#{type_name}"
@@ -262,15 +262,15 @@ public
   end
 
 
-  ## Inspects the given response, and returns a string describing this
-  ## resource's data type.
+  ## Inspects the given Faraday::Response, and returns a string describing
+  ## this resource's data type.
   ##
   ## By default, this method looks for a +type=...+ modifier in the
   ## response's +Content-type+ and returns that value, capitalized.
   ##
   ## Override this method in a subclass to alter HyperResource's behavior.
 
-  def self._get_response_data_type(response)
+  def self.get_data_type_from_response(response)
     return nil unless response
     return nil unless content_type = response['content-type']
     return nil unless m=content_type.match(/;\s* type=([0-9A-Za-z:]+)/x)
@@ -278,11 +278,10 @@ public
   end
 
   ## Uses +HyperResource.get_response_data_type+ to determine the proper
-  ## data type for this object.  Override to change behavior.
-
-
-  def _get_response_data_type
-    self.class._get_response_data_type(self.response)
+  ## data type for this object.  Override to change behavior (though you
+  ## probably just want to override the class method).
+  def get_data_type_from_response
+    self.class.get_data_type_from_response(self.response)
   end
 
 private
