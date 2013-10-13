@@ -207,7 +207,7 @@ public
 
 
   ## Return a new HyperResource based on this object and a given href.
-  def _new_from_link(href) # @private
+  def _hr_new_from_link(href) # @private
     self.class.new(:root    => self.root,
                    :auth    => self.auth,
                    :headers => self.headers,
@@ -220,14 +220,14 @@ public
   ## If the object is not loaded yet, or if +opts[:namespace]+ is
   ## not set, returns +self+.
   ##
-  ## Otherwise, +_get_response_class+ uses +_get_response_data_type+ to
+  ## Otherwise, +_hr_response_class+ uses +_get_response_data_type+ to
   ## determine subclass name, glues it to the given namespace, and
   ## creates the class if it's not there yet. E.g., given a namespace of
   ## +FooAPI+ and a response content-type of
   ## "application/vnd.foocorp.fooapi.v1+json;type=User", this should
   ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
 
-  def self._get_response_class(response, namespace) # @private
+  def self._hr_response_class(response, namespace) # @private
     if self.to_s == 'HyperResource'
       return self unless namespace
     end
@@ -256,9 +256,9 @@ public
     eval(class_name)
   end
 
-  def _get_response_class # @private
+  def _hr_response_class # @private
     self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
-    self.class._get_response_class(self.response, self.namespace)
+    self.class._hr_response_class(self.response, self.namespace)
   end
 
 
@@ -289,7 +289,7 @@ private
 
   ## Return this object, "cast" into its proper response class.
   def to_response_class
-    response_class = self._get_response_class
+    response_class = self._hr_response_class
     return self if self.class == response_class
     response_class.new(self)
   end

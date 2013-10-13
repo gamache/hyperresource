@@ -78,6 +78,24 @@ api.get.links['users'].where(email: "jdoe@example.com").get.first
 api.get.links['users'].where(email: "jdoe@example.com").get.objects.first[1][0]
 ```
 
+## GET, POST, PUT, and DELETE
+
+In addition to `.get`, HyperResource provides `.create`, `.update`, and 
+`.delete` methods track their HTTP counterparts.
+
+```ruby
+new_user = api.users.create(:email => 'fng@example.com',
+                            :first_name => 'New',
+                            :last_name => 'Guy')
+
+new_user.first_name = 'F. New'
+new_user.update
+
+new_user.delete
+```
+
+## Fake Real World Example
+
 Now let's put it together, with our theoretical API.
 Let's say Johnny ran his mouth in the
 'Politics' forum one particular day and somehow managed to piss off the
@@ -121,14 +139,17 @@ user.full_name
 ```
 
 Don't worry if your API uses some other method to indicate resource data
-type; you can override the `data_type_name` method and implement your
+type; you can override the `get_resource_data_type` method and implement your
 own logic.
 
 ## Error Handling
 
 HyperResource raises a `HyperResource::ClientError` on 4xx responses,
 and `HyperResource::ServerError` on 5xx responses.  Catch one or both
-(`HyperResource::ResponseError`).
+(`HyperResource::ResponseError`).  The exceptions contain as much of
+`cause` (internal exception which led to this one), `response`
+(`Faraday::Response` object), and `deserialized_response` (the response
+as a `Hash`) as is possible at the time.
 
 ## Recent Changes
 
