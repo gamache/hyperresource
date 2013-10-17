@@ -7,6 +7,7 @@ class HyperResource::Link
                 :params,
                 :parent_resource
 
+  ## Returns true if this link is templated.
   def templated?; templated end
 
   def initialize(resource=nil, link_spec={})

@@ -9,7 +9,7 @@ class HyperResource
     ## Creates accessor methods in self.class and self._resource.class.
     ## Protects against method creation into HyperResource::Links and
     ## HyperResource classes.  Just subclasses, please!
-    def _hr_create_methods!(opts={})
+    def _hr_create_methods!(opts={}) # @private
       return if self.class.to_s == 'HyperResource::Links' ||
                 self._resource.class.to_s == 'HyperResource'
 
