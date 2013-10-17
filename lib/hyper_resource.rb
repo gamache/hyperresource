@@ -9,7 +9,6 @@ require 'pp'
 
 ## HyperResource is the main resource base class
 class HyperResource
-  include HyperResource::Modules::Utils
   include HyperResource::Modules::HTTP
   include HyperResource::Modules::InternalAttributes
   include Enumerable
@@ -254,6 +253,7 @@ private
     response_class.new(self)
   end
 
+  ## Use the given resource's data to initialize this one.
   def init_from_resource(resource)
     (self.class._hr_attributes - [:attributes, :links, :objects]).each do |attr|
       self.send("#{attr}=".to_sym, resource.send(attr))
@@ -261,4 +261,13 @@ private
     self.adapter.apply(self.deserialized_response, self)
   end
 
+
+  ## Show a deprecation message.
+  def self._hr_deprecate(message) # @private
+    STDERR.puts "#{message} (called from #{caller[2]})"
+  end
+
+  def _hr_deprecate(*args) # @private
+    self.class._hr_deprecate(*args)
+  end
 end
