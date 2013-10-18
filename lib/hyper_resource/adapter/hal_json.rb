@@ -1,6 +1,9 @@
 require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
 require 'json'
 
+
+## Also see HyperResource::Adapter 
+
 class HyperResource
   class Adapter
     class HAL_JSON < Adapter
@@ -75,7 +78,7 @@ class HyperResource
           links._hr_create_methods!
         end
 
-        def new_link_from_spec(resource, link_spec) # @private
+        def new_link_from_spec(resource, link_spec)
           resource.class::Link.new(resource, link_spec)
         end
 
