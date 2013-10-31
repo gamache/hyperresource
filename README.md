@@ -33,7 +33,7 @@ api.get
 What'd we get back?
 
 ```ruby
-api.deserialized_response
+api.body
 # => { 'message' => 'Welcome to the Example.com API',
 #      'version' => 1,
 #      '_links' => {
@@ -148,7 +148,7 @@ HyperResource raises a `HyperResource::ClientError` on 4xx responses,
 and `HyperResource::ServerError` on 5xx responses.  Catch one or both
 (`HyperResource::ResponseError`).  The exceptions contain as much of
 `cause` (internal exception which led to this one), `response`
-(`Faraday::Response` object), and `deserialized_response` (the response
+(`Faraday::Response` object), and `body` (the response
 as a `Hash`) as is possible at the time.
 
 ## Compatibility and Dependencies

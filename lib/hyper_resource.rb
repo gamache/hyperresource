@@ -163,18 +163,24 @@ public
     "@namespace=#{self.namespace.inspect} ...>"
   end
 
-  ## +response_body+ and +response_object+ are deprecated in favor of
-  ## +deserialized_response+.  (Sorry. Naming things is hard.)
+  ## +response_body+, +response_object+, and +deserialized_response+
+  ##  are deprecated in favor of +body+.  (Sorry. Naming things is hard.)
   def response_body # @private
-    _hr_deprecate('HyperResource#response_body is deprecated. Please use '+
-                  'HyperResource#deserialized_response instead.')
-    deserialized_response
+    _hr_deprecate('HyperResource#response_body is deprecated. '+
+                  'Please use HyperResource#body instead.')
+    body
   end
   def response_object # @private
-    _hr_deprecate('HyperResource#response_object is deprecated. Please use '+
-                  'HyperResource#deserialized_response instead.')
-    deserialized_response
+    _hr_deprecate('HyperResource#response_object is deprecated. '+
+                  'Please use HyperResource#body instead.')
+    body
   end
+  def deserialized_response # @private
+    _hr_deprecate('HyperResource#deserialized_response is deprecated. '+
+                  'Please use HyperResource#body instead.')
+    body
+  end
+
 
 
   ## Return a new HyperResource based on this object and a given href.
@@ -268,7 +274,7 @@ private
     (self.class._hr_attributes - [:attributes, :links, :objects]).each do |attr|
       self.send("#{attr}=".to_sym, resource.send(attr))
     end
-    self.adapter.apply(self.deserialized_response, self)
+    self.adapter.apply(self.body, self)
   end
 
 

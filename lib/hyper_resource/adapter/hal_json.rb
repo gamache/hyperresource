@@ -45,12 +45,12 @@ class HyperResource
           resp['_embedded'].each do |name, collection|
             if collection.is_a? Hash
               r = rc.new(:root => rsrc.root, :namespace => rsrc.namespace)
-              r.deserialized_response = collection
+              r.body = collection
               objs[name] = apply(collection, r)
             else
               objs[name] = collection.map do |obj|
                 r = rc.new(:root => rsrc.root, :namespace => rsrc.namespace)
-                r.deserialized_response = obj
+                r.body = obj
                 apply(obj, r)
               end
             end

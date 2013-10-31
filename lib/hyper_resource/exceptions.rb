@@ -15,15 +15,15 @@ class HyperResource
 
     ## The deserialized response body which led to this exception.
     ## May be blank, e.g. in case of deserialization errors.
-    attr_accessor :deserialized_response
+    attr_accessor :body
 
     def initialize(message, attrs={}) # @private
       self.response = attrs[:response]
-      self.deserialized_response = attrs[:deserialized_response]
+      self.body = attrs[:body]
 
       ## Try to help out with the message
-      if self.deserialized_response
-        if error = self.deserialized_response['error']
+      if self.body
+        if error = self.body['error']
           message = "#{message} (#{error})"
         end
       elsif self.response
