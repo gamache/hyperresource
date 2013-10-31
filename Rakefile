@@ -24,3 +24,9 @@ task :release do
   EOT
 end
 
+task :test_server do
+  require './test/live/live_test_server'
+  port = ENV['PORT'] || ENV['port'] || 3000
+  Rack::Handler::WEBrick.run(LiveTestServer.new, :Port => port)
+end
+
