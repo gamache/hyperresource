@@ -1,9 +1,18 @@
-this_dir = File.dirname(__FILE__)
-Dir.glob(this_dir + '/hyper_resource/**/*.rb') {|f| require f}
+require 'hyper_resource/attributes'
+require 'hyper_resource/exceptions'
+require 'hyper_resource/link'
+require 'hyper_resource/links'
+require 'hyper_resource/objects'
+require 'hyper_resource/response'
+require 'hyper_resource/version'
 
-if RUBY_VERSION[0..2] == '1.8'
-  require 'rubygems'
-end
+require 'hyper_resource/adapter'
+require 'hyper_resource/adapter/hal_json'
+
+require 'hyper_resource/modules/http'
+require 'hyper_resource/modules/internal_attributes'
+
+require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
 
 require 'pp'
 
@@ -14,6 +23,7 @@ class HyperResource
   include Enumerable
 
 private
+
   DEFAULT_HEADERS = { 'Accept' => 'application/json' }
 
 public
