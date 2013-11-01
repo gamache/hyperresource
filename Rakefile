@@ -12,6 +12,7 @@ end
 
 task :release => [:docs] do
   system(<<-EOT)
+    git commit -m 'release #{HyperResource::VERSION}'
     git tag release-#{HyperResource::VERSION}
     git push origin
     gem build hyper_resource.gemspec
@@ -24,7 +25,6 @@ task :docs do
     git rm -rf doc
     yard --no-private
     git add doc
-    git commit -m 'generated doc/'
   EOT
 end
 
