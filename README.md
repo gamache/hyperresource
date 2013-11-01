@@ -17,6 +17,10 @@ HyperResource supports the
 HAL+JSON hypermedia format</a>, with support for
 other hypermedia formats planned.
 
+## Install It
+
+`gem install hyperresource`
+
 ## Quick Tour
 
 Set up API connection:
