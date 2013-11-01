@@ -13,8 +13,8 @@ It is usable with no configuration other than API root endpoint, but
 also allows incoming data types to be extended with Ruby code.
 
 HyperResource supports the 
-<a href="http://stateless.co/hal_specification.html" target="_blank">
-HAL+JSON hypermedia format</a>, with support for
+{http://stateless.co/hal_specification.html HAL+JSON
+hypermedia format}, with support for
 other hypermedia formats planned.
 
 ## Install It
@@ -164,21 +164,19 @@ as a `Hash`) as is possible at the time.
 ## Compatibility and Dependencies
 
 HyperResource requires the 
-<a href="https://github.com/hannesg/uri_template" target="_blank">uri_template</a>
-and <a href="https://github.com/lostisland/faraday" target="_blank">Faraday</a>
+{https://github.com/hannesg/uri_template uri_template}
+and {https://github.com/lostisland/faraday Faraday}
 gems.  
 
 HyperResource is tested to support MRI Ruby 1.8.7 to present, and JRuby
 in 1.8 mode or above.  Thanks,
-<a href="https://travis-ci.org/gamache/hyperresource" target="_blank">
-Travis CI!</a>
+{https://travis-ci.org/gamache/hyperresource Travis CI}!
 
 ## Authorship and License
 
-Copyright 2013 Pete Gamache,
-<a href="mailto:pete@gamache.org" target="_blank">pete@gamache.org</a>.
+Copyright 2013 Pete Gamache, {mailto:pete@gamache.org pete@gamache.org}.
 
 If you got this far, you should probably follow me on Twitter.
-<a href="https://twitter.com/gamache" target="_blank">@gamache</a>
+{https://twitter.com/gamache @gamache}
 
 Released under the MIT License.  See LICENSE.txt.

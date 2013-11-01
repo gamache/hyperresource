@@ -271,6 +271,28 @@ this resource.</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#_hr_response_class-instance_method" title="#_hr_response_class (instance method)">- (Object) <strong>_hr_response_class</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#changed%3F-instance_method" title="#changed? (instance method)">- (Boolean) <strong>changed?</strong>(*args) </a>
     
 
@@ -289,6 +311,28 @@ this resource.</p>
 <p>Returns true if one or more of this object&#39;s attributes has been
 reassigned.</p>
 </div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#deserialized_response-instance_method" title="#deserialized_response (instance method)">- (Object) <strong>deserialized_response</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -397,6 +441,28 @@ values on their way from a response body to a HyperResource.</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#inspect-instance_method" title="#inspect (instance method)">- (Object) <strong>inspect</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#method_missing-instance_method" title="#method_missing (instance method)">- (Object) <strong>method_missing</strong>(method, *args) </a>
     
 
@@ -496,6 +562,28 @@ values on their way from a HyperResource to a URL.</p>
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#response_object-instance_method" title="#response_object (instance method)">- (Object) <strong>response_object</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -507,6 +595,11 @@ values on their way from a HyperResource to a URL.</p>
   
   
   
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="HyperResource/Modules/InternalAttributes.html" title="HyperResource::Modules::InternalAttributes (module)">Modules::InternalAttributes</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="HyperResource/Modules/InternalAttributes.html#included-class_method" title="HyperResource::Modules::InternalAttributes.included (method)">included</a></span></p>
+
   
   
   
@@ -1007,6 +1100,38 @@ this resource.  Returns nil on failure.</p>
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="_hr_response_class-instance_method">
+  
+    - (<tt>Object</tt>) <strong>_hr_response_class</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+238
+239
+240
+241</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 238</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid__hr_response_class'>_hr_response_class</span> <span class='comment'># @private
+</span>  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_namespace'>namespace</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='op'>==</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_response_class'>response_class</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_response'>response</span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_namespace'>namespace</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="changed?-instance_method">
   
     - (<tt>Boolean</tt>) <strong>changed?</strong>(*args) 
@@ -1055,6 +1180,40 @@ reassigned.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_changed?'>changed?</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_attributes'>attributes</span><span class='period'>.</span><span class='id identifier rubyid_changed?'>changed?</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="deserialized_response-instance_method">
+  
+    - (<tt>Object</tt>) <strong>deserialized_response</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+181
+182
+183
+184
+185</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 181</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_deserialized_response'>deserialized_response</span> <span class='comment'># @private
+</span>  <span class='id identifier rubyid__hr_deprecate'>_hr_deprecate</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource#deserialized_response is deprecated. </span><span class='tstring_end'>&#39;</span></span><span class='op'>+</span>
+                <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Please use HyperResource#body instead.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_body'>body</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1185,6 +1344,40 @@ in a subclass of HyperResource to implement filters on incoming data.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_incoming_body_filter'>incoming_body_filter</span><span class='lparen'>(</span><span class='id identifier rubyid_attr_hash'>attr_hash</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_attr_hash'>attr_hash</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="inspect-instance_method">
+  
+    - (<tt>Object</tt>) <strong>inspect</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+163
+164
+165
+166
+167</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 163</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span> <span class='comment'># @private
+</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>#&lt;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_content'>:0x</span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>%x</span><span class='tstring_end'>&quot;</span></span> <span class='op'>%</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_object_id'>object_id</span><span class='embexpr_end'>}</span><span class='tstring_content'> @root=</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='op'>+</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>@href=</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_href'>href</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> @loaded=</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_loaded'>loaded</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='op'>+</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>@namespace=</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_namespace'>namespace</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> ...&gt;</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1325,12 +1518,46 @@ subclass of HyperResource to implement filters on outgoing URI parameters.</p>
 </table>
 </div>
     
+      <div class="method_details ">
+  <h3 class="signature " id="response_object-instance_method">
+  
+    - (<tt>Object</tt>) <strong>response_object</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+176
+177
+178
+179
+180</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 176</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_response_object'>response_object</span> <span class='comment'># @private
+</span>  <span class='id identifier rubyid__hr_deprecate'>_hr_deprecate</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource#response_object is deprecated. </span><span class='tstring_end'>&#39;</span></span><span class='op'>+</span>
+                <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Please use HyperResource#body instead.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_body'>body</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
 
     <div id="footer">
-  Generated on Thu Oct 31 21:00:44 2013 by
+  Generated on Fri Nov  1 11:51:20 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.2 (ruby-2.0.0).
 </div>
