@@ -1,11 +1,15 @@
 # HyperResource 
 
-a self-inflating client for hypermedia APIs
+A self-inflating client for hypermedia APIs.
 
 ## About
 
-HyperResource is a client library for hypermedia web services.  It
-is usable with no configuration other than API root endpoint, but
+HyperResource is a client library for hypermedia web services.  
+
+It makes using a generic hypermedia client library as
+elegant and easy as using a well-written custom library.
+
+It is usable with no configuration other than API root endpoint, but
 also allows incoming data types to be extended with Ruby code.
 
 HyperResource supports the 
@@ -114,8 +118,8 @@ end
 
 ## Extending Data Types
 
-If an API is returning data type information as part of the response --
-and it really should be -- then we can assign those data types to
+If an API is returning data type information as part of the response,
+then we can assign those data types to
 ruby classes so that they can be extended.
 
 For example, in our hypothetical Example API above, a user object is
