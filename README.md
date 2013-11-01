@@ -1,10 +1,10 @@
 # HyperResource 
 
-A self-inflating client for hypermedia APIs.
+A self-inflating Ruby client for hypermedia APIs.
 
 ## About
 
-HyperResource is a client library for hypermedia web services.  
+HyperResource is a Ruby client library for hypermedia web services.
 
 It makes using a generic hypermedia client library as
 elegant and easy as using a well-written custom library.
