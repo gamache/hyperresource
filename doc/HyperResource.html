@@ -6,13 +6,13 @@
 <title>
   Class: HyperResource
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.2
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -108,7 +108,8 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>Also see HyperResource::Adapter</p>
+<p>HyperResource is the main resource base class.  Normally it will be used
+through subclassing, though it may also be used directly.</p>
 
 
   </div>
@@ -136,7 +137,7 @@
         <dt id="VERSION-constant" class="">VERSION =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.2.0pre</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.2.0pre0</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
         <dt id="VERSION_DATE-constant" class="">VERSION_DATE =
           
@@ -163,30 +164,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#_hr_response_class-class_method" title="_hr_response_class (class method)">+ (Object) <strong>_hr_response_class</strong>(response, namespace) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the class into which the given response should be cast.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#get_data_type_from_response-class_method" title="get_data_type_from_response (class method)">+ (Object) <strong>get_data_type_from_response</strong>(response) </a>
     
 
@@ -204,6 +181,30 @@
     <span class="summary_desc"><div class='inline'>
 <p>Inspects the given Faraday::Response, and returns a string describing this
 resource&#39;s data type.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#response_class-class_method" title="response_class (class method)">+ (Object) <strong>response_class</strong>(response, namespace) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the class into which the given response should be cast.</p>
 </div></span>
   
 </li>
@@ -270,28 +271,6 @@ this resource.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#_hr_response_class-instance_method" title="#_hr_response_class (instance method)">- (Object) <strong>_hr_response_class</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#changed%3F-instance_method" title="#changed? (instance method)">- (Boolean) <strong>changed?</strong>(*args) </a>
     
 
@@ -310,28 +289,6 @@ this resource.</p>
 <p>Returns true if one or more of this object&#39;s attributes has been
 reassigned.</p>
 </div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#deserialized_response-instance_method" title="#deserialized_response (instance method)">- (Object) <strong>deserialized_response</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -440,28 +397,6 @@ values on their way from a response body to a HyperResource.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#inspect-instance_method" title="#inspect (instance method)">- (Object) <strong>inspect</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#method_missing-instance_method" title="#method_missing (instance method)">- (Object) <strong>method_missing</strong>(method, *args) </a>
     
 
@@ -554,30 +489,9 @@ values on their way from a HyperResource to a URL.</p>
   
     <span class="summary_desc"><div class='inline'>
 <p><code>response_body</code>, <code>response_object</code>, and
-<code>deserialized_response</code>.</p>
+<code>deserialized_response</code>  are deprecated in favor of
+<code>body</code>.</p>
 </div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#response_object-instance_method" title="#response_object (instance method)">- (Object) <strong>response_object</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -593,11 +507,6 @@ values on their way from a HyperResource to a URL.</p>
   
   
   
-  
-  
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="HyperResource/Modules/InternalAttributes.html" title="HyperResource::Modules::InternalAttributes (module)">Modules::InternalAttributes</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="HyperResource/Modules/InternalAttributes.html#included-class_method" title="HyperResource::Modules::InternalAttributes.included (method)">included</a></span></p>
-
   
   
   
@@ -653,9 +562,6 @@ eventual child resources, if any).</p>
       <pre class="lines">
 
 
-44
-45
-46
 47
 48
 49
@@ -691,10 +597,13 @@ eventual child resources, if any).</p>
 79
 80
 81
-82</pre>
+82
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_init_from_resource'>init_from_resource</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>HyperResource</span><span class='rparen'>)</span>
@@ -789,9 +698,6 @@ delegate to <code>attributes</code>, then <code>objects</code>, then
       <pre class="lines">
 
 
-138
-139
-140
 141
 142
 143
@@ -808,10 +714,13 @@ delegate to <code>attributes</code>, then <code>objects</code>, then
 154
 155
 156
-157</pre>
+157
+158
+159
+160</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 138</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_loaded'>loaded</span>
@@ -846,107 +755,7 @@ delegate to <code>attributes</code>, then <code>objects</code>, then
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="_hr_response_class-class_method">
-  
-    + (<tt>Object</tt>) <strong>_hr_response_class</strong>(response, namespace) 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Returns the class into which the given response should be cast. If the
-object is not loaded yet, or if <tt>&lt;a href=&quot;http://:namespace&quot;&gt;opts&lt;/a&gt;</tt> is
-not set, returns <code>self</code>.</p>
-
-<p>Otherwise, <code>_hr_response_class</code> uses
-<code>get_data_type_from_response</code> to determine subclass name, glues
-it to the given namespace, and creates the class if it&#39;s not there yet.
-E.g., given a namespace of <code>FooAPI</code> and a response content-type
-of “application/vnd.foocorp.fooapi.v1+json;type=User”, this should return
-<tt>FooAPI::User</tt> (even if <tt>FooAPI::User</tt> hadn&#39;t existed yet).</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-207
-208
-209
-210
-211
-212
-213
-214
-215
-216
-217
-218
-219
-220
-221
-222
-223
-224
-225
-226
-227
-228
-229
-230
-231
-232
-233
-234</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 207</span>
-
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid__hr_response_class'>_hr_response_class</span><span class='lparen'>(</span><span class='id identifier rubyid_response'>response</span><span class='comma'>,</span> <span class='id identifier rubyid_namespace'>namespace</span><span class='rparen'>)</span> <span class='comment'># @private
-</span>  <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource</span><span class='tstring_end'>&#39;</span></span>
-    <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>unless</span> <span class='id identifier rubyid_namespace'>namespace</span>
-  <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_namespace'>namespace</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
-
-  <span class='id identifier rubyid_type_name'>type_name</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_data_type_from_response'>get_data_type_from_response</span><span class='lparen'>(</span><span class='id identifier rubyid_response'>response</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>unless</span> <span class='id identifier rubyid_type_name'>type_name</span>
-
-  <span class='id identifier rubyid_class_name'>class_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_namespace'>namespace</span><span class='embexpr_end'>}</span><span class='tstring_content'>::</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type_name'>type_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id identifier rubyid_class_name'>class_name</span><span class='period'>.</span><span class='id identifier rubyid_gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^_0-9A-Za-z:]</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>  <span class='comment'>## sanitize class_name
-</span>
-  <span class='comment'>## Return data type class if it exists
-</span>  <span class='id identifier rubyid_klass'>klass</span> <span class='op'>=</span> <span class='id identifier rubyid_eval'>eval</span><span class='lparen'>(</span><span class='id identifier rubyid_class_name'>class_name</span><span class='rparen'>)</span> <span class='kw'>rescue</span> <span class='symbol'>:sorry_dude</span>
-  <span class='kw'>return</span> <span class='id identifier rubyid_klass'>klass</span> <span class='kw'>if</span> <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Class</span><span class='rparen'>)</span>
-
-  <span class='comment'>## Data type class didn&#39;t exist -- create namespace (if necessary),
-</span>  <span class='comment'>## then the data type class
-</span>  <span class='kw'>if</span> <span class='id identifier rubyid_namespace'>namespace</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span>
-    <span class='id identifier rubyid_nsc'>nsc</span> <span class='op'>=</span> <span class='id identifier rubyid_eval'>eval</span><span class='lparen'>(</span><span class='id identifier rubyid_namespace'>namespace</span><span class='rparen'>)</span> <span class='kw'>rescue</span> <span class='symbol'>:bzzzzzt</span>
-    <span class='kw'>unless</span> <span class='id identifier rubyid_nsc'>nsc</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Class</span><span class='rparen'>)</span>
-      <span class='const'>Object</span><span class='period'>.</span><span class='id identifier rubyid_module_eval'>module_eval</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>class </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_namespace'>namespace</span><span class='embexpr_end'>}</span><span class='tstring_content'> &lt; </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_content'>; end</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-  <span class='const'>Object</span><span class='period'>.</span><span class='id identifier rubyid_module_eval'>module_eval</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>class </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_class_name'>class_name</span><span class='embexpr_end'>}</span><span class='tstring_content'> &lt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_namespace'>namespace</span><span class='embexpr_end'>}</span><span class='tstring_content'>; end</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id identifier rubyid_eval'>eval</span><span class='lparen'>(</span><span class='id identifier rubyid_class_name'>class_name</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="get_data_type_from_response-class_method">
+  <h3 class="signature first" id="get_data_type_from_response-class_method">
   
     + (<tt>Object</tt>) <strong>get_data_type_from_response</strong>(response) 
   
@@ -977,21 +786,121 @@ resource&#39;s data type.</p>
       <pre class="lines">
 
 
-249
-250
 251
 252
 253
-254</pre>
+254
+255
+256</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 249</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 251</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_data_type_from_response'>get_data_type_from_response</span><span class='lparen'>(</span><span class='id identifier rubyid_response'>response</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_response'>response</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_content_type'>content_type</span> <span class='op'>=</span> <span class='id identifier rubyid_response'>response</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>content-type</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_m'>m</span><span class='op'>=</span><span class='id identifier rubyid_content_type'>content_type</span><span class='period'>.</span><span class='id identifier rubyid_match'>match</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>;\s* type=([0-9A-Za-z:]+)</span><span class='regexp_end'>/x</span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_m'>m</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='int'>0</span><span class='comma'>,</span><span class='int'>1</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_upcase'>upcase</span> <span class='op'>+</span> <span class='id identifier rubyid_m'>m</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='int'>1</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="response_class-class_method">
+  
+    + (<tt>Object</tt>) <strong>response_class</strong>(response, namespace) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the class into which the given response should be cast. If the
+object is not loaded yet, or if <code>namespace</code> is not set, returns
+<code>self</code>.</p>
+
+<p>Otherwise, <code>response_class</code> uses
+<code>get_data_type_from_response</code> to determine subclass name, glues
+it to the given namespace, and creates the class if it&#39;s not there yet.
+E.g., given a namespace of <code>FooAPI</code> and a response content-type
+of “application/vnd.foocorp.fooapi.v1+json;type=User”, this should return
+<tt>FooAPI::User</tt> (even if <tt>FooAPI::User</tt> hadn&#39;t existed yet).</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 209</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_response_class'>response_class</span><span class='lparen'>(</span><span class='id identifier rubyid_response'>response</span><span class='comma'>,</span> <span class='id identifier rubyid_namespace'>namespace</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource</span><span class='tstring_end'>&#39;</span></span>
+    <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>unless</span> <span class='id identifier rubyid_namespace'>namespace</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_namespace'>namespace</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+
+  <span class='id identifier rubyid_type_name'>type_name</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_data_type_from_response'>get_data_type_from_response</span><span class='lparen'>(</span><span class='id identifier rubyid_response'>response</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>unless</span> <span class='id identifier rubyid_type_name'>type_name</span>
+
+  <span class='id identifier rubyid_class_name'>class_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_namespace'>namespace</span><span class='embexpr_end'>}</span><span class='tstring_content'>::</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type_name'>type_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_class_name'>class_name</span><span class='period'>.</span><span class='id identifier rubyid_gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^_0-9A-Za-z:]</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>  <span class='comment'>## sanitize class_name
+</span>
+  <span class='comment'>## Return data type class if it exists
+</span>  <span class='id identifier rubyid_klass'>klass</span> <span class='op'>=</span> <span class='id identifier rubyid_eval'>eval</span><span class='lparen'>(</span><span class='id identifier rubyid_class_name'>class_name</span><span class='rparen'>)</span> <span class='kw'>rescue</span> <span class='symbol'>:sorry_dude</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_klass'>klass</span> <span class='kw'>if</span> <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Class</span><span class='rparen'>)</span>
+
+  <span class='comment'>## Data type class didn&#39;t exist -- create namespace (if necessary),
+</span>  <span class='comment'>## then the data type class
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_namespace'>namespace</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span>
+    <span class='id identifier rubyid_nsc'>nsc</span> <span class='op'>=</span> <span class='id identifier rubyid_eval'>eval</span><span class='lparen'>(</span><span class='id identifier rubyid_namespace'>namespace</span><span class='rparen'>)</span> <span class='kw'>rescue</span> <span class='symbol'>:bzzzzzt</span>
+    <span class='kw'>unless</span> <span class='id identifier rubyid_nsc'>nsc</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Class</span><span class='rparen'>)</span>
+      <span class='const'>Object</span><span class='period'>.</span><span class='id identifier rubyid_module_eval'>module_eval</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>class </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_namespace'>namespace</span><span class='embexpr_end'>}</span><span class='tstring_content'> &lt; </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_content'>; end</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='const'>Object</span><span class='period'>.</span><span class='id identifier rubyid_module_eval'>module_eval</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>class </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_class_name'>class_name</span><span class='embexpr_end'>}</span><span class='tstring_content'> &lt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_namespace'>namespace</span><span class='embexpr_end'>}</span><span class='tstring_content'>; end</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_eval'>eval</span><span class='lparen'>(</span><span class='id identifier rubyid_class_name'>class_name</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1031,13 +940,13 @@ this resource.  Returns nil on failure.</p>
       <pre class="lines">
 
 
-121
-122
-123
-124</pre>
+124
+125
+126
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_i'>i</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_get'>get</span> <span class='kw'>unless</span> <span class='id identifier rubyid_loaded'>loaded</span>
@@ -1074,16 +983,16 @@ this resource.  Returns nil on failure.</p>
       <pre class="lines">
 
 
-187
-188
-189
 190
 191
 192
-193</pre>
+193
+194
+195
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 187</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 190</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid__hr_new_from_link'>_hr_new_from_link</span><span class='lparen'>(</span><span class='id identifier rubyid_href'>href</span><span class='rparen'>)</span> <span class='comment'># @private
 </span>  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:root</span>    <span class='op'>=&gt;</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='comma'>,</span>
@@ -1091,38 +1000,6 @@ this resource.  Returns nil on failure.</p>
                  <span class='symbol'>:headers</span> <span class='op'>=&gt;</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_headers'>headers</span><span class='comma'>,</span>
                  <span class='symbol'>:namespace</span> <span class='op'>=&gt;</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_namespace'>namespace</span><span class='comma'>,</span>
                  <span class='symbol'>:href</span>    <span class='op'>=&gt;</span> <span class='id identifier rubyid_href'>href</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="_hr_response_class-instance_method">
-  
-    - (<tt>Object</tt>) <strong>_hr_response_class</strong> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-236
-237
-238
-239</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 236</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid__hr_response_class'>_hr_response_class</span> <span class='comment'># @private
-</span>  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_namespace'>namespace</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='op'>==</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource</span><span class='tstring_end'>&#39;</span></span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid__hr_response_class'>_hr_response_class</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_response'>response</span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_namespace'>namespace</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1169,49 +1046,15 @@ reassigned.</p>
       <pre class="lines">
 
 
-87
-88
-89</pre>
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 87</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_changed?'>changed?</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_attributes'>attributes</span><span class='period'>.</span><span class='id identifier rubyid_changed?'>changed?</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="deserialized_response-instance_method">
-  
-    - (<tt>Object</tt>) <strong>deserialized_response</strong> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-178
-179
-180
-181
-182</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 178</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_deserialized_response'>deserialized_response</span> <span class='comment'># @private
-</span>  <span class='id identifier rubyid__hr_deprecate'>_hr_deprecate</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource#deserialized_response is deprecated. </span><span class='tstring_end'>&#39;</span></span><span class='op'>+</span>
-                <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Please use HyperResource#body instead.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_body'>body</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1245,13 +1088,13 @@ this resource.</p>
       <pre class="lines">
 
 
-128
-129
-130
-131</pre>
+131
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 131</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_get'>get</span> <span class='kw'>unless</span> <span class='id identifier rubyid_loaded'>loaded</span>
@@ -1290,12 +1133,12 @@ probably just want to override the class method).</p>
       <pre class="lines">
 
 
-259
-260
-261</pre>
+261
+262
+263</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 259</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 261</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_data_type_from_response'>get_data_type_from_response</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_get_data_type_from_response'>get_data_type_from_response</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_response'>response</span><span class='rparen'>)</span>
@@ -1333,49 +1176,15 @@ in a subclass of HyperResource to implement filters on incoming data.</p>
       <pre class="lines">
 
 
-97
-98
-99</pre>
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_incoming_body_filter'>incoming_body_filter</span><span class='lparen'>(</span><span class='id identifier rubyid_attr_hash'>attr_hash</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_attr_hash'>attr_hash</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="inspect-instance_method">
-  
-    - (<tt>Object</tt>) <strong>inspect</strong> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-160
-161
-162
-163
-164</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 160</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span> <span class='comment'># @private
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>#&lt;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_content'>:0x</span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>%x</span><span class='tstring_end'>&quot;</span></span> <span class='op'>%</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_object_id'>object_id</span><span class='embexpr_end'>}</span><span class='tstring_content'> @root=</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='op'>+</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>@href=</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_href'>href</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> @loaded=</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_loaded'>loaded</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='op'>+</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>@namespace=</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_namespace'>namespace</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> ...&gt;</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1410,12 +1219,12 @@ in a subclass of HyperResource to implement filters on outgoing data.</p>
       <pre class="lines">
 
 
-104
-105
-106</pre>
+107
+108
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_outgoing_body_filter'>outgoing_body_filter</span><span class='lparen'>(</span><span class='id identifier rubyid_attr_hash'>attr_hash</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_attr_hash'>attr_hash</span>
@@ -1453,12 +1262,12 @@ subclass of HyperResource to implement filters on outgoing URI parameters.</p>
       <pre class="lines">
 
 
-112
-113
-114</pre>
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 112</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_outgoing_uri_filter'>outgoing_uri_filter</span><span class='lparen'>(</span><span class='id identifier rubyid_attr_hash'>attr_hash</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_attr_hash'>attr_hash</span>
@@ -1497,51 +1306,17 @@ subclass of HyperResource to implement filters on outgoing URI parameters.</p>
       <pre class="lines">
 
 
-168
-169
-170
 171
-172</pre>
+172
+173
+174
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 168</span>
+      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 171</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_response_body'>response_body</span> <span class='comment'># @private
 </span>  <span class='id identifier rubyid__hr_deprecate'>_hr_deprecate</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource#response_body is deprecated. </span><span class='tstring_end'>&#39;</span></span><span class='op'>+</span>
-                <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Please use HyperResource#body instead.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_body'>body</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="response_object-instance_method">
-  
-    - (<tt>Object</tt>) <strong>response_object</strong> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-173
-174
-175
-176
-177</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource.rb', line 173</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_response_object'>response_object</span> <span class='comment'># @private
-</span>  <span class='id identifier rubyid__hr_deprecate'>_hr_deprecate</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HyperResource#response_object is deprecated. </span><span class='tstring_end'>&#39;</span></span><span class='op'>+</span>
                 <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Please use HyperResource#body instead.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_body'>body</span>
 <span class='kw'>end</span></pre>
@@ -1555,9 +1330,9 @@ subclass of HyperResource to implement filters on outgoing URI parameters.</p>
 </div>
 
     <div id="footer">
-  Generated on Thu Oct 31 19:57:44 2013 by
+  Generated on Thu Oct 31 20:39:17 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.2 (ruby-2.0.0).
 </div>
 
   </body>

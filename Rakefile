@@ -10,17 +10,21 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-task :release do
+task :release => [:docs] do
   system(<<-EOT)
-    git checkout master
-    git rm -r doc
-    yard
-    git add doc
-    git commit -m 'generated doc/'
     git tag release-#{HyperResource::VERSION}
-    git push origin master
+    git push origin
     gem build hyper_resource.gemspec
     gem push hyperresource-#{HyperResource::VERSION}.gem
+  EOT
+end
+
+task :docs do
+  system(<<-EOT)
+    git rm -rf doc
+    yard --no-private
+    git add doc
+    git commit -m 'generated doc/'
   EOT
 end
 

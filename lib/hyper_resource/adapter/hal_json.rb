@@ -1,11 +1,13 @@
 require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
 require 'json'
 
-
-## Also see HyperResource::Adapter 
-
 class HyperResource
   class Adapter
+
+    ## HyperResource::Adapter::HAL_JSON provides support for the HAL+JSON
+    ## hypermedia format by implementing the interface defined in
+    ## HyperResource::Adapter.
+
     class HAL_JSON < Adapter
       class << self
 

@@ -16,8 +16,11 @@ require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
 
 require 'pp'
 
-## HyperResource is the main resource base class
+## HyperResource is the main resource base class.  Normally it will be used
+## through subclassing, though it may also be used directly.
+
 class HyperResource
+
   include HyperResource::Modules::HTTP
   include HyperResource::Modules::InternalAttributes
   include Enumerable
@@ -194,17 +197,16 @@ public
 
 
   ## Returns the class into which the given response should be cast.
-  ## If the object is not loaded yet, or if +opts[:namespace]+ is
+  ## If the object is not loaded yet, or if +namespace+ is
   ## not set, returns +self+.
   ##
-  ## Otherwise, +_hr_response_class+ uses +get_data_type_from_response+ to
+  ## Otherwise, +response_class+ uses +get_data_type_from_response+ to
   ## determine subclass name, glues it to the given namespace, and
   ## creates the class if it's not there yet. E.g., given a namespace of
   ## +FooAPI+ and a response content-type of
   ## "application/vnd.foocorp.fooapi.v1+json;type=User", this should
   ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
-
-  def self._hr_response_class(response, namespace) # @private
+  def self.response_class(response, namespace)
     if self.to_s == 'HyperResource'
       return self unless namespace
     end
@@ -235,7 +237,7 @@ public
 
   def _hr_response_class # @private
     self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
-    self.class._hr_response_class(self.response, self.namespace)
+    self.class.response_class(self.response, self.namespace)
   end
 
 

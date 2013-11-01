@@ -6,13 +6,13 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.2
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -61,177 +61,220 @@
 
     <iframe id="search_frame"></iframe>
 
-    <div id="content"><div id='filecontents'><h1>HyperResource - a self-inflating client for hypermedia APIs</h1>
+    <div id="content"><div id='filecontents'>
+<h1 id="label-HyperResource+-+a+self-inflating+client+for+hypermedia+APIs">HyperResource - a self-inflating client for hypermedia APIs</h1>
 
-<h2>About</h2>
+<h2 id="label-About">About</h2>
 
-<p>HyperResource is a client library for hypermedia web services.  It
-is usable with no configuration other than API root endpoint, but
-also allows incoming data types to be extended with Ruby code.</p>
+<p>HyperResource is a client library for hypermedia web services. It
+is usable
+with no configuration other than API root endpoint, but
+also allows
+incoming data types to be extended with Ruby code.</p>
 
-<p>HyperResource supports the 
-<a href="http://stateless.co/hal_specification.html" target="_blank">
-HAL+JSON hypermedia format</a>, with support for
+<p>HyperResource supports the
+&lt;a href=&quot;<a
+href="http://stateless.co/hal_specification.html">stateless.co/hal_specification.html</a>&quot;
+target=&quot;_blank&quot;&gt;
+HAL+JSON hypermedia format&lt;/a&gt;, with
+support for
 other hypermedia formats planned.</p>
 
-<h2>Quick Tour</h2>
+<h2 id="label-Quick+Tour">Quick Tour</h2>
 
 <p>Set up API connection:</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_api'>api</span> <span class='op'>=</span> <span class='const'>HyperResource</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>root:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>https://api.example.com</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-                        <span class='label'>headers:</span> <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Accept</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>application/vnd.example.com.v1+json</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-                        <span class='label'>auth:</span> <span class='lbrace'>{</span><span class='label'>basic:</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>username</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>password</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-<span class='comment'># =&gt; #&lt;HyperResource:0xABCD1234 @root=&quot;https://api.example.com&quot; @href=&quot;&quot; @namespace=nil ... &gt;
-</span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">api</span> = <span class="ruby-constant">HyperResource</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">root</span><span class="ruby-operator">:</span> <span class="ruby-string">&#39;https://api.example.com&#39;</span>,
+                        <span class="ruby-identifier">headers</span><span class="ruby-operator">:</span> {<span class="ruby-string">&#39;Accept&#39;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&#39;application/vnd.example.com.v1+json&#39;</span>},
+                        <span class="ruby-identifier">auth</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">basic</span><span class="ruby-operator">:</span> [<span class="ruby-string">&#39;username&#39;</span>, <span class="ruby-string">&#39;password&#39;</span>]})
+<span class="ruby-comment"># =&gt; #&lt;HyperResource:0xABCD1234 @root=&quot;https://api.example.com&quot; @href=&quot;&quot; @namespace=nil ... &gt;</span>
+</pre>
 
-<p>Now we can get the API&#39;s root resource, the gateway to everything else
+<p>Now we can get the API&#39;s root resource, the gateway to everything
+else
 on the API.</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span>
-<span class='comment'># =&gt; #&lt;HyperResource:0xABCD1234 @root=&quot;https://api.example.com&quot; @href=&quot;&quot; @namespace=nil ... &gt;
-</span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">api</span>.<span class="ruby-identifier">get</span>
+<span class="ruby-comment"># =&gt; #&lt;HyperResource:0xABCD1234 @root=&quot;https://api.example.com&quot; @href=&quot;&quot; @namespace=nil ... &gt;</span>
+</pre>
 
 <p>What&#39;d we get back?</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_body'>body</span>
-<span class='comment'># =&gt; { &#39;message&#39; =&gt; &#39;Welcome to the Example.com API&#39;,
-</span><span class='comment'>#      &#39;version&#39; =&gt; 1,
-</span><span class='comment'>#      &#39;_links&#39; =&gt; {
-</span><span class='comment'>#        &#39;self&#39; =&gt; {&#39;href&#39; =&gt; &#39;/&#39;},
-</span><span class='comment'>#        &#39;users&#39; =&gt; {&#39;href&#39; =&gt; &#39;/users{?email,last_name}&#39;, &#39;templated&#39; =&gt; true},
-</span><span class='comment'>#        &#39;forums&#39; =&gt; {&#39;href&#39; =&gt; &#39;/forums{?title}&#39;, &#39;templated&#39; =&gt; true}
-</span><span class='comment'>#      }
-</span><span class='comment'>#    }
-</span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">api</span>.<span class="ruby-identifier">body</span>
+<span class="ruby-comment"># =&gt; { &#39;message&#39; =&gt; &#39;Welcome to the Example.com API&#39;,</span>
+<span class="ruby-comment">#      &#39;version&#39; =&gt; 1,</span>
+<span class="ruby-comment">#      &#39;_links&#39; =&gt; {</span>
+<span class="ruby-comment">#        &#39;self&#39; =&gt; {&#39;href&#39; =&gt; &#39;/&#39;},</span>
+<span class="ruby-comment">#        &#39;users&#39; =&gt; {&#39;href&#39; =&gt; &#39;/users{?email,last_name}&#39;, &#39;templated&#39; =&gt; true},</span>
+<span class="ruby-comment">#        &#39;forums&#39; =&gt; {&#39;href&#39; =&gt; &#39;/forums{?title}&#39;, &#39;templated&#39; =&gt; true}</span>
+<span class="ruby-comment">#      }</span>
+<span class="ruby-comment">#    }</span>
+</pre>
 
-<p>Lovely.  Let&#39;s find a user by their email.</p>
+<p>Lovely. Let&#39;s find a user by their email.</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_jdoe_user'>jdoe_user</span> <span class='op'>=</span> <span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_users'>users</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
-<span class='comment'># =&gt; #&lt;HyperResource:0x12312312 ...&gt;
-</span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">jdoe_user</span> = <span class="ruby-identifier">api</span>.<span class="ruby-identifier">users</span>(<span class="ruby-identifier">email</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;jdoe@example.com&quot;</span>).<span class="ruby-identifier">first</span>
+<span class="ruby-comment"># =&gt; #&lt;HyperResource:0x12312312 ...&gt;</span>
+</pre>
 
 <p>HyperResource has performed some behind-the-scenes expansions here.</p>
 
 <p>First, the <code>users</code> link was
-added as a method on the <code>api</code> object at the time the resource was
-loaded with <code>api.get</code>.</p>
+added as a method on the
+<code>api</code> object at the time the resource was
+loaded with
+<code>api.get</code>.</p>
 
 <p>Then, calling <code>first</code> on the <code>users</code> link
-followed the link and loaded it automatically.</p>
+followed
+the link and loaded it automatically.</p>
 
-<p>Finally, calling <code>first</code> on the resource containing one set of
-embedded objects -- like this one -- delegates the method to
-<code>.objects.first</code>, which returns the first object in the resource.</p>
+<p>Finally, calling <code>first</code> on the resource containing one set
+of
+embedded objects -- like this one -- delegates the method
+to
+<code>.objects.first</code>, which returns the first object in the
+resource.</p>
 
-<p>Here are some equivalent expressions to the above.  HyperResource offers
-a very short, expressive syntax as its primary interface,
-but you can always fall back to explicit syntax if you like or need to.</p>
+<p>Here are some equivalent expressions to the above. HyperResource offers
+a
+very short, expressive syntax as its primary interface,
+but you can always
+fall back to explicit syntax if you like or need to.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_users'>users</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
 <span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_users'>users</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
 <span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_links'>links</span><span class='period'>.</span><span class='id identifier rubyid_users'>users</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
 <span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_links'>links</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>users</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
 <span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_links'>links</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>users</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
-<span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_links'>links</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>users</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_objects'>objects</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
-</code></pre>
+<span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_links'>links</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>users</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='period'>.</span><span class='id identifier rubyid_objects'>objects</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span></code></pre>
 
-<h2>GET, POST, PUT, and DELETE</h2>
+<h2 id="label-GET%2C+POST%2C+PUT%2C+and+DELETE">GET, POST, PUT, and DELETE</h2>
 
-<p>In addition to <code>.get</code>, HyperResource provides <code>.create</code>, <code>.update</code>, and 
-<code>.delete</code> methods track their HTTP counterparts.</p>
+<p>In addition to <code>.get</code>, HyperResource provides
+<code>.create</code>, <code>.update</code>, and
+<code>.delete</code>
+methods track their HTTP counterparts.</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_new_user'>new_user</span> <span class='op'>=</span> <span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_users'>users</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='symbol'>:email</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>fng@example.com</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-                            <span class='symbol'>:first_name</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>New</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-                            <span class='symbol'>:last_name</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Guy</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<pre class="ruby"><span class="ruby-identifier">new_user</span> = <span class="ruby-identifier">api</span>.<span class="ruby-identifier">users</span>.<span class="ruby-identifier">create</span>(:<span class="ruby-identifier">email</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&#39;fng@example.com&#39;</span>,
+                            :<span class="ruby-identifier">first_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&#39;New&#39;</span>,
+                            :<span class="ruby-identifier">last_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&#39;Guy&#39;</span>)
 
-<span class='id identifier rubyid_new_user'>new_user</span><span class='period'>.</span><span class='id identifier rubyid_first_name'>first_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>F. New</span><span class='tstring_end'>&#39;</span></span>
-<span class='id identifier rubyid_new_user'>new_user</span><span class='period'>.</span><span class='id identifier rubyid_update'>update</span>
+<span class="ruby-identifier">new_user</span>.<span class="ruby-identifier">first_name</span> = <span class="ruby-string">&#39;F. New&#39;</span>
+<span class="ruby-identifier">new_user</span>.<span class="ruby-identifier">update</span>
 
-<span class='id identifier rubyid_new_user'>new_user</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span>
-</code></pre>
+<span class="ruby-identifier">new_user</span>.<span class="ruby-identifier">delete</span>
+</pre>
 
-<h2>Fake Real World Example</h2>
+<h2 id="label-Fake+Real+World+Example">Fake Real World Example</h2>
 
 <p>Now let&#39;s put it together, with our theoretical API.
-Let&#39;s say Johnny ran his mouth in the
-&#39;Politics&#39; forum one particular day and somehow managed to piss off the
-entire Internet.  Let&#39;s try and satisfy the DDoSing horde by
+Let&#39;s say
+Johnny ran his mouth in the
+&#39;Politics&#39; forum one particular day and
+somehow managed to piss off the
+entire Internet. Let&#39;s try and satisfy
+the DDoSing horde by
 amending his tone.</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_forum'>forum</span> <span class='op'>=</span> <span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_forums'>forums</span><span class='lparen'>(</span><span class='label'>title:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Politics</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
-<span class='id identifier rubyid_jdoe_user'>jdoe_user</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='lparen'>(</span><span class='label'>date:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2013-04-01</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>forum:</span> <span class='id identifier rubyid_forum'>forum</span><span class='period'>.</span><span class='id identifier rubyid_href'>href</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_comment'>comment</span><span class='op'>|</span>
-  <span class='id identifier rubyid_comment'>comment</span><span class='period'>.</span><span class='id identifier rubyid_text'>text</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>OMG PUPPIES!!</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id identifier rubyid_comment'>comment</span><span class='period'>.</span><span class='id identifier rubyid_update'>update</span>
-<span class='kw'>end</span>
-</code></pre>
+<pre class="ruby"><span class="ruby-identifier">forum</span> = <span class="ruby-identifier">api</span>.<span class="ruby-identifier">forums</span>(<span class="ruby-identifier">title</span><span class="ruby-operator">:</span> <span class="ruby-string">&#39;Politics&#39;</span>).<span class="ruby-identifier">first</span>
+<span class="ruby-identifier">jdoe_user</span>.<span class="ruby-identifier">comments</span>(<span class="ruby-identifier">date</span><span class="ruby-operator">:</span> <span class="ruby-string">&#39;2013-04-01&#39;</span>, <span class="ruby-identifier">forum</span><span class="ruby-operator">:</span> <span class="ruby-identifier">forum</span>.<span class="ruby-identifier">href</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">comment</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">comment</span>.<span class="ruby-identifier">text</span> = <span class="ruby-string">&quot;OMG PUPPIES!!&quot;</span>
+  <span class="ruby-identifier">comment</span>.<span class="ruby-identifier">update</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
-<h2>Extending Data Types</h2>
+<h2 id="label-Extending+Data+Types">Extending Data Types</h2>
 
-<p>If an API is returning data type information as part of the response --
-and it really should be -- then we can assign those data types to
-ruby classes so that they can be extended.</p>
+<p>If an API is returning data type information as part of the response –
+and
+it really should be -- then we can assign those data types to
+ruby classes
+so that they can be extended.</p>
 
-<p>For example, in our hypothetical Example API above, a user object is
-returned with a custom media type bearing a &#39;type=User&#39; modifier.  We
+<p>For example, in our hypothetical Example API above, a user object
+is
+returned with a custom media type bearing a &#39;type=User&#39;
+modifier. We
 will extend the User class with a few convenience methods.</p>
 
-<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>ExampleAPI</span> <span class='op'>&lt;</span> <span class='const'>HyperResource</span>
-  <span class='kw'>class</span> <span class='const'>User</span> <span class='op'>&lt;</span> <span class='const'>ExampleAPI</span>
-    <span class='kw'>def</span> <span class='id identifier rubyid_full_name'>full_name</span>
-      <span class='id identifier rubyid_first_name'>first_name</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_last_name'>last_name</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ExampleAPI</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">HyperResource</span>
+  <span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ExampleAPI</span>
+    <span class="ruby-keyword">def</span> <span class="ruby-identifier">full_name</span>
+      <span class="ruby-identifier">first_name</span> <span class="ruby-operator">+</span> <span class="ruby-string">&#39; &#39;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">last_name</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
 
-<span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_namespace'>namespace</span> <span class='op'>=</span> <span class='const'>ExampleApi</span>
+<span class="ruby-identifier">api</span>.<span class="ruby-identifier">namespace</span> = <span class="ruby-constant">ExampleApi</span>
 
-<span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_users'>users</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>jdoe@example.com</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
-<span class='comment'># =&gt; #&lt;ExampleApi::User:0xffffffff ...&gt;
-</span>
-<span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_full_name'>full_name</span>
-<span class='comment'># =&gt; &quot;John Doe&quot;
-</span></code></pre>
+<span class="ruby-identifier">user</span> = <span class="ruby-identifier">api</span>.<span class="ruby-identifier">users</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">email</span><span class="ruby-operator">:</span> <span class="ruby-string">&#39;jdoe@example.com&#39;</span>).<span class="ruby-identifier">first</span>
+<span class="ruby-comment"># =&gt; #&lt;ExampleApi::User:0xffffffff ...&gt;</span>
 
-<p>Don&#39;t worry if your API uses some other method to indicate resource data
-type; you can override the <code>.get_data_type_from_response</code> method and
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">full_name</span>
+<span class="ruby-comment"># =&gt; &quot;John Doe&quot;</span>
+</pre>
+
+<p>Don&#39;t worry if your API uses some other method to indicate resource
+data
+type; you can override the <code>.get_data_type_from_response</code>
+method and
 implement your own logic.</p>
 
-<h2>Error Handling</h2>
+<h2 id="label-Error+Handling">Error Handling</h2>
 
-<p>HyperResource raises a <code>HyperResource::ClientError</code> on 4xx responses,
-and <code>HyperResource::ServerError</code> on 5xx responses.  Catch one or both
-(<code>HyperResource::ResponseError</code>).  The exceptions contain as much of
-<code>cause</code> (internal exception which led to this one), <code>response</code>
-(<code>Faraday::Response</code> object), and <code>body</code> (the response
-as a <code>Hash</code>) as is possible at the time.</p>
+<p>HyperResource raises a <code>HyperResource::ClientError</code> on 4xx
+responses,
+and <code>HyperResource::ServerError</code> on 5xx responses.
+Catch one or both
+(<code>HyperResource::ResponseError</code>). The
+exceptions contain as much of
+<code>cause</code> (internal exception which
+led to this one), <code>response</code>
+(<code>Faraday::Response</code>
+object), and <code>body</code> (the response
+as a <code>Hash</code>) as is
+possible at the time.</p>
 
-<h2>Compatibility and Dependencies</h2>
+<h2 id="label-Compatibility+and+Dependencies">Compatibility and Dependencies</h2>
 
-<p>HyperResource requires the 
-<a href="https://github.com/hannesg/uri_template" target="_blank">uri_template</a>
-and <a href="https://github.com/lostisland/faraday" target="_blank">Faraday</a>
-gems.  </p>
+<p>HyperResource requires the
+&lt;a href=&quot;<a
+href="https://github.com/hannesg/uri_template">github.com/hannesg/uri_template</a>&quot;
+target=&quot;_blank&quot;&gt;uri_template&lt;/a&gt;
+and &lt;a href=&quot;<a
+href="https://github.com/lostisland/faraday">github.com/lostisland/faraday</a>&quot;
+target=&quot;_blank&quot;&gt;Faraday&lt;/a&gt;
+gems.</p>
 
 <p>HyperResource is tested to support MRI Ruby 1.8.7 to present, and JRuby
-in 1.8 mode or above.  Thanks,
-<a href="https://travis-ci.org/gamache/hyperresource" target="_blank">
-Travis CI!</a></p>
+in
+1.8 mode or above. Thanks,
+&lt;a href=&quot;<a
+href="https://travis-ci.org/gamache/hyperresource">travis-ci.org/gamache/hyperresource</a>&quot;
+target=&quot;_blank&quot;&gt;
+Travis CI!&lt;/a&gt;</p>
 
-<h2>Authorship and License</h2>
+<h2 id="label-Authorship+and+License">Authorship and License</h2>
 
 <p>Copyright 2013 Pete Gamache,
-<a href="mailto:pete@gamache.org" target="_blank"><a href="mailto:pete@gamache.org">pete@gamache.org</a></a>.</p>
+&lt;a href=&quot;<a
+href="mailto:pete@gamache.org">pete@gamache.org</a>&quot;
+target=&quot;_blank&quot;&gt;pete@gamache.org&lt;/a&gt;.</p>
 
 <p>If you got this far, you should probably follow me on Twitter.
-<a href="https://twitter.com/gamache" target="_blank">@gamache</a></p>
+&lt;a
+href=&quot;<a
+href="https://twitter.com/gamache">twitter.com/gamache</a>&quot;
+target=&quot;_blank&quot;&gt;@gamache&lt;/a&gt;</p>
 
-<p>Released under the MIT License.  See LICENSE.txt.</p>
+<p>Released under the MIT License. See LICENSE.txt.</p>
 </div></div>
 
     <div id="footer">
-  Generated on Thu Oct 31 19:57:44 2013 by
+  Generated on Thu Oct 31 20:39:17 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.2 (ruby-2.0.0).
 </div>
 
   </body>
