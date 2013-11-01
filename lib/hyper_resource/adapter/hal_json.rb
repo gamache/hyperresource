@@ -1,11 +1,13 @@
 require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
 require 'json'
 
-
-## Also see HyperResource::Adapter 
-
 class HyperResource
   class Adapter
+
+    ## HyperResource::Adapter::HAL_JSON provides support for the HAL+JSON
+    ## hypermedia format by implementing the interface defined in
+    ## HyperResource::Adapter.
+
     class HAL_JSON < Adapter
       class << self
 
@@ -45,12 +47,12 @@ class HyperResource
           resp['_embedded'].each do |name, collection|
             if collection.is_a? Hash
               r = rc.new(:root => rsrc.root, :namespace => rsrc.namespace)
-              r.deserialized_response = collection
+              r.body = collection
               objs[name] = apply(collection, r)
             else
               objs[name] = collection.map do |obj|
                 r = rc.new(:root => rsrc.root, :namespace => rsrc.namespace)
-                r.deserialized_response = obj
+                r.body = obj
                 apply(obj, r)
               end
             end

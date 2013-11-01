@@ -39,7 +39,7 @@ module HyperResource::Modules
 
           :request,
           :response,
-          :deserialized_response,
+          :body,
 
           :attributes,
           :links,

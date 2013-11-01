@@ -1,19 +1,32 @@
-this_dir = File.dirname(__FILE__)
-Dir.glob(this_dir + '/hyper_resource/**/*.rb') {|f| require f}
+require 'hyper_resource/attributes'
+require 'hyper_resource/exceptions'
+require 'hyper_resource/link'
+require 'hyper_resource/links'
+require 'hyper_resource/objects'
+require 'hyper_resource/response'
+require 'hyper_resource/version'
 
-if RUBY_VERSION[0..2] == '1.8'
-  require 'rubygems'
-end
+require 'hyper_resource/adapter'
+require 'hyper_resource/adapter/hal_json'
+
+require 'hyper_resource/modules/http'
+require 'hyper_resource/modules/internal_attributes'
+
+require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
 
 require 'pp'
 
-## HyperResource is the main resource base class
+## HyperResource is the main resource base class.  Normally it will be used
+## through subclassing, though it may also be used directly.
+
 class HyperResource
+
   include HyperResource::Modules::HTTP
   include HyperResource::Modules::InternalAttributes
   include Enumerable
 
 private
+
   DEFAULT_HEADERS = { 'Accept' => 'application/json' }
 
 public
@@ -153,18 +166,24 @@ public
     "@namespace=#{self.namespace.inspect} ...>"
   end
 
-  ## +response_body+ and +response_object+ are deprecated in favor of
-  ## +deserialized_response+.  (Sorry. Naming things is hard.)
+  ## +response_body+, +response_object+, and +deserialized_response+
+  ##  are deprecated in favor of +body+.  (Sorry. Naming things is hard.)
   def response_body # @private
-    _hr_deprecate('HyperResource#response_body is deprecated. Please use '+
-                  'HyperResource#deserialized_response instead.')
-    deserialized_response
+    _hr_deprecate('HyperResource#response_body is deprecated. '+
+                  'Please use HyperResource#body instead.')
+    body
   end
   def response_object # @private
-    _hr_deprecate('HyperResource#response_object is deprecated. Please use '+
-                  'HyperResource#deserialized_response instead.')
-    deserialized_response
+    _hr_deprecate('HyperResource#response_object is deprecated. '+
+                  'Please use HyperResource#body instead.')
+    body
   end
+  def deserialized_response # @private
+    _hr_deprecate('HyperResource#deserialized_response is deprecated. '+
+                  'Please use HyperResource#body instead.')
+    body
+  end
+
 
 
   ## Return a new HyperResource based on this object and a given href.
@@ -178,17 +197,16 @@ public
 
 
   ## Returns the class into which the given response should be cast.
-  ## If the object is not loaded yet, or if +opts[:namespace]+ is
+  ## If the object is not loaded yet, or if +namespace+ is
   ## not set, returns +self+.
   ##
-  ## Otherwise, +_hr_response_class+ uses +get_data_type_from_response+ to
+  ## Otherwise, +response_class+ uses +get_data_type_from_response+ to
   ## determine subclass name, glues it to the given namespace, and
   ## creates the class if it's not there yet. E.g., given a namespace of
   ## +FooAPI+ and a response content-type of
   ## "application/vnd.foocorp.fooapi.v1+json;type=User", this should
   ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
-
-  def self._hr_response_class(response, namespace) # @private
+  def self.response_class(response, namespace)
     if self.to_s == 'HyperResource'
       return self unless namespace
     end
@@ -219,7 +237,7 @@ public
 
   def _hr_response_class # @private
     self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
-    self.class._hr_response_class(self.response, self.namespace)
+    self.class.response_class(self.response, self.namespace)
   end
 
 
@@ -258,7 +276,7 @@ private
     (self.class._hr_attributes - [:attributes, :links, :objects]).each do |attr|
       self.send("#{attr}=".to_sym, resource.send(attr))
     end
-    self.adapter.apply(self.deserialized_response, self)
+    self.adapter.apply(self.body, self)
   end
 
 

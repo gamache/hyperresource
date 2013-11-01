@@ -85,8 +85,59 @@ describe HyperResource do
         del.message.must_equal "Deleted widget."
       end
 
+
+      describe "invocation styles" do
+        it 'can use HyperResource with no namespace' do
+          api = HyperResource.new(:root => "http://localhost:#{@port}/")
+          root = api.get
+          root.loaded.must_equal true          
+          root.class.to_s.must_equal 'HyperResource'
+        end
+
+        it 'can use HyperResource with a namespace' do
+          api = HyperResource.new(:root => "http://localhost:#{@port}/",
+                                  :namespace => 'NsTestApi')
+          root = api.get
+          root.loaded.must_equal true
+          root.class.to_s.must_equal 'NsTestApi::Root'
+        end
+
+        class NsExtTestApi < HyperResource
+          class Root < NsExtTestApi
+            def foo; :foo end
+          end
+        end
+        it 'can use HyperResource with a namespace which is extended' do
+          api = HyperResource.new(:root => "http://localhost:#{@port}/",
+                                  :namespace => 'NsExtTestApi')
+          root = api.get
+          root.loaded.must_equal true
+          root.class.to_s.must_equal 'NsExtTestApi::Root'
+          root.must_respond_to :foo
+          root.foo.must_equal :foo
+        end
+
+
+        class SubclassTestApi < HyperResource
+          self.root = "YOUR AD HERE"
+        end
+        it 'can use a subclass of HR' do
+          ## Test class-level setter
+          api = SubclassTestApi.new
+          api.root.must_equal "YOUR AD HERE"
+
+          SubclassTestApi.root = "http://localhost:#{@port}/"
+          api = SubclassTestApi.new
+          root = api.get
+          root.loaded.must_equal true
+          root.class.to_s.must_equal 'SubclassTestApi::Root'
+        end
+      end
+
+
     end # describe 'live tests'
 
   end # if
 end # describe HyperResource
+
 

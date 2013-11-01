@@ -1,9 +1,15 @@
-#  HyperResource - a self-inflating client for hypermedia APIs
+# HyperResource 
+
+A self-inflating client for hypermedia APIs.
 
 ## About
 
-HyperResource is a client library for hypermedia web services.  It
-is usable with no configuration other than API root endpoint, but
+HyperResource is a client library for hypermedia web services.  
+
+It makes using a generic hypermedia client library as
+elegant and easy as using a well-written custom library.
+
+It is usable with no configuration other than API root endpoint, but
 also allows incoming data types to be extended with Ruby code.
 
 HyperResource supports the 
@@ -33,7 +39,7 @@ api.get
 What'd we get back?
 
 ```ruby
-api.deserialized_response
+api.body
 # => { 'message' => 'Welcome to the Example.com API',
 #      'version' => 1,
 #      '_links' => {
@@ -112,8 +118,8 @@ end
 
 ## Extending Data Types
 
-If an API is returning data type information as part of the response --
-and it really should be -- then we can assign those data types to
+If an API is returning data type information as part of the response,
+then we can assign those data types to
 ruby classes so that they can be extended.
 
 For example, in our hypothetical Example API above, a user object is
@@ -148,7 +154,7 @@ HyperResource raises a `HyperResource::ClientError` on 4xx responses,
 and `HyperResource::ServerError` on 5xx responses.  Catch one or both
 (`HyperResource::ResponseError`).  The exceptions contain as much of
 `cause` (internal exception which led to this one), `response`
-(`Faraday::Response` object), and `deserialized_response` (the response
+(`Faraday::Response` object), and `body` (the response
 as a `Hash`) as is possible at the time.
 
 ## Compatibility and Dependencies
