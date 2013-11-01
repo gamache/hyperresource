@@ -1,4 +1,6 @@
-#  HyperResource - a self-inflating client for hypermedia APIs
+# HyperResource 
+
+a self-inflating client for hypermedia APIs
 
 ## About
 
