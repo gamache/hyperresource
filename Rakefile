@@ -10,8 +10,9 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-task :release => [:docs] do
+task :release do
   system(<<-EOT)
+    git add lib/hyper_resource/version.rb
     git commit -m 'release v#{HyperResource::VERSION}'
     git push origin
     git tag v#{HyperResource::VERSION}
@@ -22,11 +23,7 @@ task :release => [:docs] do
 end
 
 task :docs do
-  system(<<-EOT)
-    git rm -rf doc
-    yard --no-private
-    git add doc
-  EOT
+  system("yard --no-private")
 end
 
 task :test_server do
