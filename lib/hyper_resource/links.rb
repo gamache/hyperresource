@@ -15,7 +15,6 @@ class HyperResource
 
       self.keys.each do |attr|
         attr_sym = attr.to_sym
-
         self.class.send(:define_method, attr_sym) do |*args|
           if args.count > 0
             self[attr].where(*args)

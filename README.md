@@ -47,9 +47,14 @@ api.body
 # => { 'message' => 'Welcome to the Example.com API',
 #      'version' => 1,
 #      '_links' => {
+#        'curies' => [{
+#          'name' => 'example',
+#          'templated' => true,
+#          'href' => 'https://api.example.com/rels/{rel}'
+#        }],
 #        'self' => {'href' => '/'},
-#        'users' => {'href' => '/users{?email,last_name}', 'templated' => true},
-#        'forums' => {'href' => '/forums{?title}', 'templated' => true}
+#        'example:users' => {'href' => '/users{?email,last_name}', 'templated' => true},
+#        'example:forums' => {'href' => '/forums{?title}', 'templated' => true}
 #      }
 #    }
 ```
@@ -63,9 +68,11 @@ jdoe_user = api.users(email: "jdoe@example.com").first
 
 HyperResource has performed some behind-the-scenes expansions here.
 
-First, the `users` link was
+First, the `example:users` link was
 added as a method on the `api` object at the time the resource was
-loaded with `api.get`.
+loaded with `api.get`.  And since the link rel has a 
+{http://tools.ietf.org/html/draft-kelly-json-hal-06#section-8.2 CURIE prefix},
+a method without the prefix, `users`, was created at the same time.
 
 Then, calling `first` on the `users` link
 followed the link and loaded it automatically.
