@@ -9,8 +9,13 @@ class LiveTestServer < Sinatra::Base
     <<-EOT
       { "name": "whatever API",
         "_links": {
+          "curies": [{
+            "name": "whatever",
+            "templated": true,
+            "href": "/rels{?rel}"
+          }],
           "self": {"href":"/"},
-          "widgets": {"href":"/widgets"}
+          "whatever:widgets": {"href":"/widgets"}
         }
       }
     EOT
@@ -21,15 +26,25 @@ class LiveTestServer < Sinatra::Base
     <<-EOT
       { "name": "My Widgets",
         "_links": {
+          "curies": [{
+            "name": "whatever",
+            "templated": true,
+            "href": "/rels{?rel}"
+          }],
           "self": {"href":"/widgets"},
-          "root": {"href":"/"}
+          "whatever:root": {"href":"/"}
         },
         "_embedded": {
           "widgets": [
             { "name": "Widget 1",
               "_links": {
+                "curies": [{
+                  "name": "whatever",
+                  "templated": true,
+                  "href": "/rels{?rel}"
+                }],
                 "self": {"href": "/widgets/1"},
-                "widgets": {"href": "/widgets"}
+                "whatever:widgets": {"href": "/widgets"}
               }
             }
           ]
@@ -48,8 +63,13 @@ class LiveTestServer < Sinatra::Base
       <<-EOT
         { "name": "#{params["name"]}",
           "_links": {
+            "curies": [{
+              "name": "whatever",
+              "templated": true,
+              "href": "/rels{?rel}"
+            }],
             "self": {"href": "/widgets/1"},
-            "widgets": {"href": "/widgets"}
+            "whatever:widgets": {"href": "/widgets"}
           }
         }
       EOT
@@ -66,9 +86,14 @@ class LiveTestServer < Sinatra::Base
       [201, headers, <<-EOT ]
         { "name": "#{params["name"]}",
           "_links": {
+            "curies": [{
+              "name": "whatever",
+              "templated": true,
+              "href": "/rels{?rel}"
+            }],
             "self": {"href":"/widgets/2"},
-            "widgets": {"href": "/widgets"},
-            "root": {"href":"/"}
+            "whatever:widgets": {"href": "/widgets"},
+            "whatever:root": {"href":"/"}
           }
         }
       EOT
@@ -80,9 +105,14 @@ class LiveTestServer < Sinatra::Base
     <<-EOT
       { "message": "Deleted widget.",
         "_links": {
+          "curies": [{
+            "name": "whatever",
+            "templated": true,
+            "href": "/rels{?rel}"
+          }],
           "self": {"href":"/widgets/1"},
-          "widgets": {"href": "/widgets"},
-          "root": {"href":"/"}
+          "whatever:widgets": {"href": "/widgets"},
+          "whatever:root": {"href":"/"}
         }
       }
     EOT

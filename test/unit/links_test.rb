@@ -10,8 +10,10 @@ describe HyperResource::Links do
   end
 
   describe '#init_from_hal' do
-    it 'creates readers for all links' do
+    it 'creates readers for all links, including CURIE names' do
       @links.must_respond_to :self
+      @links.must_respond_to :foobars
+      @links.must_respond_to :'foo:foobars'
     end
 
     it 'creates all links as HyperResource::Link or subclass' do

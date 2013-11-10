@@ -14,20 +14,28 @@ class HyperResource
                 self._resource.class.to_s == 'HyperResource'
 
       self.keys.each do |attr|
-        attr_sym = attr.to_sym
 
-        self.class.send(:define_method, attr_sym) do |*args|
-          if args.count > 0
-            self[attr].where(*args)
-          else
-            self[attr]
-          end
+        ## If this link's rel name is a CURIE (e.g. "yourapi:widgets"),
+        ## define methods for both "yourapi:widgets" and "widgets".
+        attr_syms = [attr.to_sym]
+        if m = attr.match(/.+ : (.+)/x)
+          attr_syms << m[1].to_sym
         end
 
-        ## Don't stomp on _resource's methods
-        unless _resource.respond_to?(attr_sym)
-          _resource.class.send(:define_method, attr_sym) do |*args|
-            links.send(attr_sym, *args)
+        attr_syms.each do |attr_sym|
+          self.class.send(:define_method, attr_sym) do |*args|
+            if args.count > 0
+              self[attr].where(*args)
+            else
+              self[attr]
+            end
+          end
+
+          ## Don't stomp on _resource's methods
+          unless _resource.respond_to?(attr_sym)
+            _resource.class.send(:define_method, attr_sym) do |*args|
+              links.send(attr_sym, *args)
+            end
           end
         end
       end
