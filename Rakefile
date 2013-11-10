@@ -12,9 +12,10 @@ end
 
 task :release => [:docs] do
   system(<<-EOT)
-    git commit -m 'release #{HyperResource::VERSION}'
-    git tag release-#{HyperResource::VERSION}
+    git commit -m 'release v#{HyperResource::VERSION}'
     git push origin
+    git tag v#{HyperResource::VERSION}
+    git push --tags origin
     gem build hyper_resource.gemspec
     gem push hyperresource-#{HyperResource::VERSION}.gem
   EOT
