@@ -10,10 +10,16 @@ describe HyperResource::Links do
   end
 
   describe '#init_from_hal' do
-    it 'creates readers for all links, including CURIE names' do
+    it 'creates reader methods for all links, including CURIE names' do
       @links.must_respond_to :self
       @links.must_respond_to :foobars
       @links.must_respond_to :'foo:foobars'
+    end
+
+    it 'creates reader hash keys for all links, including CURIE names' do
+      @links['self'].wont_be_nil
+      @links['foobars'].wont_be_nil
+      @links['foo:foobars'].wont_be_nil
     end
 
     it 'creates all links as HyperResource::Link or subclass' do
@@ -22,6 +28,8 @@ describe HyperResource::Links do
 
     it 'handles link arrays' do
       @links.foobars.must_be_kind_of Array
+      @links.send(:'foo:foobars').must_be_kind_of Array
+      @links.foobars.first.must_be_kind_of HyperResource::Link
     end
   end
 
