@@ -102,28 +102,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#_hr_attributes-instance_method" title="#_hr_attributes (instance method)">- (Object) <strong>_hr_attributes</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#_hr_class_attribute-instance_method" title="#_hr_class_attribute (instance method)">- (Object) <strong>_hr_class_attribute</strong>(*names) </a>
     
 
@@ -141,28 +119,6 @@
     <span class="summary_desc"><div class='inline'>
 <p>Inheritable class attribute, kinda like in Rails.</p>
 </div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#_hr_class_attributes-instance_method" title="#_hr_class_attributes (instance method)">- (Object) <strong>_hr_class_attributes</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -201,69 +157,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="_hr_attributes-instance_method">
-  
-    - (<tt>Object</tt>) <strong>_hr_attributes</strong> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource/modules/internal_attributes.rb', line 32</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid__hr_attributes'>_hr_attributes</span> <span class='comment'># @private
-</span>  <span class='lbracket'>[</span> <span class='symbol'>:root</span><span class='comma'>,</span>
-    <span class='symbol'>:href</span><span class='comma'>,</span>
-    <span class='symbol'>:auth</span><span class='comma'>,</span>
-    <span class='symbol'>:headers</span><span class='comma'>,</span>
-    <span class='symbol'>:namespace</span><span class='comma'>,</span>
-    <span class='symbol'>:adapter</span><span class='comma'>,</span>
-
-    <span class='symbol'>:request</span><span class='comma'>,</span>
-    <span class='symbol'>:response</span><span class='comma'>,</span>
-    <span class='symbol'>:body</span><span class='comma'>,</span>
-
-    <span class='symbol'>:attributes</span><span class='comma'>,</span>
-    <span class='symbol'>:links</span><span class='comma'>,</span>
-    <span class='symbol'>:objects</span><span class='comma'>,</span>
-
-    <span class='symbol'>:loaded</span>
-  <span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="_hr_class_attribute-instance_method">
+  <h3 class="signature first" id="_hr_class_attribute-instance_method">
   
     - (<tt>Object</tt>) <strong>_hr_class_attribute</strong>(*names) 
   
@@ -319,46 +213,6 @@
       end
 </span><span class='heredoc_end'>    EOT
 </span>  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="_hr_class_attributes-instance_method">
-  
-    - (<tt>Object</tt>) <strong>_hr_class_attributes</strong> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-23
-24
-25
-26
-27
-28
-29
-30</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/hyper_resource/modules/internal_attributes.rb', line 23</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid__hr_class_attributes'>_hr_class_attributes</span> <span class='comment'># @private
-</span>  <span class='lbracket'>[</span> <span class='symbol'>:root</span><span class='comma'>,</span>             <span class='comment'>## e.g. &#39;https://example.com/api/v1&#39;
-</span>    <span class='symbol'>:auth</span><span class='comma'>,</span>             <span class='comment'>## e.g. {:basic =&gt; [&#39;username&#39;, &#39;password&#39;]}
-</span>    <span class='symbol'>:headers</span><span class='comma'>,</span>          <span class='comment'>## e.g. {&#39;Accept&#39; =&gt; &#39;application/vnd.example+json&#39;}
-</span>    <span class='symbol'>:namespace</span><span class='comma'>,</span>        <span class='comment'>## e.g. &#39;ExampleAPI&#39;, or the class ExampleAPI itself
-</span>    <span class='symbol'>:adapter</span>           <span class='comment'>## subclass of HR::Adapter
-</span>  <span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -433,7 +287,7 @@
 </div>
 
     <div id="footer">
-  Generated on Sun Nov 10 13:06:18 2013 by
+  Generated on Sun Nov 10 14:14:39 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.3 (ruby-2.0.0).
 </div>

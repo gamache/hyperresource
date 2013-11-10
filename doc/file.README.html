@@ -111,9 +111,14 @@ on the API.</p>
 <span class="ruby-comment"># =&gt; { &#39;message&#39; =&gt; &#39;Welcome to the Example.com API&#39;,</span>
 <span class="ruby-comment">#      &#39;version&#39; =&gt; 1,</span>
 <span class="ruby-comment">#      &#39;_links&#39; =&gt; {</span>
+<span class="ruby-comment">#        &#39;curies&#39; =&gt; [{</span>
+<span class="ruby-comment">#          &#39;name&#39; =&gt; &#39;example&#39;,</span>
+<span class="ruby-comment">#          &#39;templated&#39; =&gt; true,</span>
+<span class="ruby-comment">#          &#39;href&#39; =&gt; &#39;https://api.example.com/rels/{rel}&#39;</span>
+<span class="ruby-comment">#        }],</span>
 <span class="ruby-comment">#        &#39;self&#39; =&gt; {&#39;href&#39; =&gt; &#39;/&#39;},</span>
-<span class="ruby-comment">#        &#39;users&#39; =&gt; {&#39;href&#39; =&gt; &#39;/users{?email,last_name}&#39;, &#39;templated&#39; =&gt; true},</span>
-<span class="ruby-comment">#        &#39;forums&#39; =&gt; {&#39;href&#39; =&gt; &#39;/forums{?title}&#39;, &#39;templated&#39; =&gt; true}</span>
+<span class="ruby-comment">#        &#39;example:users&#39; =&gt; {&#39;href&#39; =&gt; &#39;/users{?email,last_name}&#39;, &#39;templated&#39; =&gt; true},</span>
+<span class="ruby-comment">#        &#39;example:forums&#39; =&gt; {&#39;href&#39; =&gt; &#39;/forums{?title}&#39;, &#39;templated&#39; =&gt; true}</span>
 <span class="ruby-comment">#      }</span>
 <span class="ruby-comment">#    }</span>
 </pre>
@@ -126,11 +131,15 @@ on the API.</p>
 
 <p>HyperResource has performed some behind-the-scenes expansions here.</p>
 
-<p>First, the <code>users</code> link was
+<p>First, the <code>example:users</code> link was
 added as a method on the
 <code>api</code> object at the time the resource was
 loaded with
-<code>api.get</code>.</p>
+<code>api.get</code>. And since the link rel has
+a
+<a href="http://tools.ietf.org/html/draft-kelly-json-hal-06#section-8.2" target="_parent" title="CURIE prefix">CURIE prefix</a>,
+a method without the prefix, <code>users</code>, was created at
+the same time.</p>
 
 <p>Then, calling <code>first</code> on the <code>users</code> link
 followed
@@ -267,7 +276,7 @@ Twitter.
 </div></div>
 
     <div id="footer">
-  Generated on Sun Nov 10 13:06:17 2013 by
+  Generated on Sun Nov 10 14:14:39 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.3 (ruby-2.0.0).
 </div>
