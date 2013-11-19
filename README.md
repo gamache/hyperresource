@@ -2,6 +2,8 @@
 
 A self-inflating Ruby client for hypermedia APIs.
 
+[![Build Status](https://travis-ci.org/gamache/hyperresource.png?branch=master)](https://travis-ci.org/gamache/hyperresource)
+
 ## About
 
 HyperResource is a Ruby client library for hypermedia web services.
