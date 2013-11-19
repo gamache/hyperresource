@@ -10,8 +10,9 @@ class HyperResource
     ## Protects against method creation into HyperResource::Links and
     ## HyperResource classes.  Just subclasses, please!
     def _hr_create_methods!(opts={}) # @private
-      return if self.class.to_s == 'HyperResource::Links' ||
-                self._resource.class.to_s == 'HyperResource'
+      return if self.class.to_s == 'HyperResource::Links'
+      return if self._resource.class.to_s == 'HyperResource'
+      return if self.class.class_variable_defined?(:@@_hr_created_links_methods)
 
       self.keys.each do |attr|
         attr_sym = attr.to_sym
@@ -30,6 +31,8 @@ class HyperResource
           end
         end
       end
+
+      self.class.class_variable_set(:@@_hr_created_links_methods, true)
     end
 
     def []=(attr, value) # @private

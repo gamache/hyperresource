@@ -10,6 +10,6 @@ describe 'HyperResource caching' do
 
   it 'can be dumped with Marshal.dump' do
     new_rsrc = Marshal.load(Marshal.dump(@rsrc))
-    new_rsrc.must_respond_to :attr1
+    assert new_rsrc.attr1
   end
 end

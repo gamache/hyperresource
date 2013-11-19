@@ -13,8 +13,9 @@ describe 'HyperResource#incoming_body_filter' do
   end
 
   it 'filters incoming attributes' do
-    @rsrc.wont_respond_to :attr1
-    @rsrc.must_respond_to :awesome_attr1
+    assert_raises NoMethodError do
+      @rsrc.attr1
+    end
     @rsrc.awesome_attr1.must_equal 'awesomer val1'
   end
 end
