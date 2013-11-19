@@ -101,6 +101,7 @@ class HyperResource
             rsrc.attributes[attr] = filtered_attrs[attr]
           end
 
+          rsrc.attributes._hr_clear_changed
           rsrc.attributes._hr_create_methods!
         end
 

@@ -7,25 +7,26 @@ describe HyperResource::Attributes do
     before do
       @rsrc = TestAPI.new
       @rsrc.adapter.apply(HAL_BODY, @rsrc)
-      @attribs = @rsrc.attributes
+      @attrs = @rsrc.attributes
     end
 
-    it "creates accessors for all attributes" do
-      @attribs.must_respond_to :attr1
-      @attribs.attr1.must_equal 'val1'
-
-      @attribs.must_respond_to :attr2
-      @attribs.attr2.must_equal 'val2'
+    it "provides access to all attributes" do
+      @attrs.attr1.must_equal 'val1'
+      @attrs.attr2.must_equal 'val2'
     end
 
     it 'leaves _links and _embedded alone' do
-      @attribs.wont_respond_to :_links
-      @attribs.wont_respond_to :_embedded
+      assert_raises NoMethodError do
+        @attrs._links
+      end
+      assert_raises NoMethodError do
+        @attrs._embedded
+      end
     end
 
     it 'allows values to be changed' do
-      @attribs.attr1 = :foo
-      @attribs.attr1.must_equal :foo
+      @attrs.attr1 = :foo
+      @attrs.attr1.must_equal :foo
     end
   end
 

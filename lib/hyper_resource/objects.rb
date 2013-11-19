@@ -2,7 +2,7 @@ class HyperResource
   class Objects < Hash
     attr_accessor :_resource
 
-    def initialize(resource=nil)
+    def initialize(resource=nil) 
       self._resource = resource || HyperResource.new
     end
 
@@ -10,8 +10,10 @@ class HyperResource
     ## Protects against method creation into HyperResource::Objects and
     ## HyperResource classes.  Just subclasses, please!
     def _hr_create_methods!(opts={}) # @private
-      return if self.class.to_s == 'HyperResource::Objects' ||
-                self._resource.class.to_s == 'HyperResource'
+      return if self.class.to_s == 'HyperResource::Objects'
+      return if self._resource.class.to_s == 'HyperResource' 
+      return if self.class.send(
+        :class_variable_defined?, :@@_hr_created_objects_methods) 
 
       self.keys.each do |attr|
         attr_sym = attr.to_sym
@@ -27,6 +29,8 @@ class HyperResource
           end
         end
       end
+
+      self.class.send(:class_variable_set, :@@_hr_created_objects_methods, true) 
     end
 
     def []=(attr, value) # @private

@@ -11,8 +11,10 @@ class HyperResource
     ## Protects against method creation into HyperResource::Attributes and
     ## HyperResource classes.  Just subclasses, please!
     def _hr_create_methods!(opts={}) # @private
-      return if self.class.to_s == 'HyperResource::Attributes' ||
-                self._resource.class.to_s == 'HyperResource'
+      return if self.class.to_s == 'HyperResource::Attributes'
+      return if self._resource.class.to_s == 'HyperResource'
+      return if self.class.send(
+        :class_variable_defined?, :@@_hr_created_attributes_methods)
 
       self.keys.each do |attr|
         attr_sym = attr.to_sym
@@ -40,6 +42,8 @@ class HyperResource
 
       ## This is a good time to mark this object as not-changed
       _hr_clear_changed
+
+      self.class.send(:class_variable_set, :@@_hr_created_attributes_methods, true) 
     end
 
     ## Returns +true+ if the given attribute has been changed since creation
@@ -59,7 +63,8 @@ class HyperResource
     end
 
     def []=(attr, value) # @private
-      _hr_mark_changed(attr)
+      return self[attr] if self[attr] == value
+      _hr_mark_changed(attr) 
       super(attr.to_s, value)
     end
 
@@ -70,20 +75,24 @@ class HyperResource
     end
 
     def method_missing(method, *args) # @private
-      return self[method] if self[method]
-      raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
+      method = method.to_s
+      if self[method]
+        self[method]
+      elsif method[-1,1] == '='
+        self[method[0..-2]] = args.first
+      else
+        raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
+      end
     end
 
-  private
+    def _hr_clear_changed # @private
+      @_hr_changed = nil
+    end
 
     def _hr_mark_changed(attr, is_changed=true) # @private
       attr = attr.to_sym
       @_hr_changed ||= Hash.new(false)
       @_hr_changed[attr] = is_changed
-    end
-
-    def _hr_clear_changed
-      @_hr_changed = nil
     end
 
   end
