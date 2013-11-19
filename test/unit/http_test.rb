@@ -99,7 +99,7 @@ describe HyperResource::Modules::HTTP do
       root.must_be_kind_of HyperResource
       root.must_be_instance_of DummyAPI::Root
       root.links.must_be_instance_of DummyAPI::Root::Links
-      root.links.must_respond_to :dummies
+      assert root.links.dummies
     end
 
     it 'raises client error' do

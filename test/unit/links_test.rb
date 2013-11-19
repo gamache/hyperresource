@@ -10,10 +10,10 @@ describe HyperResource::Links do
   end
 
   describe '#init_from_hal' do
-    it 'creates reader methods for all links, including CURIE names' do
-      @links.must_respond_to :self
-      @links.must_respond_to :foobars
-      @links.must_respond_to :'foo:foobars'
+    it 'provides readers for all links, including CURIE names' do
+      assert @links.self
+      assert @links.foobars
+      assert @links.send('foo:foobars')
     end
 
     it 'creates reader hash keys for all links, including CURIE names' do
