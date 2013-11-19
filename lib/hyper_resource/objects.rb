@@ -12,7 +12,8 @@ class HyperResource
     def _hr_create_methods!(opts={}) # @private
       return if self.class.to_s == 'HyperResource::Objects'
       return if self._resource.class.to_s == 'HyperResource' 
-      return if self.class.class_variable_defined?(:@@_hr_created_objects_methods) 
+      return if self.class.send(
+        :class_variable_defined?, :@@_hr_created_objects_methods) 
 
       self.keys.each do |attr|
         attr_sym = attr.to_sym
@@ -29,7 +30,7 @@ class HyperResource
         end
       end
 
-      self.class.class_variable_set(:@@_hr_created_objects_methods, true) 
+      self.class.send(:class_variable_set, :@@_hr_created_objects_methods, true) 
     end
 
     def []=(attr, value) # @private

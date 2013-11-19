@@ -13,7 +13,8 @@ class HyperResource
     def _hr_create_methods!(opts={}) # @private
       return if self.class.to_s == 'HyperResource::Attributes'
       return if self._resource.class.to_s == 'HyperResource'
-      return if self.class.class_variable_defined?(:@@_hr_created_attributes_methods)
+      return if self.class.send(
+        :class_variable_defined?, :@@_hr_created_attributes_methods)
 
       self.keys.each do |attr|
         attr_sym = attr.to_sym
@@ -42,7 +43,7 @@ class HyperResource
       ## This is a good time to mark this object as not-changed
       _hr_clear_changed
 
-      self.class.class_variable_set(:@@_hr_created_attributes_methods, true) 
+      self.class.send(:class_variable_set, :@@_hr_created_attributes_methods, true) 
     end
 
     ## Returns +true+ if the given attribute has been changed since creation
