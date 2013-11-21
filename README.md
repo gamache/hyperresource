@@ -15,9 +15,8 @@ It is usable with no configuration other than API root endpoint, but
 also allows incoming data types to be extended with Ruby code.
 
 HyperResource supports the 
-{http://stateless.co/hal_specification.html HAL+JSON
-hypermedia format}, with support for
-other hypermedia formats planned.
+[HAL+JSON hypermedia format](http://stateless.co/hal_specification.html),
+with support for other hypermedia formats planned.
 
 ## Install It
 
@@ -73,7 +72,7 @@ HyperResource has performed some behind-the-scenes expansions here.
 First, the `example:users` link was
 added as a method on the `api` object at the time the resource was
 loaded with `api.get`.  And since the link rel has a 
-{http://tools.ietf.org/html/draft-kelly-json-hal-06#section-8.2 CURIE prefix},
+[CURIE prefix](http://tools.ietf.org/html/draft-kelly-json-hal-06#section-8.2),
 a method without the prefix, `users`, was created at the same time.
 
 Then, calling `first` on the `users` link
@@ -173,19 +172,19 @@ as a `Hash`) as is possible at the time.
 ## Compatibility and Dependencies
 
 HyperResource requires the 
-{https://github.com/hannesg/uri_template uri_template}
-and {https://github.com/lostisland/faraday Faraday}
+[uri_template](https://github.com/hannesg/uri_template)
+and [Faraday](https://github.com/lostisland/faraday)
 gems.  
 
 HyperResource is tested to support MRI Ruby 1.8.7 to present, and JRuby
-in 1.8 mode or above.  Thanks,
-{https://travis-ci.org/gamache/hyperresource Travis CI}!
+in 1.8 mode or above.
+Thanks, [Travis CI](https://travis-ci.org/gamache/hyperresource)!
 
 ## Authorship and License
 
-Copyright 2013 Pete Gamache, {mailto:pete@gamache.org pete@gamache.org}.
+Copyright 2013 Pete Gamache, [pete@gamache.org](mailto:pete@gamache.org).
 
 If you got this far, you should probably follow me on Twitter.
-{https://twitter.com/gamache @gamache}
+[@gamache](https://twitter.com/gamache)
 
 Released under the MIT License.  See LICENSE.txt.
