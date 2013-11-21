@@ -23,10 +23,6 @@ task :release do
   EOT
 end
 
-task :docs do
-  system("yard --no-private")
-end
-
 task :test_server do
   require './test/live/live_test_server'
   port = ENV['PORT'] || ENV['port'] || 3000
