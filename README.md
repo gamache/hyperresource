@@ -1,15 +1,9 @@
-# HyperResource 
-
-A self-inflating Ruby client for hypermedia APIs.
-
-[![Build Status](https://travis-ci.org/gamache/hyperresource.png?branch=master)](https://travis-ci.org/gamache/hyperresource)
-
-## About
+# HyperResource [![Build Status](https://travis-ci.org/gamache/hyperresource.png?branch=master)](https://travis-ci.org/gamache/hyperresource)
 
 HyperResource is a Ruby client library for hypermedia web services.
 
-It makes using a generic hypermedia client library as
-elegant and easy as using a well-written custom library.
+HyperResource makes using a hypermedia API feel like calling plain old
+methods on plain old objects.
 
 It is usable with no configuration other than API root endpoint, but
 also allows incoming data types to be extended with Ruby code.
@@ -18,11 +12,46 @@ HyperResource supports the
 [HAL+JSON hypermedia format](http://stateless.co/hal_specification.html),
 with support for other hypermedia formats planned.
 
+## Hypermedia in a Nutshell
+
+Hypermedia APIs return a list of hyperlinks with each response.  These
+links, each of which has a relation name or "rel", represent everything
+you can do to, with, or from the given response.  They are URLs which
+can take arguments.  The consumer of the hypermedia API uses these
+links to access the API's entire functionality.
+
+The primary advantage to a hypermedia API is that a client library can
+write itself based on the hyperlinks coming back with each response.
+This removes both the chore of writing a custom client library in the
+first place, and also the process of pushing client updates to your
+users.
+
+## HyperResource Philosophy
+
+HyperResource exists in the belief that the automatically-generated library
+can feel as comfortable as a custom client library.
+If you're an API user, HyperResource will help you consume a hypermedia
+API with short, direct, elegant code.
+If you're an API designer, HyperResource is a great starting point
+for a rich SDK, or just a default client.
+
+The one-line philosophy of HyperResource is that link-driven APIs are 
+the future, and proper tooling can make it The Jetsons instead of
+The Road Warrior.
+
 ## Install It
 
-`gem install hyperresource`
+Nothing special is required, just: `gem install hyperresource`
 
-## Quick Tour
+HyperResource works on Ruby 1.8.7 to present, and JRuby in 1.8 mode or
+above.
+
+HyperResource uses the 
+[uri_template](https://github.com/hannesg/uri_template)
+and [Faraday](https://github.com/lostisland/faraday)
+gems.  
+
+## Use It - Zero Configuration
 
 Set up API connection:
 
@@ -96,43 +125,11 @@ api.get.links['users'].where(email: "jdoe@example.com").get.first
 api.get.links['users'].where(email: "jdoe@example.com").get.objects.first[1][0]
 ```
 
-## GET, POST, PUT, and DELETE
-
-In addition to `.get`, HyperResource provides `.create`, `.update`, and 
-`.delete` methods track their HTTP counterparts.
-
-```ruby
-new_user = api.users.create(:email => 'fng@example.com',
-                            :first_name => 'New',
-                            :last_name => 'Guy')
-
-new_user.first_name = 'F. New'
-new_user.update
-
-new_user.delete
-```
-
-## Fake Real World Example
-
-Now let's put it together, with our theoretical API.
-Let's say Johnny ran his mouth in the
-'Politics' forum one particular day and somehow managed to piss off the
-entire Internet.  Let's try and satisfy the DDoSing horde by
-amending his tone.
-
-```ruby
-forum = api.forums(title: 'Politics').first
-jdoe_user.comments(date: '2013-04-01', forum: forum.href).each do |comment|
-  comment.text = "OMG PUPPIES!!"
-  comment.update
-end
-```
-
-## Extending Data Types
+## Use It - ActiveResource-style
 
 If an API is returning data type information as part of the response,
-then we can assign those data types to
-ruby classes so that they can be extended.
+then we can assign those data types to ruby classes so that they can
+be extended.
 
 For example, in our hypothetical Example API above, a user object is
 returned with a custom media type bearing a 'type=User' modifier.  We
@@ -140,6 +137,10 @@ will extend the User class with a few convenience methods.
 
 ```ruby
 class ExampleAPI < HyperResource
+  self.root = 'https://api.example.com'
+  self.headers = {'Accept' => 'application/vnd.example.com.v1+json'}
+  self.auth = {basic: ['username', 'password']}
+
   class User < ExampleAPI
     def full_name
       first_name + ' ' + last_name
@@ -147,7 +148,7 @@ class ExampleAPI < HyperResource
   end
 end
 
-api.namespace = ExampleApi
+api = ExampleApi.new
 
 user = api.users.where(email: 'jdoe@example.com').first
 # => #<ExampleApi::User:0xffffffff ...>
@@ -166,25 +167,16 @@ HyperResource raises a `HyperResource::ClientError` on 4xx responses,
 and `HyperResource::ServerError` on 5xx responses.  Catch one or both
 (`HyperResource::ResponseError`).  The exceptions contain as much of
 `cause` (internal exception which led to this one), `response`
-(`Faraday::Response` object), and `body` (the response
+(`Faraday::Response` object), and `body` (the decoded response
 as a `Hash`) as is possible at the time.
-
-## Compatibility and Dependencies
-
-HyperResource requires the 
-[uri_template](https://github.com/hannesg/uri_template)
-and [Faraday](https://github.com/lostisland/faraday)
-gems.  
-
-HyperResource is tested to support MRI Ruby 1.8.7 to present, and JRuby
-in 1.8 mode or above.
-Thanks, [Travis CI](https://travis-ci.org/gamache/hyperresource)!
 
 ## Authorship and License
 
 Copyright 2013 Pete Gamache, [pete@gamache.org](mailto:pete@gamache.org).
 
+Released under the MIT License.  See LICENSE.txt.
+
 If you got this far, you should probably follow me on Twitter.
 [@gamache](https://twitter.com/gamache)
 
-Released under the MIT License.  See LICENSE.txt.
+
