@@ -83,7 +83,7 @@ class HyperResource
 
       def finish_up
         begin
-          self.body = self.adapter.deserialize(self.response.body)
+          self.body = self.adapter.deserialize(self.response.body) unless self.response.body.nil?
         rescue StandardError => e
           raise HyperResource::ResponseError.new(
             "Error when deserializing response body",
