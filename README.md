@@ -20,7 +20,7 @@ you can do to, with, or from the given response.  They are URLs which
 can take arguments.  The consumer of the hypermedia API uses these
 links to access the API's entire functionality.
 
-The primary advantage to a hypermedia API is that a client library can
+A primary advantage to hypermedia APIs is that a client library can
 write itself based on the hyperlinks coming back with each response.
 This removes both the chore of writing a custom client library in the
 first place, and also the process of pushing client updates to your
@@ -28,16 +28,17 @@ users.
 
 ## HyperResource Philosophy
 
-HyperResource exists in the belief that the automatically-generated library
-can feel as comfortable as a custom client library.
+An automatically-generated library can and should feel as comfortable as a
+custom client library.  Hypermedia brings many promises, but this is one
+we can deliver on.
+
 If you're an API user, HyperResource will help you consume a hypermedia
 API with short, direct, elegant code.
-If you're an API designer, HyperResource is a great starting point
-for a rich SDK, or just a default client.
+If you're an API designer, HyperResource is a great default client, or a
+smart starting point for a rich SDK.
 
-The one-line philosophy of HyperResource is that link-driven APIs are 
-the future, and proper tooling can make it The Jetsons instead of
-The Road Warrior.
+Link-driven APIs are the future, and proper tooling can make it The Jetsons
+instead of The Road Warrior.
 
 ## Install It
 
