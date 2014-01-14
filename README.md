@@ -10,7 +10,7 @@ also allows incoming data types to be extended with Ruby code.
 
 HyperResource supports the 
 [HAL+JSON hypermedia format](http://stateless.co/hal_specification.html),
-with support for other hypermedia formats planned.
+with support for Siren and other hypermedia formats planned.
 
 ## Hypermedia in a Nutshell
 
