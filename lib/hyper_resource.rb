@@ -165,6 +165,13 @@ public
     raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
   end
 
+  def respond_to?(method, *args) # @private
+    return true if self.links && self.links.respond_to?(method)
+    return true if self.attributes && self.attributes.respond_to?(method)
+    return true if self.objects && self.objects.respond_to?(method)
+    super
+  end
+
 
   def inspect # @private
     "#<#{self.class}:0x#{"%x" % self.object_id} @root=#{self.root.inspect} "+

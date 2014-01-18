@@ -9,9 +9,10 @@ HAL_BODY = {
   'attr2' => 'val2',
   '_links' => {
     'curies' => [
-      { 'name' => 'foo', 
-        'templated' => true, 
-        'href' => 'http://example.com/api/rels/{rel}' }
+      { 'name' => 'foo',
+        'templated' => true,
+        'href' => 'http://example.com/api/rels/{rel}'
+      }
     ],
     'self' => {'href' => '/obj1/'},
     'foo:foobars' => [

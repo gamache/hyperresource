@@ -103,10 +103,10 @@ jdoe_user = api.users(email: "jdoe@example.com").first
 HyperResource has performed some behind-the-scenes expansions here.
 
 First, the `example:users` link was
-added as a method on the `api` object at the time the resource was
+added to the `api` object at the time the resource was
 loaded with `api.get`.  And since the link rel has a 
 [CURIE prefix](http://tools.ietf.org/html/draft-kelly-json-hal-06#section-8.2),
-a method without the prefix, `users`, was created at the same time.
+HyperResource will allow a shortened version of its name, `users`.
 
 Then, calling `first` on the `users` link
 followed the link and loaded it automatically.
@@ -161,7 +161,7 @@ user.full_name
 # => "John Doe"
 ```
 
-Don't worry if your API uses some other method to indicate resource data
+Don't worry if your API uses some other mechanism to indicate resource data
 type; you can override the `.get_data_type_from_response` method and
 implement your own logic.
 
