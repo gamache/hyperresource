@@ -3,6 +3,10 @@ require 'rack'
 require 'json'
 require File.expand_path('../live_test_server.rb', __FILE__)
 
+## Default port 25491 was selected using a meat-based PRNG.
+HR_TEST_PORT_1 = ENV['HR_TEST_PORT']   || ENV['HR_TEST_PORT_1'] || 25491
+HR_TEST_PORT_2 = ENV['HR_TEST_PORT_2'] || (HR_TEST_PORT_1.to_i + 1)
+
 unless !!ENV['NO_LIVE']
 
   describe HyperResource do

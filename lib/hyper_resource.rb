@@ -143,7 +143,7 @@ public
 
   ## method_missing will load this resource if not yet loaded, then
   ## attempt to delegate to +attributes+, then +objects+, then +links+.
-  ## Override with care.
+  ## Override with extreme care.
   def method_missing(method, *args)
     self.get unless self.loaded
 
@@ -165,7 +165,10 @@ public
     raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
   end
 
-  def respond_to?(method, *args) # @private
+  ## respond_to? is patched to return +true+ if +method_missing+ would
+  ## successfully delegate a method call to +attributes+, +links+, or
+  ## +objects+.
+  def respond_to?(method, *args)
     return true if self.links && self.links.respond_to?(method)
     return true if self.attributes && self.attributes.respond_to?(method)
     return true if self.objects && self.objects.respond_to?(method)
@@ -258,8 +261,9 @@ public
   ## Inspects the given Faraday::Response, and returns a string describing
   ## this resource's data type.
   ##
-  ## By default, this method looks for a +type=...+ modifier in the
-  ## response's +Content-type+ and returns that value, capitalized.
+  ## By default, this method looks for either a +type=...+ modifier in the
+  ## response's +Content-type+ or a "data_type" field in the response body,
+  ## and returns that value, capitalized.
   ##
   ## Override this method in a subclass to alter HyperResource's behavior.
   def self.get_data_type_from_response(response)
