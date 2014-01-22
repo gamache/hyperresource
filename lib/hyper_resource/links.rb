@@ -6,8 +6,29 @@ class HyperResource
      self._resource = resource || HyperResource.new
     end
 
+    ## []= is patched to recognize and use abbreviations of link rels,
+    ## as well as the original names.  This is performed here rather than
+    ## in [] for efficiency; you read more than you write.
     def []=(attr, value) # @private
-      super(attr.to_s, value)
+      attr = attr.to_s
+
+      ## Every link must appear under its proper name.
+      names = [attr]
+
+      ## Extract 'foo' from e.g. 'http://example.com/foo',
+      ## 'http://example.com/url#foo', 'somecurie:foo'.
+      if m=attr.match(%r{[:/#](.+)})
+        names << m[1]
+      end
+
+      ## Underscore all non-word characters.
+      underscored_names = names.map{|n| n.gsub(/[^a-zA-Z_]/, '_')}
+      names = (names + underscored_names).uniq
+
+      ## Register this link under every name we've come up with.
+      names.each do |name|
+        super(name, value)
+      end
     end
 
     def [](key) # @private

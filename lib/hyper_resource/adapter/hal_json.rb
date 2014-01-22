@@ -70,18 +70,12 @@ class HyperResource
           links = rsrc.links
 
           resp['_links'].each do |rel, link_spec|
-            keys = [rel]
-            if m=rel.match(/.+:(.+)/)
-              keys << m[1]
-            end
-            keys.each do |key|
-              if link_spec.is_a? Array
-                links[key] = link_spec.map do |link|
-                  new_link_from_spec(rsrc, link)
-                end
-              else
-                links[key] = new_link_from_spec(rsrc, link_spec)
+            if link_spec.is_a? Array
+              links[rel] = link_spec.map do |link|
+                new_link_from_spec(rsrc, link)
               end
+            else
+              links[rel] = new_link_from_spec(rsrc, link_spec)
             end
           end
         end

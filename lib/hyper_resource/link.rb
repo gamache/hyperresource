@@ -11,6 +11,7 @@ class HyperResource::Link
   ## Returns true if this link is templated.
   def templated?; templated end
 
+  ## +link_spec+ must have +href+ and +name+ defined
   def initialize(resource=nil, link_spec={})
     self.parent_resource = resource || HyperResource.new
     self.base_href       = link_spec['href']
