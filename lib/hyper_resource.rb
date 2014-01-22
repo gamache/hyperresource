@@ -57,8 +57,12 @@ public
     self.namespace  = opts[:namespace] || self.class.namespace
     self.headers    = DEFAULT_HEADERS.merge(self.class.headers || {}).
                                       merge(opts[:headers]     || {})
+<<<<<<< HEAD
     self.faraday_options = opts[:faraday_options] ||
                                self.class.faraday_options || {}
+=======
+    self.default_method = opts[:default_method] || 'get'
+>>>>>>> added #default_method to HR and HR::Link
 
     ## There's a little acrobatics in getting Attributes, Links, and Objects
     ## into the correct subclass.
@@ -145,8 +149,15 @@ public
   ## attempt to delegate to +attributes+, then +objects+, then +links+.
   ## Override with extreme care.
   def method_missing(method, *args)
-    self.get unless self.loaded
+    ## If this resource is not loaded, do so, and repeat the call on the
+    ## loaded resource.  Respect the +default_method+ attribute on the
+    ## resource.
+    if !self.loaded
+      load_method = self.default_method.to_s.downcase.to_sym
+      return self.send(load_method).send(method, *args)
+    end
 
+    ## Otherwise, try to match against attributes, then objects, then links.
     method = method.to_s
     if method[-1,1] == '='
       return attributes[method[0..-2]] = args.first if attributes[method[0..-2]]
@@ -203,6 +214,7 @@ public
 
 
   ## Return a new HyperResource based on this object and a given href.
+<<<<<<< HEAD
   def _hr_new_from_link(href) # @private
     self.class.new(:root            => self.root,
                    :auth            => self.auth,
@@ -210,6 +222,15 @@ public
                    :namespace       => self.namespace,
                    :faraday_options => self.faraday_options,
                    :href            => href)
+=======
+  def _hr_new_from_link(href, method='get') # @private
+    self.class.new(:root    => self.root,
+                   :auth    => self.auth,
+                   :headers => self.headers,
+                   :namespace => self.namespace,
+                   :href    => href,
+                   :default_method  => method)
+>>>>>>> added #default_method to HR and HR::Link
   end
 
 

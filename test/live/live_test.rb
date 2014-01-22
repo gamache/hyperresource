@@ -30,7 +30,7 @@ unless !!ENV['NO_LIVE']
           )
         end
 
-        @api = WhateverAPI.new(:root => "http://localhost:#{@port}/")
+        @api = make_new_api_resource
 
         @api.get rescue sleep(0.2) and retry  # block until server is ready
       end
@@ -38,6 +38,14 @@ unless !!ENV['NO_LIVE']
       after do
         @server_thread.kill
       end
+
+    private
+
+      def make_new_api_resource
+        WhateverAPI.new(:root => "http://localhost:#{@port}/")
+      end
+
+    public
 
       describe 'live tests' do
         it 'works at all' do
@@ -56,8 +64,15 @@ unless !!ENV['NO_LIVE']
           widgets.must_be_instance_of WhateverAPI::WidgetSet
         end
 
+        it 'loads resources automatically from method_missing' do
+          api = make_new_api_resource
+          api.widgets.wont_be_nil
+        end
+
         it 'observes proper classing' do
-          root = @api.get
+          api = make_new_api_resource
+          api.must_be_instance_of WhateverAPI
+          root = api.get
           root.must_be_instance_of WhateverAPI::Root
           root.links.must_be_instance_of WhateverAPI::Root::Links
           root.attributes.must_be_instance_of WhateverAPI::Root::Attributes

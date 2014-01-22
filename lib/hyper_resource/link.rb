@@ -5,17 +5,19 @@ class HyperResource::Link
                 :name,
                 :templated,
                 :params,
-                :parent_resource
+                :parent_resource,
+                :default_method
 
   ## Returns true if this link is templated.
   def templated?; templated end
 
   def initialize(resource=nil, link_spec={})
     self.parent_resource = resource || HyperResource.new
-    self.base_href = link_spec['href']
-    self.name = link_spec['name']
-    self.templated = !!link_spec['templated']
-    self.params    = link_spec['params'] || {}
+    self.base_href       = link_spec['href']
+    self.name            = link_spec['name']
+    self.templated       = !!link_spec['templated']
+    self.params          = link_spec['params'] || {}
+    self.default_method  = link_spec['method'] || 'get'
   end
 
   ## Returns this link's href, applying any URI template params.
@@ -36,12 +38,13 @@ class HyperResource::Link
                    'href' => self.base_href,
                    'name' => self.name,
                    'templated' => self.templated,
-                   'params' => self.params.merge(params))
+                   'params' => self.params.merge(params),
+                   'method' => self.default_method)
   end
 
   ## Returns a HyperResource representing this link
   def resource
-    parent_resource._hr_new_from_link(self.href)
+    parent_resource._hr_new_from_link(self.href, self.default_method)
   end
 
   ## Delegate HTTP methods to the resource.
