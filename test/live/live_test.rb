@@ -86,6 +86,13 @@ unless !!ENV['NO_LIVE']
           del.message.must_equal "Deleted widget."
         end
 
+        it 'passes headers to sub-objects' do
+          @api.headers['X-Type'] = 'Foobar'
+          root = @api.get
+          widget = root.widgets.get.first
+          widget.headers['X-Type'].must_equal 'Foobar'
+        end
+
 
         describe "invocation styles" do
           it 'can use HyperResource with no namespace' do
