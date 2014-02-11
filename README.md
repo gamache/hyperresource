@@ -171,9 +171,16 @@ and `HyperResource::ServerError` on 5xx responses.  Catch one or both
 (`Faraday::Response` object), and `body` (the decoded response
 as a `Hash`) as is possible at the time.
 
+## Contributors
+
+Many thanks to the people who've sent pull requests and improved this code:
+Jean-Charles d'Anthenaise Sisk (@jasisk), Ian Asaff (@montague), Julien
+Blanchard (@julienXX), Andrew Rollins (@andrew311), Étienne Barrié (@etiennebarrie),
+James Martelletti (@jmartelletti), and Frank Macreery (@fancyremarker).
+
 ## Authorship and License
 
-Copyright 2013 Pete Gamache, [pete@gamache.org](mailto:pete@gamache.org).
+Copyright 2013-2014 Pete Gamache, [pete@gamache.org](mailto:pete@gamache.org).
 
 Released under the MIT License.  See LICENSE.txt.
 
