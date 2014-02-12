@@ -12,6 +12,9 @@ HyperResource supports the
 [HAL+JSON hypermedia format](http://stateless.co/hal_specification.html),
 with support for Siren and other hypermedia formats planned.
 
+For more insight into HyperResource's goals and design,
+[read the paper](http://petegamache.com/wsrest2014-gamache.pdf)!
+
 ## Hypermedia in a Nutshell
 
 Hypermedia APIs return a list of hyperlinks with each response.  These
