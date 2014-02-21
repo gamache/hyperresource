@@ -122,7 +122,7 @@ class LiveTestServer < Sinatra::Base
   # To test short timeouts
   get '/slow_widgets' do
     sleep 2
-    headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=WidgetSet'
+    headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=SlowWidgetSet'
     <<-EOT
       { "name": "My Slow Widgets",
         "_links": {
