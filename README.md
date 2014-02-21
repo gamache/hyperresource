@@ -177,9 +177,15 @@ as a `Hash`) as is possible at the time.
 ## Contributors
 
 Many thanks to the people who've sent pull requests and improved this code:
-Jean-Charles d'Anthenaise Sisk (@jasisk), Ian Asaff (@montague), Julien
-Blanchard (@julienXX), Andrew Rollins (@andrew311), Étienne Barrié (@etiennebarrie),
-James Martelletti (@jmartelletti), and Frank Macreery (@fancyremarker).
+
+* Jean-Charles d'Anthenaise Sisk ([@jasisk](https://github.com/jasisk))
+* Ian Asaff ([@montague](https://github.com/montague))
+* Julien Blanchard ([@julienXX](https://github.com/julienXX))
+* Andrew Rollins ([@andrew311](https://github.com/andrew311))
+* Étienne Barrié ([@etiennebarrie](https://github.com/etiennebarrie))
+* James Martelletti ([@jmartelletti](https://github.com/jmartelletti))
+* Frank Macreery ([@fancyremarker](https://github.com/fancyremarker))
+* Chris Rollock ([@Sastafer](https://github.com/Sastafer))
 
 ## Authorship and License
 
