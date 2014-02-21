@@ -70,7 +70,7 @@ class HyperResource
         key = "faraday_connection_#{url}"
         return Thread.current[key] if Thread.current[key]
 
-        fc = Faraday.new(:url => url)
+        fc = Faraday.new(self.faraday_options.merge(:url => url))
         fc.headers.merge!('User-Agent' => "HyperResource #{HyperResource::VERSION}")
         fc.headers.merge!(self.headers || {})
         if ba=self.auth[:basic]
