@@ -15,7 +15,8 @@ class LiveTestServer < Sinatra::Base
             "href": "/rels{?rel}"
           }],
           "self": {"href":"/"},
-          "whatever:widgets": {"href":"/widgets"}
+          "whatever:widgets": {"href":"/widgets"},
+          "whatever:slow_widgets": {"href":"/slow_widgets"}
         }
       }
     EOT
@@ -113,6 +114,28 @@ class LiveTestServer < Sinatra::Base
           "self": {"href":"/widgets/1"},
           "whatever:widgets": {"href": "/widgets"},
           "whatever:root": {"href":"/"}
+        }
+      }
+    EOT
+  end
+
+  # To test short timeouts
+  get '/slow_widgets' do
+    sleep 2
+    headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=SlowWidgetSet'
+    <<-EOT
+      { "name": "My Slow Widgets",
+        "_links": {
+          "curies": [{
+            "name": "whatever",
+            "templated": true,
+            "href": "/rels{?rel}"
+          }],
+          "self": {"href":"/slow_widgets"},
+          "whatever:root": {"href":"/"}
+        },
+        "_embedded": {
+          "slow_widgets": []
         }
       }
     EOT

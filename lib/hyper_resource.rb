@@ -44,6 +44,10 @@ public
   ##
   ## [headers] Headers to send along with requests for this resource (as
   ##           well as its eventual child resources, if any).
+  ##
+  ## [faraday_options] Configuration passed to +Faraday::Connection.initialize+,
+  ##                   such as +{request: {timeout: 30}}+.
+  ##
   def initialize(opts={})
     return init_from_resource(opts) if opts.kind_of?(HyperResource)
 
@@ -53,6 +57,8 @@ public
     self.namespace  = opts[:namespace] || self.class.namespace
     self.headers    = DEFAULT_HEADERS.merge(self.class.headers || {}).
                                       merge(opts[:headers]     || {})
+    self.faraday_options = opts[:faraday_options] ||
+                               self.class.faraday_options || {}
 
     ## There's a little acrobatics in getting Attributes, Links, and Objects
     ## into the correct subclass.
@@ -135,7 +141,7 @@ public
 
   #### Magic
 
-  ## method_missing will load this resource if not yet loaded, then 
+  ## method_missing will load this resource if not yet loaded, then
   ## attempt to delegate to +attributes+, then +objects+, then +links+.
   ## Override with care.
   def method_missing(method, *args)
@@ -188,11 +194,12 @@ public
 
   ## Return a new HyperResource based on this object and a given href.
   def _hr_new_from_link(href) # @private
-    self.class.new(:root    => self.root,
-                   :auth    => self.auth,
-                   :headers => self.headers,
-                   :namespace => self.namespace,
-                   :href    => href)
+    self.class.new(:root            => self.root,
+                   :auth            => self.auth,
+                   :headers         => self.headers,
+                   :namespace       => self.namespace,
+                   :faraday_options => self.faraday_options,
+                   :href            => href)
   end
 
 

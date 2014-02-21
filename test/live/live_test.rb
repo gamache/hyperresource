@@ -98,7 +98,7 @@ unless !!ENV['NO_LIVE']
           it 'can use HyperResource with no namespace' do
             api = HyperResource.new(:root => "http://localhost:#{@port}/")
             root = api.get
-            root.loaded.must_equal true          
+            root.loaded.must_equal true
             root.class.to_s.must_equal 'HyperResource'
           end
 
@@ -139,6 +139,25 @@ unless !!ENV['NO_LIVE']
             root = api.get
             root.loaded.must_equal true
             root.class.to_s.must_equal 'SubclassTestApi::Root'
+          end
+        end
+
+        describe 'configuration testing' do
+          before do
+            @api_short = WhateverAPI.new(:root => "http://localhost:#{@port}/",
+                                         :faraday_options => {
+                                             :request => {:timeout => 0.001}
+                                         })
+          end
+
+          it 'accepts custom timeout parameters' do
+            proc { @api_short.get.slow_widgets.first }.
+                must_raise(Faraday::TimeoutError)
+          end
+
+          it 'passes the configuration to subclasses' do
+            api_short_child = @api_short.get
+            api_short_child.faraday_options[:request][:timeout].must_equal 0.001
           end
         end
 
