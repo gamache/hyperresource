@@ -68,10 +68,10 @@ class HyperResource
       def faraday_connection(url=nil)
         url ||= URI.join(self.root, self.href)
         key = Digest::MD5.hexdigest({
-          faraday_connection: {
-            url: url,
-            headers: self.headers,
-            ba: self.auth[:basic]
+          'faraday_connection' => {
+            'url' => url,
+            'headers' => self.headers,
+            'ba' => self.auth[:basic]
           }
         }.to_json)
         return Thread.current[key] if Thread.current[key]
