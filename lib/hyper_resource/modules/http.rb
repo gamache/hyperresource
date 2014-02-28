@@ -67,7 +67,13 @@ class HyperResource
       ## headers (including auth).  Threadsafe.
       def faraday_connection(url=nil)
         url ||= URI.join(self.root, self.href)
-        key = "faraday_connection_#{url}"
+        key = Digest::MD5.hexdigest({
+          faraday_connection: {
+            url: url,
+            headers: self.headers,
+            ba: self.auth[:basic]
+          }
+        }.to_json)
         return Thread.current[key] if Thread.current[key]
 
         fc = Faraday.new(self.faraday_options.merge(:url => url))
