@@ -223,6 +223,10 @@ public
     type_name = self.get_data_type_from_response(response)
     return self unless type_name
 
+    namespaced_class(type_name, namespace)
+  end
+
+  def self.namespaced_class(type_name, namespace)
     class_name = "#{namespace}::#{type_name}"
     class_name.gsub!(/[^_0-9A-Za-z:]/, '')  ## sanitize class_name
 

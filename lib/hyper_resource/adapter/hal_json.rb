@@ -57,6 +57,7 @@ class HyperResource
                            :headers => rsrc.headers,
                            :namespace => rsrc.namespace)
                 r.body = obj
+                r = classify(obj, r)
                 apply(obj, r)
               end
             end
@@ -65,6 +66,24 @@ class HyperResource
           objs._hr_create_methods!
         end
 
+        def classify(resp, rsrc)
+          return rsrc unless (type_name = get_data_type_from_object(resp)) &&
+                             (namespace = rsrc.namespace)
+          klass = rsrc.class.namespaced_class(type_name, namespace)
+
+          if klass
+            rsrc = klass.new(:root => rsrc.root,
+                             :headers => rsrc.headers,
+                             :namespace => rsrc.namespace)
+            rsrc.body = resp
+          end
+          rsrc
+        end
+
+        def get_data_type_from_object(object)
+          return nil unless object && object['type']
+          object['type'][0].upcase + object['type'][1..-1]
+        end
 
         def apply_links(resp, rsrc)
           return unless resp['_links']
