@@ -27,7 +27,6 @@ class HyperResource
             raise ArgumentError, "'resource' argument must be a HyperResource"
           end
 
-          resource = classify(response, resource)
           apply_objects(response, resource)
           apply_links(response, resource)
           apply_attributes(response, resource)
@@ -58,6 +57,7 @@ class HyperResource
                            :headers => rsrc.headers,
                            :namespace => rsrc.namespace)
                 r.body = obj
+                r = classify(obj, r)
                 apply(obj, r)
               end
             end
