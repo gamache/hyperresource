@@ -68,7 +68,6 @@ unless !!ENV['NO_LIVE']
           widget.name = "Awesome Widget dood"
           resp = widget.update
           resp.attributes.must_equal widget.attributes
-          resp.wont_equal widget
         end
 
         it 'can create' do
@@ -91,6 +90,12 @@ unless !!ENV['NO_LIVE']
           root = @api.get
           widget = root.widgets.get.first
           widget.headers['X-Type'].must_equal 'Foobar'
+        end
+
+        it 'classifies embedded objects' do
+          root = @api.get
+          widget = root.widgets.first
+          widget.class.to_s.must_equal 'WhateverAPI::Widget'
         end
 
 
