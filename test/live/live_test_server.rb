@@ -16,7 +16,8 @@ class LiveTestServer < Sinatra::Base
           }],
           "self": {"href":"/"},
           "whatever:widgets": {"href":"/widgets"},
-          "whatever:slow_widgets": {"href":"/slow_widgets"}
+          "whatever:slow_widgets": {"href":"/slow_widgets"},
+          "whatever:conditional_widgets": {"href":"/conditional_widgets"}
         }
       }
     EOT
@@ -141,5 +142,25 @@ class LiveTestServer < Sinatra::Base
     EOT
   end
 
+  # To test header caching
+  get '/conditional_widgets' do
+    if request.env['HTTP_WIDGET'] == 'true'
+      <<-EOT
+        { "type": "widget",
+          "_links": {
+            "self": {"href": "/conditional_widgets"}
+          }
+        }
+      EOT
+    else
+      <<-EOT
+        { "type": "antiwidget",
+          "_links": {
+            "self": {"href": "/conditional_widgets"}
+          }
+        }
+      EOT
+    end
+  end
 end
 

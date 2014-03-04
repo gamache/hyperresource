@@ -93,6 +93,18 @@ unless !!ENV['NO_LIVE']
           widget.headers['X-Type'].must_equal 'Foobar'
         end
 
+        it 'caches headers separately across instances' do
+          api1 = HyperResource.new(
+            :root => "http://localhost:#{@port}/conditional_widgets"
+          )
+          api1.get.type.must_equal 'antiwidget'
+
+          api2 = HyperResource.new(
+            :root => "http://localhost:#{@port}/conditional_widgets",
+            :headers => { 'WIDGET' => 'true' }
+          )
+          api2.get.type.must_equal 'widget'
+        end
 
         describe "invocation styles" do
           it 'can use HyperResource with no namespace' do
