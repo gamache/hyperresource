@@ -44,10 +44,12 @@ class HyperResource::Link
     parent_resource._hr_new_from_link(self.href)
   end
 
-  ## Returns a HyperResource representing this link, and fetches it.
-  def get
-    self.resource.get
-  end
+  ## Delegate HTTP methods to the resource.
+  def get(*args);    self.resource.get(*args)    end
+  def post(*args);   self.resource.post(*args)   end
+  def patch(*args);  self.resource.patch(*args)  end
+  def put(*args);    self.resource.put(*args)    end
+  def delete(*args); self.resource.delete(*args) end
 
   ## If we were called with a method we don't know, load this resource
   ## and pass the message along.  This achieves implicit loading.

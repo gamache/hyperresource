@@ -86,6 +86,12 @@ unless !!ENV['NO_LIVE']
           del.message.must_equal "Deleted widget."
         end
 
+        it 'can post without implicitly performing a get' do
+          widget = @api.post_only_widgets.post(:name => 'Cool Widget brah')
+          widget.class.to_s.must_equal 'WhateverAPI::Widget'
+          widget.name.must_equal "Cool Widget brah"
+        end
+
         it 'passes headers to sub-objects' do
           @api.headers['X-Type'] = 'Foobar'
           root = @api.get
