@@ -22,7 +22,8 @@ class HyperResource
 
       ## POSTs the given attributes to this resource's href, and returns
       ## the response resource.
-      def post(attrs)
+      def post(attrs=nil)
+        attrs || self.attributes
         self.response = faraday_connection.post do |req|
           req.body = adapter.serialize(attrs)
         end

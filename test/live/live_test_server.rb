@@ -17,7 +17,8 @@ class LiveTestServer < Sinatra::Base
           "self": {"href":"/"},
           "whatever:widgets": {"href":"/widgets"},
           "whatever:slow_widgets": {"href":"/slow_widgets"},
-          "whatever:conditional_widgets": {"href":"/conditional_widgets"}
+          "whatever:conditional_widgets": {"href":"/conditional_widgets"},
+          "whatever:post_only_widgets": {"href":"/post_only_widgets"}
         }
       }
     EOT
@@ -157,6 +158,31 @@ class LiveTestServer < Sinatra::Base
         { "type": "antiwidget",
           "_links": {
             "self": {"href": "/conditional_widgets"}
+          }
+        }
+      EOT
+    end
+  end
+
+  ## To test HR::Link#post
+  post '/post_only_widgets' do
+    params = JSON.parse(request.env["rack.input"].read)
+    if params["name"] != 'Cool Widget brah'
+      headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Error'
+      [422, JSON.dump(:error => "Name was wrong; you sent #{params.inspect}")]
+    else
+      headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Widget'
+      [201, headers, <<-EOT ]
+        { "name": "#{params["name"]}",
+          "_links": {
+            "curies": [{
+              "name": "whatever",
+              "templated": true,
+              "href": "/rels{?rel}"
+            }],
+            "self": {"href":"/post_only_widgets/2"},
+            "whatever:widgets": {"href": "/widgets"},
+            "whatever:root": {"href":"/"}
           }
         }
       EOT
