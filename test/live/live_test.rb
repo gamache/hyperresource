@@ -162,15 +162,23 @@ unless !!ENV['NO_LIVE']
 
         describe 'configuration testing' do
           before do
-            @api_short = WhateverAPI.new(:root => "http://localhost:#{@port}/",
-                                         :faraday_options => {
-                                             :request => {:timeout => 0.001}
-                                         })
+            @api_short = WhateverAPI.new(
+              :root => "http://localhost:#{@port}/",
+              :faraday_options => {
+                :request => {:timeout => 0.001}
+              }
+            )
           end
 
           it 'accepts custom timeout parameters' do
-            proc { @api_short.get.slow_widgets.first }.
-                must_raise(Faraday::TimeoutError)
+            p = proc { @api_short.get.slow_widgets.first }
+            if defined?(Faraday::TimeoutError)
+              p.must_raise(Faraday::TimeoutError)
+            elsif defined?(Faraday::Error::TimeoutError)
+              p.must_raise(Faraday::Error::TimeoutError)
+            else
+              raise RuntimeError, "Unknown version of Faraday."
+            end
           end
 
           it 'passes the configuration to subclasses' do

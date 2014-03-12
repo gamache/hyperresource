@@ -2,3 +2,4 @@ hyperresource-*.gem
 Gemfile.lock
 .yardoc/
 doc/
+.bundle/
