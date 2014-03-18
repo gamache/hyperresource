@@ -45,7 +45,7 @@ class HyperResource::Link
 
   ## Returns a HyperResource representing this link
   def resource
-    parent_resource._hr_new_from_link(self.href, self.default_method)
+    parent_resource._hr_new_from_link(self.href)
   end
 
   ## Delegate HTTP methods to the resource.
