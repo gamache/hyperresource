@@ -2,11 +2,6 @@
 require 'sinatra'
 require 'json'
 
-## Default port 25491 was selected using a meat-based PRNG.
-HR_TEST_PORT_1 = ENV['HR_TEST_PORT']   || ENV['HR_TEST_PORT_1'] || 25491
-HR_TEST_PORT_2 = ENV['HR_TEST_PORT_2'] || (HR_TEST_PORT_1.to_i + 1)
-
-
 class LiveTestServer < Sinatra::Base
 
   get '/' do

@@ -58,6 +58,6 @@ class HyperResource::Link
   ## If we were called with a method we don't know, load this resource
   ## and pass the message along.  This achieves implicit loading.
   def method_missing(method, *args)
-    self.get.send(method, *args)
+    self.send(default_method || :get).send(method, *args)
   end
 end
