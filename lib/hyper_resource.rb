@@ -1,4 +1,5 @@
 require 'hyper_resource/attributes'
+require 'hyper_resource/configuration'
 require 'hyper_resource/exceptions'
 require 'hyper_resource/link'
 require 'hyper_resource/links'
