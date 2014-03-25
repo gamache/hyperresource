@@ -1,23 +1,34 @@
-class HyperResource
-  class Links < Hash
-    attr_accessor :_resource
+require 'weakref'
 
-    def initialize(resource=nil)
-     self._resource = resource || HyperResource.new
+class HyperResource
+
+  ## HyperResource::Links is a modified hash structure which permits lookup
+  ## of a link by its link relation (rel), or an abbreviation thereof.
+  ## It also provides read access through `method_missing`.
+  ##
+  ## For example, a link with rel `someapi:widgets` is accessible
+  ## by any of `self.widgets`, `self['widgets']`, `self[:widgets]`, and
+  ## `self['someapi:widgets'].
+  class Links < Hash
+
+    ## This is a WeakRef so that HyperResource objects don't leak.
+    attr_accessor :resource # @private
+
+    def initialize(resource=nil) # @private
+      self.resource = WeakRef.new(resource) if resource
     end
 
-    ## []= is patched to recognize and use abbreviations of link rels,
-    ## as well as the original names.  This is performed here rather than
-    ## in [] for efficiency; you read more than you write.
-    def []=(attr, value) # @private
-      attr = attr.to_s
+    ## Stores a link for future retrieval by its link rel or abbreviations
+    ## thereof.
+    def []=(rel, link)
+      rel = rel.to_s
 
-      ## Every link must appear under its proper name.
-      names = [attr]
+      ## Every link must appear under its literal name.
+      names = [rel]
 
       ## Extract 'foo' from e.g. 'http://example.com/foo',
       ## 'http://example.com/url#foo', 'somecurie:foo'.
-      if m=attr.match(%r{[:/#](.+)})
+      if m=rel.match(%r{[:/#](.+)})
         names << m[1]
       end
 
@@ -27,16 +38,17 @@ class HyperResource
 
       ## Register this link under every name we've come up with.
       names.each do |name|
-        super(name, value)
+        super(name, link)
       end
     end
 
-    def [](key) # @private
-      return super(key.to_s) if self.has_key?(key.to_s)
-      return super(key.to_sym) if self.has_key?(key.to_sym)
-      nil
+    ## Retrieves a link by its rel.
+    def [](rel)
+      super(rel.to_s)
     end
 
+    ## Provides links.somelink(:a => b) to links.somelink.where(:a => b)
+    ## expansion.
     def method_missing(method, *args) # @private
       unless self[method]
         raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
@@ -50,8 +62,7 @@ class HyperResource
     end
 
     def respond_to?(method, *args) # @private
-      method = method.to_s
-      return true if self.has_key?(method)
+      return true if self.has_key?(method.to_s)
       super
     end
   end
