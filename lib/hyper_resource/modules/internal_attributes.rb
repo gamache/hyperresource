@@ -22,22 +22,22 @@ module HyperResource::Modules
 
       def _hr_class_attributes # @private
         [ :root,             ## e.g. 'https://example.com/api/v1'
-          :auth,             ## e.g. {:basic => ['username', 'password']}
-          :headers,          ## e.g. {'Accept' => 'application/vnd.example+json'}
-          :namespace,        ## e.g. 'ExampleAPI', or the class ExampleAPI itself
-          :adapter,          ## subclass of HR::Adapter
-          :faraday_options   ## e.g. {:request => {:timeout => 30}}
+          #:auth,             ## e.g. {:basic => ['username', 'password']}
+          #:headers,          ## e.g. {'Accept' => 'application/vnd.example+json'}
+          #:namespace,        ## e.g. 'ExampleAPI', or the class ExampleAPI itself
+          #:adapter,          ## subclass of HR::Adapter
+          #:faraday_options   ## e.g. {:request => {:timeout => 30}}
         ]
       end
 
       def _hr_attributes # @private
         [ :root,
           :href,
-          :auth,
-          :headers,
-          :namespace,
-          :adapter,
-          :faraday_options,
+          #:auth,
+          #:headers,
+          #:namespace,
+          #:adapter,
+          #:faraday_options,
 
           :request,
           :response,

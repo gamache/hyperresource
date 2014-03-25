@@ -11,6 +11,7 @@ require 'hyper_resource/adapter'
 require 'hyper_resource/adapter/hal_json'
 
 require 'hyper_resource/modules/http'
+require 'hyper_resource/modules/config_attributes'
 require 'hyper_resource/modules/internal_attributes'
 
 require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
@@ -23,6 +24,7 @@ require 'pp'
 class HyperResource
 
   include HyperResource::Modules::HTTP
+  include HyperResource::Modules::ConfigAttributes
   include HyperResource::Modules::InternalAttributes
   include Enumerable
 
@@ -89,6 +91,26 @@ public
 
     self.adapter    = opts[:adapter] || self.class.adapter ||
                       HyperResource::Adapter::HAL_JSON
+  end
+
+  ## Return a new HyperResource based on this object and a given href.
+  def new_resource_with_href(href) # @private
+    self.class.new(:root            => self.root,
+                   :auth            => self.auth,
+                   :headers         => self.headers,
+                   :namespace       => self.namespace,
+                   :faraday_options => self.faraday_options,
+                   :href            => href)
+  end
+
+
+
+  def url
+    begin
+      URI.join(self.root, self.href).to_s
+    rescue StandardError
+      nil
+    end
   end
 
 
@@ -214,15 +236,7 @@ public
 
 
 
-  ## Return a new HyperResource based on this object and a given href.
-  def _hr_new_from_link(href) # @private
-    self.class.new(:root            => self.root,
-                   :auth            => self.auth,
-                   :headers         => self.headers,
-                   :namespace       => self.namespace,
-                   :faraday_options => self.faraday_options,
-                   :href            => href)
-  end
+
 
 
   ## Returns the class into which the given response should be cast.

@@ -24,11 +24,11 @@ class HyperResource
     ## +link_spec+ must have +href+ and +name+ defined
     def initialize(resource, link_spec={})
       self.resource = resource.is_a?(WeakRef) ? resource : WeakRef.new(resource)
-      self.base_href       = link_spec['href']
-      self.name            = link_spec['name']
-      self.templated       = !!link_spec['templated']
-      self.params          = link_spec['params'] || {}
-      self.default_method  = link_spec['method'] || 'get'
+      self.base_href = link_spec['href']
+      self.name = link_spec['name']
+      self.templated = !!link_spec['templated']
+      self.params = link_spec['params'] || {}
+      self.default_method = link_spec['method'] || 'get'
     end
 
     ## Returns this link's href, applying any URI template params.
@@ -53,12 +53,12 @@ class HyperResource
                      'method' => self.default_method)
     end
 
-    ## Returns a HyperResource representing this link
+    ## Returns a HyperResource representing this link.
     def make_resource
-      resource._hr_new_from_link(self.href)
+      resource.new_resource_with_href(self.href)
     end
 
-    ## Delegate HTTP methods to the resource.
+    ## Delegate HTTP methods to resource.
     def get(*args);    self.make_resource.get(*args)    end
     def post(*args);   self.make_resource.post(*args)   end
     def patch(*args);  self.make_resource.patch(*args)  end

@@ -45,7 +45,8 @@ class HyperResource
     ## Sets a key and value pair, using the given URL's hostname as the
     ## hostmask.
     def set_for_url(url, key, value)
-      set(URI(url).host, key, value)
+      host = URI(url).host rescue '*'
+      set(host, key, value)
     end
 
   private
