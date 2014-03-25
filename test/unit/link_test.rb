@@ -2,9 +2,10 @@ require 'test_helper'
 
 describe HyperResource::Link do
   before do
-    @link = HyperResource::Link.new(nil, {'href' => '/foo{?blarg}',
-                                          'name' => 'foo',
-                                          'templated' => true})
+    hr = HyperResource.new
+    @link = HyperResource::Link.new(hr, {'href' => '/foo{?blarg}',
+                                         'name' => 'foo',
+                                         'templated' => true})
   end
 
   describe '#where' do

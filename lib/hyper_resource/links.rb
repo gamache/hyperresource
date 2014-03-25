@@ -2,7 +2,7 @@ require 'weakref'
 
 class HyperResource
 
-  ## HyperResource::Links is a modified hash structure which permits lookup
+  ## HyperResource::Links is a modified Hash that permits lookup
   ## of a link by its link relation (rel), or an abbreviation thereof.
   ## It also provides read access through `method_missing`.
   ##
