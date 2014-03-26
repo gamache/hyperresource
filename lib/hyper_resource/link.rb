@@ -55,7 +55,13 @@ class HyperResource
 
     ## Returns a HyperResource representing this link.
     def make_resource
-      resource.new_resource_with_href(self.href)
+      puts "\n\n*** make_resource ***"
+      #pp resource
+      puts resource.namespace.inspect
+      puts " erp"
+      v =resource.new_resource_with_href(self.href)
+      puts "*********************\n\n"
+      v
     end
 
     ## Delegate HTTP methods to resource.

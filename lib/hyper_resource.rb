@@ -57,11 +57,18 @@ public
     self.root       = opts[:root] || self.class.root
     self.href       = opts[:href] || ''
     self.auth       = (self.class.auth || {}).merge(opts[:auth] || {})
-    self.namespace  = opts[:namespace] || self.class.namespace
+    self.namespace  = opts[:namespace] if opts[:namespace]# || self.class.namespace
     self.headers    = DEFAULT_HEADERS.merge(self.class.headers || {}).
                                       merge(opts[:headers]     || {})
     self.faraday_options = opts[:faraday_options] ||
                                self.class.faraday_options || {}
+
+    pp "***NAMESPACE"
+    pp self.namespace
+    if !self.namespace && self.class != HyperResource
+      self.namespace = self.class.namespace || self.class.to_s
+    end
+    pp self.namespace
 
     ## There's a little acrobatics in getting Attributes, Links, and Objects
     ## into the correct subclass.
@@ -95,6 +102,8 @@ public
 
   ## Return a new HyperResource based on this object and a given href.
   def new_resource_with_href(href) # @private
+    puts "n00b resource with href"
+    pp self.class.namespace
     self.class.new(:root            => self.root,
                    :auth            => self.auth,
                    :headers         => self.headers,
@@ -253,7 +262,6 @@ public
     if self.to_s == 'HyperResource'
       return self unless namespace
     end
-
     namespace ||= self.to_s
 
     type_name = self.get_data_type_from_response(response)
@@ -261,6 +269,7 @@ public
 
     class_name = "#{namespace}::#{type_name}"
     class_name.gsub!(/[^_0-9A-Za-z:]/, '')  ## sanitize class_name
+    puts "sanitized #{class_name}"
 
     ## Return data type class if it exists
     klass = eval(class_name) rescue :sorry_dude
@@ -279,7 +288,10 @@ public
   end
 
   def _hr_response_class # @private
-    self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
+    if !self.namespace
+      self.namespace ||= self.class.namespace
+      #self.namespace ||= self.class.to_s unless self.class==HyperResource
+    end
     self.class.response_class(self.response, self.namespace)
   end
 
@@ -289,7 +301,7 @@ public
   ##
   ## By default, this method looks for either a +type=...+ modifier in the
   ## response's +Content-type+ or a "data_type" field in the response body,
-  ## and returns that value, capitalized.
+  ## and returns that value, caqpitalized.
   ##
   ## Override this method in a subclass to alter HyperResource's behavior.
   def self.get_data_type_from_response(response)
@@ -304,6 +316,14 @@ public
   ## probably just want to override the class method).
   def get_data_type_from_response
     self.class.get_data_type_from_response(self.response)
+  end
+
+  def self.user_agent # @private
+    "HyperResource #{HyperResource::VERSION}"
+  end
+
+  def user_agent # @private
+    self.class.user_agent
   end
 
 private

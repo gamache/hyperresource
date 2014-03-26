@@ -40,6 +40,8 @@ class HyperResource
 
       ## Sets the namespace string/class for this resource.
       def namespace=(v)
+        puts "HOLY SHIT! writing to namespace: #{v}, for url #{self.url}"
+        puts caller[0..10]
         cfg_set(:namespace, v)
       end
 

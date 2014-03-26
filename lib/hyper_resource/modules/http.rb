@@ -1,6 +1,7 @@
 require 'faraday'
 require 'uri'
 require 'json'
+require 'digest/md5'
 
 class HyperResource
   module Modules
@@ -77,8 +78,9 @@ class HyperResource
         }.to_json)
         return Thread.current[key] if Thread.current[key]
 
-        fc = Faraday.new(self.faraday_options.merge(:url => url))
-        fc.headers.merge!('User-Agent' => "HyperResource #{HyperResource::VERSION}")
+        fo = self.faraday_options || {}
+        fc = Faraday.new(fo.merge(:url => url))
+        fc.headers.merge!('User-Agent' => self.user_agent)
         fc.headers.merge!(self.headers || {})
         if ba=self.auth[:basic]
           fc.basic_auth(*ba)

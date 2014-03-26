@@ -48,6 +48,8 @@ unless !!ENV['NO_LIVE']
     public
 
       describe 'live tests' do
+
+=begin
         it 'works at all' do
           root = @api.get
           root.wont_be_nil
@@ -97,13 +99,15 @@ unless !!ENV['NO_LIVE']
           new_widget.name.must_equal "Cool Widget brah"
         end
 
+=end
         it 'can delete' do
-          root = @api.get
-          widget = root.widgets.first
-          del = widget.delete
+          pp root = @api.get
+          pp widget = root.widgets.first
+          pp del = widget.delete
           del.class.to_s.must_equal 'WhateverAPI::Message'
           del.message.must_equal "Deleted widget."
         end
+=begin
 
         it 'can post without implicitly performing a get' do
           widget = @api.post_only_widgets.post(:name => 'Cool Widget brah')
@@ -164,12 +168,12 @@ unless !!ENV['NO_LIVE']
 
 
           class SubclassTestApi < HyperResource
-            self.root = "YOUR AD HERE"
+            self.root = "http://example.com"
           end
           it 'can use a subclass of HR' do
             ## Test class-level setter
             api = SubclassTestApi.new
-            api.root.must_equal "YOUR AD HERE"
+            api.root.must_equal "http://example.com"
 
             SubclassTestApi.root = "http://localhost:#{@port}/"
             api = SubclassTestApi.new
@@ -207,6 +211,7 @@ unless !!ENV['NO_LIVE']
         end
 
 
+=end
       end # describe 'live tests'
 
     end # if
