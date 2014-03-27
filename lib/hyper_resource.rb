@@ -307,16 +307,6 @@ public
 
 private
 
-  ## Use the given resource's data to initialize this one.
-  def init_from_resource(resource)
-    raise NotImplementedError
-    (self.class._hr_attributes - [:attributes, :links, :objects]).each do |attr|
-      self.send("#{attr}=".to_sym, resource.send(attr))
-    end
-    self.adapter.apply(self.body, self)
-  end
-
-
   ## Show a deprecation message.
   def self._hr_deprecate(message) # @private
     STDERR.puts "#{message} (called from #{caller[2]})"
