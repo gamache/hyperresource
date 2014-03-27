@@ -40,6 +40,7 @@ class LiveTestServer < Sinatra::Base
         "_embedded": {
           "widgets": [
             { "name": "Widget 1",
+              "_data_type": "Widget",
               "_links": {
                 "curies": [{
                   "name": "whatever",
@@ -65,6 +66,7 @@ class LiveTestServer < Sinatra::Base
       headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Widget'
       <<-EOT
         { "name": "#{params["name"]}",
+          "_data_type": "Widget",
           "_links": {
             "curies": [{
               "name": "whatever",
@@ -88,6 +90,7 @@ class LiveTestServer < Sinatra::Base
       headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Widget'
       [201, headers, <<-EOT ]
         { "name": "#{params["name"]}",
+          "_data_type": "Widget",
           "_links": {
             "curies": [{
               "name": "whatever",
@@ -107,6 +110,7 @@ class LiveTestServer < Sinatra::Base
     headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Message'
     <<-EOT
       { "message": "Deleted widget.",
+        "_data_type": "Message",
         "_links": {
           "curies": [{
             "name": "whatever",
@@ -127,6 +131,7 @@ class LiveTestServer < Sinatra::Base
     headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=SlowWidgetSet'
     <<-EOT
       { "name": "My Slow Widgets",
+        "_data_type": "SlowWidgetSet",
         "_links": {
           "curies": [{
             "name": "whatever",
@@ -174,6 +179,7 @@ class LiveTestServer < Sinatra::Base
       headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Widget'
       [201, headers, <<-EOT ]
         { "name": "#{params["name"]}",
+          "_data_type":"PostOnlyWidget",
           "_links": {
             "curies": [{
               "name": "whatever",

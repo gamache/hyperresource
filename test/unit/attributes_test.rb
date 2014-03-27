@@ -5,7 +5,7 @@ describe HyperResource::Attributes do
 
   describe 'accessors' do
     before do
-      @rsrc = TestAPI.new
+      @rsrc = TestAPI.new(:root => 'http://example.com')
       @rsrc.adapter.apply(HAL_BODY, @rsrc)
       @attrs = @rsrc.attributes
     end

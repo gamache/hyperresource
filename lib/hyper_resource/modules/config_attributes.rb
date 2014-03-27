@@ -12,10 +12,19 @@ class HyperResource
         @hr_config ||= self.class::Configuration.new
       end
 
+      def hr_config=(cfg) # @private
+        @hr_config = cfg
+      end
+
 
       ## Returns the auth config hash for this resource.
       def auth
         cfg_get(:auth) || {}
+      end
+
+      ## Returns the auth config hash for the given url.
+      def auth_for_url(url)
+        self.hr_config.get_for_url(url, :auth)
       end
 
       ## Sets the auth config hash for this resource.
@@ -28,6 +37,11 @@ class HyperResource
         cfg_get(:headers) || {}
       end
 
+      ## Returns the headers hash for the given url.
+      def headers_for_url(url)
+        self.hr_config.get_for_url(url, :headers)
+      end
+
       ## Sets the headers hash for this resource.
       def headers=(v)
         cfg_set(:headers, v)
@@ -38,16 +52,24 @@ class HyperResource
         cfg_get(:namespace)
       end
 
+      ## Returns the namespace string/class for the given url.
+      def namespace_for_url(url)
+        self.hr_config.get_for_url(url, :namespace)
+      end
+
       ## Sets the namespace string/class for this resource.
       def namespace=(v)
-        puts "HOLY SHIT! writing to namespace: #{v}, for url #{self.url}"
-        puts caller[0..10]
         cfg_set(:namespace, v)
       end
 
       ## Returns the adapter class for this resource.
       def adapter
-        cfg_get(:adapter) || HyperResource::Adapter::HAL_JSON
+        cfg_get(:adapter) # || HyperResource::Adapter::HAL_JSON
+      end
+
+      ## Returns the adapter class for the given url.
+      def adapter_for_url(url)
+        self.hr_config.get_for_url(url, :adapter)
       end
 
       ## Sets the adapter class for this resource.
@@ -58,6 +80,11 @@ class HyperResource
       ## Returns the Faraday connection options hash for this resource.
       def faraday_options
         cfg_get(:faraday_options)
+      end
+
+      ## Returns the Faraday connection options hash for this resource.
+      def faraday_options_for_url(url)
+        self.hr_config.get_for_url(url, :faraday_options)
       end
 
       ## Sets the Faraday connection options hash for this resource.

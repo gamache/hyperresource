@@ -8,7 +8,7 @@ describe 'HyperResource#incoming_body_filter' do
   end
 
   before do
-    @rsrc = IncomingBodyFilterAPI.new
+    @rsrc = IncomingBodyFilterAPI.new(:root => 'http://example.com')
     @rsrc.adapter.apply(HAL_BODY, @rsrc)
   end
 
@@ -36,7 +36,7 @@ describe 'HyperResource#outgoing_uri_filter' do
   end
 
   before do
-    @rsrc = OutgoingUriFilterAPI.new
+    @rsrc = OutgoingUriFilterAPI.new(:root => 'http://example.com')
     @rsrc.adapter.apply(HAL_BODY, @rsrc)
   end
 

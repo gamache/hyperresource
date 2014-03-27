@@ -32,7 +32,24 @@ unless !!ENV['NO_LIVE']
 
         @api = make_new_api_resource
 
-        @api.get rescue sleep(0.2) and retry  # block until server is ready
+        if ENV['DEBUG']
+          retries = 5
+          begin
+            @api.get
+          rescue Exception => e
+            retries -= 1
+            if retries == 0
+              puts e
+              puts e.message
+              puts caller[0..10]
+              raise e
+            end
+            sleep 0.2
+            retry
+          end
+        else
+          @api.get rescue sleep(0.2) and retry  # block until server is ready
+        end
       end
 
       after do
@@ -49,7 +66,6 @@ unless !!ENV['NO_LIVE']
 
       describe 'live tests' do
 
-=begin
         it 'works at all' do
           root = @api.get
           root.wont_be_nil
@@ -80,7 +96,7 @@ unless !!ENV['NO_LIVE']
           root.attributes.must_be_instance_of WhateverAPI::Root::Attributes
 
           root.widgets.must_be_instance_of WhateverAPI::Root::Link
-          #root.widgets.first.class.must_equal 'WhateverAPI::Widget'  ## TODO!
+          root.widgets.first.class.to_s.must_equal 'WhateverAPI::Widget'
         end
 
         it 'can update' do
@@ -99,19 +115,18 @@ unless !!ENV['NO_LIVE']
           new_widget.name.must_equal "Cool Widget brah"
         end
 
-=end
         it 'can delete' do
-          pp root = @api.get
-          pp widget = root.widgets.first
-          pp del = widget.delete
+          root = @api.get
+          widget = root.widgets.first
+          del = widget.delete
           del.class.to_s.must_equal 'WhateverAPI::Message'
           del.message.must_equal "Deleted widget."
         end
-=begin
 
         it 'can post without implicitly performing a get' do
-          widget = @api.post_only_widgets.post(:name => 'Cool Widget brah')
-          widget.class.to_s.must_equal 'WhateverAPI::Widget'
+          link = @api.post_only_widgets
+          widget = link.post(:name => 'Cool Widget brah')
+          widget.class.to_s.must_equal 'WhateverAPI::PostOnlyWidget'
           widget.name.must_equal "Cool Widget brah"
         end
 
@@ -211,7 +226,6 @@ unless !!ENV['NO_LIVE']
         end
 
 
-=end
       end # describe 'live tests'
 
     end # if

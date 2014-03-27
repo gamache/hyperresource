@@ -67,13 +67,13 @@ stub_connection = Faraday.new do |builder|
     stub.get('/404') {[
       404,
       {'Content-type' => 'application/vnd.dummy.v1+hal+json;type=Error'},
-      '{"error": "Not found", "_links": {"root":"/"}}'
+      '{"error": "Not found", "_links": {"root":{"href":"/"}}}'
     ]}
 
     stub.get('/500') {[
       500,
       {'Content-type' => 'application/vnd.dummy.v1+hal+json;type=Error'},
-      '{"error": "Internal server error", "_links": {"root":"/"}}'
+      '{"error": "Internal server error", "_links": {"root":{"href":"/"}}}'
     ]}
 
     stub.get('/garbage') {[
@@ -85,10 +85,13 @@ stub_connection = Faraday.new do |builder|
 end
 
 describe HyperResource::Modules::HTTP do
-  class DummyAPI < HyperResource; end
+  class DummyAPI < HyperResource
+    class Link < HyperResource::Link
+    end
+  end
 
   before do
-    DummyAPI.any_instance.stubs(:faraday_connection).returns(stub_connection)
+    DummyAPI::Link.any_instance.stubs(:faraday_connection).returns(stub_connection)
   end
 
   describe 'GET' do

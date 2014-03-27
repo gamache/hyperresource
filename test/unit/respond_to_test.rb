@@ -4,7 +4,7 @@ describe HyperResource do
   class NoMethodsAPI < HyperResource; end
 
   before do
-    @api = NoMethodsAPI.new
+    @api = NoMethodsAPI.new(:root => 'http://example.com')
     @api.adapter.apply(HAL_BODY, @api)
   end
 

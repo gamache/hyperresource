@@ -60,7 +60,10 @@ class HyperResource
       old.send(:cfg).each do |mask, old_subcfg|
         new_subcfg = {}
         old_subcfg.each do |key, value|
-          new_subcfg[key] = value.respond_to?(:clone) ? value.clone : value
+          if value.respond_to?(:clone) && !['adapter'].include?(key)
+            value = value.clone
+          end
+          new_subcfg[key] = value
         end
         @cfg[mask] = new_subcfg
       end
