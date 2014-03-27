@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'pry-debugger'
 
 describe 'HyperResource caching' do
   class TestAPI < HyperResource; end
