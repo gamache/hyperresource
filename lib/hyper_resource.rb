@@ -55,14 +55,12 @@ public
   ##                   such as +{request: {timeout: 30}}+.
   ##
   def initialize(opts={})
-    return init_from_resource(opts) if opts.kind_of?(HyperResource)
+    self.root = opts[:root] if opts[:root]
+    self.href = opts[:href] if opts[:href]
 
-    self.root       = opts[:root] if opts[:root]
-    self.href       = opts[:href] #|| ''
-
-    self.auth       = opts[:auth] if opts[:auth]
-    self.namespace  = opts[:namespace] if opts[:namespace]
-    self.headers    = DEFAULT_HEADERS.merge(self.class.headers || {}).
+    self.auth = opts[:auth] if opts[:auth]
+    self.namespace = opts[:namespace] if opts[:namespace]
+    self.headers   = DEFAULT_HEADERS.merge(self.class.headers || {}).
                                       merge(opts[:headers]     || {})
     self.faraday_options = opts[:faraday_options] ||
                                self.class.faraday_options || {}
@@ -271,16 +269,11 @@ public
   end
 
 
-  #def inspect # @private
-    #"#<#{self.class}:0x#{"%x" % self.object_id} @root=#{self.root.inspect} "+
-    #"@href=#{self.href.inspect} @loaded=#{self.loaded} "+
-    #"@namespace=#{self.namespace.inspect} ...>"
-  #end
-
-
-
-
-
+  def inspect # @private
+    "#<#{self.class}:0x#{"%x" % self.object_id} @root=#{self.root.inspect} "+
+    "@href=#{self.href.inspect} @loaded=#{self.loaded} "+
+    "@namespace=#{self.namespace.inspect} ...>"
+  end
 
   def self.user_agent # @private
     "HyperResource #{HyperResource::VERSION}"
@@ -290,7 +283,5 @@ public
     self.class.user_agent
   end
 
-private
-
-
 end
+
