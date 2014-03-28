@@ -62,6 +62,10 @@ unless !!ENV['NO_LIVE']
         WhateverAPI.new(:root => "http://localhost:#{@port}/")
       end
 
+      def expect_deprecation(rsrc)
+        rsrc.class.expects(:_hr_deprecate).returns(true)
+      end
+
     public
 
       describe 'live tests' do
@@ -99,17 +103,19 @@ unless !!ENV['NO_LIVE']
           root.widgets.first.class.to_s.must_equal 'WhateverAPI::Widget'
         end
 
-        it 'can update' do
+        it 'can update (DEPRECATED)' do
           root = @api.get
           widget = root.widgets.first
           widget.name = "Awesome Widget dood"
+          expect_deprecation(widget)
           resp = widget.update
           resp.attributes.must_equal widget.attributes
           resp.wont_equal widget
         end
 
-        it 'can create' do
+        it 'can create (DEPRECATED)' do
           widget_set = @api.widgets.get
+          expect_deprecation(widget_set)
           new_widget = widget_set.create(:name => "Cool Widget brah")
           new_widget.class.to_s.must_equal 'WhateverAPI::Widget'
           new_widget.name.must_equal "Cool Widget brah"

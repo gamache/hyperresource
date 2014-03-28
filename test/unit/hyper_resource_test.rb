@@ -48,7 +48,7 @@ describe HyperResource do
 
   describe '#to_link' do
     it 'converts into a link' do
-      link = @rsrc.to_link
+      link = @rsrc.send :to_link
       link.href.must_equal @rsrc.href
     end
   end

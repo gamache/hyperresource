@@ -6,7 +6,8 @@ class HyperResource
       self._resource = resource || HyperResource.new
     end
 
-    def []=(attr, value) # @private
+    # @private
+    def []=(attr, value)
       super(attr.to_s, value)
     end
 
@@ -24,12 +25,14 @@ class HyperResource
       nil
     end
 
-    def method_missing(method, *args) # @private
+    # @private
+    def method_missing(method, *args)
       return self[method] if self[method]
       raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
     end
 
-    def respond_to?(method, *args) # @private
+    # @private
+    def respond_to?(method, *args)
       method = method.to_s
       return true if self.has_key?(method)
       super

@@ -14,7 +14,8 @@ class HyperResource
     ## This is a WeakRef so that HyperResource objects don't leak.
     attr_accessor :resource # @private
 
-    def initialize(resource=nil) # @private
+    # @private
+    def initialize(resource=nil)
       self.resource = WeakRef.new(resource) if resource
     end
 
@@ -49,7 +50,8 @@ class HyperResource
 
     ## Provides links.somelink(:a => b) to links.somelink.where(:a => b)
     ## expansion.
-    def method_missing(method, *args) # @private
+    # @private
+    def method_missing(method, *args)
       unless self[method]
         raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
       end
@@ -61,7 +63,8 @@ class HyperResource
       end
     end
 
-    def respond_to?(method, *args) # @private
+    # @private
+    def respond_to?(method, *args)
       return true if self.has_key?(method.to_s)
       super
     end

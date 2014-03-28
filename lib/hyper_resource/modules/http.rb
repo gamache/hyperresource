@@ -4,6 +4,76 @@ require 'json'
 require 'digest/md5'
 
 class HyperResource
+
+  ## Returns this resource's fully qualified URL.  Returns nil when
+  ## `root` or `href` are malformed.
+  def url
+    begin
+      URI.join(self.root, self.href).to_s
+    rescue StandardError
+      nil
+    end
+  end
+
+
+  ## Performs a GET request to this resource's URL, and returns a
+  ## new resource representing the response.
+  def get
+    to_link.get
+  end
+
+  ## Performs a POST request to this resource's URL, sending all of
+  ## `attributes` as a request body unless an `attrs` Hash is given.
+  ## Returns a new resource representing the response.
+  def post(attrs=nil)
+    to_link.post(attrs)
+  end
+
+  ## Performs a PUT request to this resource's URL, sending all of
+  ## `attributes` as a request body unless an `attrs` Hash is given.
+  ## Returns a new resource representing the response.
+  def put(*args)
+    to_link.put(*args)
+  end
+
+  ## Performs a PATCH request to this resource's URL, sending
+  ## `attributes.changed_attributes` as a request body
+  ## unless an `attrs` Hash is given.  Returns a new resource
+  ## representing the response.
+  def patch(*args)
+    self.to_link.patch(*args)
+  end
+
+  ## Performs a DELETE request to this resource's URL.  Returns a new
+  ## resource representing the response.
+  def delete(*args)
+    to_link.delete(*args)
+  end
+
+  ## Creates a Link representing this resource.  Used for HTTP delegation.
+  # @private
+  def to_link(args={})
+    self.class::Link.new(self,
+                         :href => args[:href] || self.href,
+                         :params => args[:params] || self.attributes)
+  end
+
+
+
+  # @private
+  def create(attrs)
+    _hr_deprecate('HyperResource#create is deprecated. Please use '+
+                  '#post instead.')
+    to_link.post(attrs)
+  end
+
+  # @private
+  def update(*args)
+    _hr_deprecate('HyperResource#update is deprecated. Please use '+
+                  '#put or #patch instead.')
+    to_link.put(*args)
+  end
+
   module Modules
 
     ## HyperResource::Modules::HTTP is included by HyperResource::Link.
@@ -22,6 +92,8 @@ class HyperResource
       ## By default, calls +post+ with the given arguments. Override to
       ## change this behavior.
       def create(*args)
+        _hr_deprecate('HyperResource::Link#create is deprecated. Please use '+
+                      '#post instead.')
         post(*args)
       end
 
@@ -38,6 +110,8 @@ class HyperResource
       ## By default, calls +puwt+ with the given arguments.  Override to
       ## change this behavior.
       def update(*args)
+        _hr_deprecate('HyperResource::Link#update is deprecated. Please use '+
+                      '#put or #patch instead.')
         put(*args)
       end
 
@@ -69,7 +143,7 @@ class HyperResource
         new_resource_from_response(response)
       end
 
-    #private
+    private
 
       ## Returns a raw Faraday connection to this resource's URL, with proper
       ## headers (including auth).  Threadsafe.
@@ -95,6 +169,11 @@ class HyperResource
         Thread.current[key] = fc
       end
 
+
+      ## Given a Faraday::Response object, create a new resource
+      ## object to represent it.  The new resource will be in its
+      ## proper class according to its configured `namespace` and
+      ## the response's detected data type.
       def new_resource_from_response(response)
         status = response.status
         is_success = (status / 100 == 2)

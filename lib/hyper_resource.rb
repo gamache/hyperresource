@@ -4,7 +4,6 @@ require 'hyper_resource/exceptions'
 require 'hyper_resource/link'
 require 'hyper_resource/links'
 require 'hyper_resource/objects'
-require 'hyper_resource/response'
 require 'hyper_resource/version'
 
 require 'hyper_resource/adapter'
@@ -61,7 +60,7 @@ public
     self.auth = opts[:auth] if opts[:auth]
     self.namespace = opts[:namespace] if opts[:namespace]
     self.headers   = DEFAULT_HEADERS.merge(self.class.headers || {}).
-                                      merge(opts[:headers]     || {})
+                                    merge(opts[:headers]     || {})
     self.faraday_options = opts[:faraday_options] ||
                                self.class.faraday_options || {}
 
@@ -103,7 +102,8 @@ public
 
   ## Creates a new resource given args :link, :resource, :href, :response, :url,
   ## and :body.  Either :link or (:resource and :href and :url) are required.
-  def self.new_from(args) # @private
+  # @private
+  def self.new_from(args)
     link = args[:link]
     resource = args[:resource] || link.resource.__getobj__  ## TODO refactor
     href = args[:href] || link.href
@@ -126,57 +126,11 @@ public
     new_rsrc
   end
 
-  def new_from(args) # @private
+  # @private
+  def new_from(args)
     self.class.new_from(args)
   end
 
-
-  ## Creates a Link representing this resource.  Used for HTTP delegation.
-  def to_link(args={}) # @private
-    self.class::Link.new(self,
-                         :href => args[:href] || self.href,
-                         :params => args[:params] || self.attributes)
-  end
-
-
-
-  ## Delegate HTTP methods to link.
-  def get(*args)
-    self.to_link.get(*args)
-  end
-
-  def post(*args)
-    self.to_link.post(*args)
-  end
-
-  def patch(*args)
-    self.to_link.patch(*args)
-  end
-
-  def put(*args)
-    self.to_link.put(*args)
-  end
-
-  def delete(*args)
-    self.to_link.delete(*args)
-  end
-
-  def create(*args)
-    self.to_link.create(*args)
-  end
-
-  def update(*args)
-    self.to_link.update(*args)
-  end
-
-
-  def url
-    begin
-      URI.join(self.root, self.href).to_s
-    rescue StandardError
-      nil
-    end
-  end
 
 
   ## Returns true if one or more of this object's attributes has been

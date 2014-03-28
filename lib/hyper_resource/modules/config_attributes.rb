@@ -8,11 +8,13 @@ class HyperResource
         klass.extend(ClassMethods)
       end
 
-      def hr_config # @private
+      # @private
+      def hr_config
         @hr_config ||= self.class::Configuration.new
       end
 
-      def hr_config=(cfg) # @private
+      # @private
+      def hr_config=(cfg)
         @hr_config = cfg
       end
 

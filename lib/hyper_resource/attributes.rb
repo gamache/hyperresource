@@ -3,7 +3,7 @@ class HyperResource
 
     attr_accessor :_resource # @private
 
-    def initialize(resource=nil) # @private
+    def initialize(resource=nil)
       self._resource = resource || HyperResource.new
     end
 
@@ -23,19 +23,22 @@ class HyperResource
       @_hr_changed.select{|k,v| v}.keys.inject({}) {|h,k| h[k]=self[k]; h}
     end
 
-    def []=(attr, value) # @private
+    # @private
+    def []=(attr, value)
       return self[attr] if self[attr] == value
       _hr_mark_changed(attr) 
       super(attr.to_s, value)
     end
 
-    def [](key) # @private
+    # @private
+    def [](key)
       return super(key.to_s) if self.has_key?(key.to_s)
       return super(key.to_sym) if self.has_key?(key.to_sym)
       nil
     end
 
-    def method_missing(method, *args) # @private
+    # @private
+    def method_missing(method, *args)
       method = method.to_s
       if self[method]
         self[method]
@@ -46,18 +49,21 @@ class HyperResource
       end
     end
 
-    def respond_to?(method, *args) # @private
+    # @private
+    def respond_to?(method, *args)
       method = method.to_s
       return true if self.has_key?(method)
       return true if method[-1,1] == '=' && self.has_key?(method[0..-2])
       super
     end
 
+    # @private
     def _hr_clear_changed # @private
       @_hr_changed = nil
     end
 
-    def _hr_mark_changed(attr, is_changed=true) # @private
+    # @private
+    def _hr_mark_changed(attr, is_changed=true)
       attr = attr.to_sym
       @_hr_changed ||= Hash.new(false)
       @_hr_changed[attr] = is_changed
