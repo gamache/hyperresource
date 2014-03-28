@@ -11,6 +11,7 @@ require 'hyper_resource/adapter'
 require 'hyper_resource/adapter/hal_json'
 
 require 'hyper_resource/modules/data_type'
+require 'hyper_resource/modules/deprecations'
 require 'hyper_resource/modules/http'
 require 'hyper_resource/modules/config_attributes'
 require 'hyper_resource/modules/internal_attributes'
@@ -26,6 +27,7 @@ class HyperResource
 
   include HyperResource::Modules::ConfigAttributes
   include HyperResource::Modules::DataType
+  include HyperResource::Modules::Deprecations
   include HyperResource::Modules::InternalAttributes
   include Enumerable
 
@@ -275,23 +277,6 @@ public
     #"@namespace=#{self.namespace.inspect} ...>"
   #end
 
-  ## +response_body+, +response_object+, and +deserialized_response+
-  ##  are deprecated in favor of +body+.  (Sorry. Naming things is hard.)
-  def response_body # @private
-    _hr_deprecate('HyperResource#response_body is deprecated. '+
-                  'Please use HyperResource#body instead.')
-    body
-  end
-  def response_object # @private
-    _hr_deprecate('HyperResource#response_object is deprecated. '+
-                  'Please use HyperResource#body instead.')
-    body
-  end
-  def deserialized_response # @private
-    _hr_deprecate('HyperResource#deserialized_response is deprecated. '+
-                  'Please use HyperResource#body instead.')
-    body
-  end
 
 
 
@@ -307,12 +292,5 @@ public
 
 private
 
-  ## Show a deprecation message.
-  def self._hr_deprecate(message) # @private
-    STDERR.puts "#{message} (called from #{caller[2]})"
-  end
 
-  def _hr_deprecate(*args) # @private
-    self.class._hr_deprecate(*args)
-  end
 end
