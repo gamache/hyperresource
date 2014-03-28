@@ -6,17 +6,23 @@ class HyperResource
         klass.extend(ClassMethods)
       end
 
+      # @private
       def get_data_type_class(args)
         self.class.get_data_type_class(args)
       end
 
+      # @private
       def get_data_type(args)
         self.class.get_data_type(args)
       end
 
       module ClassMethods
 
+        ## Returns the class into which a given response should be
+        ## instantiated.  Class name is a combination of `resource.namespace`
+        ## and `get_data_type(args)'.  Creates this class if necessary.
         ## Args are :resource, :link, :response, :body, :url.
+        # @private
         def get_data_type_class(args)
           type = get_data_type(args)
           return self unless type
@@ -46,11 +52,20 @@ class HyperResource
           data_type_class
         end
 
+        ## Given a body Hash and a response Faraday::Response, detect and
+        ## return a string describing this response's data type.
+        ## Args are :body and :response.
         def get_data_type(args)
           type = get_data_type_from_body(args[:body])
           type ||= get_data_type_from_response(args[:response])
         end
 
+        ## Given a Faraday::Response, inspects the Content-type for data
+        ## type information and returns data type as a String,
+        ## for instance returning `Widget` given a media
+        ## type `application/vnd.example.com+hal+json;type=Widget`.
+        ## Override this method to change behavior.
+        ## Returns nil on failure.
         def get_data_type_from_response(response)
           return nil unless response
           return nil unless content_type = response['content-type']
@@ -58,6 +73,9 @@ class HyperResource
           m[1]
         end
 
+        ## Given a response body Hash, returns the response's data type as
+        ## a string.  By default, it looks for a `_data_type` field in the
+        ## response.  Override this method to change behavior.
         def get_data_type_from_body(body)
           return nil unless body
           body['_data_type'] || body['type']

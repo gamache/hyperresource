@@ -96,7 +96,7 @@ class HyperResource
     ## Returns hostmasks from our config which match the given url.
     def matching_masks_for_url(url)
       return ['*'] if !url || @cfg.keys.count == 1
-      url_host = URI(url).host
+      url_host = URI(url.to_s).host
       get_possible_masks_for_host(url_host) & cfg.keys
     end
 

@@ -35,10 +35,6 @@ class HyperResource
           resource
         end
 
-        def get_data_type(response_hash)
-          ## Data types are not a standard part of HAL, but here goes.
-          response_hash['_data_type']
-        end
 
       private
 
