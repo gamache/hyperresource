@@ -18,6 +18,16 @@ class HyperResource
         @hr_config = cfg
       end
 
+      ## When called with no arguments, returns this resource's Configuration.
+      ## When called with a hash, applies the given configuration parameters
+      ## to this resource's Configuration.  `hash` must be in the form:
+      ##   {'hostmask' => {'key1' => 'value1', 'key2' => 'value2', ...}}
+      ## Valid keys are `auth`, `headers`, `namespace`, `adapter`, and
+      ## `faraday_options`.
+      def config(hash=nil)
+        return hr_config unless hash
+        hr_config.config(hash)
+      end
 
       ## Returns the auth config hash for this resource.
       def auth

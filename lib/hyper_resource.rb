@@ -132,7 +132,6 @@ public
   end
 
 
-
   ## Returns true if one or more of this object's attributes has been
   ## reassigned.
   def changed?(*args)

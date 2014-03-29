@@ -4,9 +4,9 @@ class HyperResource
 
   ## HyperResource::Configuration is a class which implements a hostmask-
   ## scoped set of configurations.  Key/value pairs are stored under hostmasks
-  ## like 'api.example.com', '*.example.com', or '*'.  Values are retrieved
-  ## using a hostname and a key, preferring more specific hostmasks when
-  ## more than one matching hostmask and key are present.
+  ## like 'api.example.com:8080', 'api.example.com', '*.example.com', or '*'.
+  ## Values are retrieved using a hostname and a key, preferring more specific
+  ## hostmasks when more than one matching hostmask and key are present.
   ##
   ## HyperResource users are not expected to use this class directly.
   class Configuration

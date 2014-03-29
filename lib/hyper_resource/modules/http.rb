@@ -150,11 +150,14 @@ class HyperResource
       def faraday_connection(url=nil)
         rsrc = self.resource
         url ||= URI.join(rsrc.root, self.href || '')
+        headers = rsrc.headers_for_url(url) || {}
+        auth = rsrc.auth_for_url(url) || {}
+
         key = ::Digest::MD5.hexdigest({
           'faraday_connection' => {
             'url' => url,
-            'headers' => rsrc.headers,
-            'ba' => rsrc.auth[:basic]
+            'headers' => headers,
+            'ba' => auth[:basic]
           }
         }.to_json)
         return Thread.current[key] if Thread.current[key]
@@ -162,8 +165,8 @@ class HyperResource
         fo = rsrc.faraday_options_for_url(url) || {}
         fc = Faraday.new(fo.merge(:url => url))
         fc.headers.merge!('User-Agent' => rsrc.user_agent)
-        fc.headers.merge!(rsrc.headers || {})
-        if ba=rsrc.auth[:basic]
+        fc.headers.merge!(headers)
+        if ba=auth[:basic]
           fc.basic_auth(*ba)
         end
         Thread.current[key] = fc
