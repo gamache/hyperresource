@@ -23,6 +23,21 @@ class HyperResource
       self.class.new.send(:initialize_copy, self)
     end
 
+    ## Merges a given Configuration with this one.
+    def merge(new)
+      merged_cfg = {}
+      new_cfg = new.send(:cfg)
+      (new_cfg.keys | cfg.keys).each do |mask|
+        merged_cfg[mask] = (cfg[mask] || {}).merge(new_cfg[mask] || {})
+      end
+      self.class.new(merged_cfg)
+    end
+
+    ## Applies a given Configuration on top of this one.
+    def merge!(new)
+      initialize_copy(merge(new))
+    end
+
     ## Returns the value for a particular hostmask and key, or nil if not
     ## present.
     def get(mask, key)
@@ -69,6 +84,7 @@ class HyperResource
       end
       self
     end
+
 
     ## Returns a merged subconfig consisting of all matching hostmask
     ## subconfigs, giving priority to more specific hostmasks.

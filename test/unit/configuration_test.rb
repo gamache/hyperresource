@@ -28,6 +28,41 @@ describe HyperResource::Configuration do
     end
   end
 
+  describe '#merge' do
+    it 'merges' do
+      cfg1 = HyperResource::Configuration.new
+      cfg1.set('test1', 'a', 'b')
+      cfg1.set('test2', 'c', 'd')
+
+      cfg2 = HyperResource::Configuration.new
+      cfg2.set('test1', 'a', 'e')
+      cfg2.set('test3', 'f', 'g')
+
+      merged = cfg1.merge(cfg2)
+      merged.get('test1', 'a').must_equal 'e'
+      merged.get('test2', 'c').must_equal 'd'
+      merged.get('test3', 'f').must_equal 'g'
+    end
+  end
+
+  describe '#merge!' do
+    it 'mergebangs' do
+      cfg1 = HyperResource::Configuration.new
+      cfg1.set('test1', 'a', 'b')
+      cfg1.set('test2', 'c', 'd')
+
+      cfg2 = HyperResource::Configuration.new
+      cfg2.set('test1', 'a', 'e')
+      cfg2.set('test3', 'f', 'g')
+
+      cfg1.merge!(cfg2)
+      cfg1.get('test1', 'a').must_equal 'e'
+      cfg1.get('test2', 'c').must_equal 'd'
+      cfg1.get('test3', 'f').must_equal 'g'
+    end
+
+  end
+
   describe '#get_for_url' do
     it 'returns exact matches' do
       cfg = HyperResource::Configuration.new

@@ -5,18 +5,16 @@ class HyperResource
   ## HyperResource::Links is a modified Hash that permits lookup
   ## of a link by its link relation (rel), or an abbreviation thereof.
   ## It also provides read access through `method_missing`.
+  ## It is typically created by HyperResource, not by end users.
   ##
   ## For example, a link with rel `someapi:widgets` is accessible
   ## by any of `self.widgets`, `self['widgets']`, `self[:widgets]`, and
   ## `self['someapi:widgets'].
   class Links < Hash
 
-    ## This is a WeakRef so that HyperResource objects don't leak.
-    attr_accessor :resource # @private
-
     # @private
     def initialize(resource=nil)
-      self.resource = WeakRef.new(resource) if resource
+      ## We used to store the resource, but we didn't need to.  Now we don't.
     end
 
     ## Stores a link for future retrieval by its link rel or abbreviations
