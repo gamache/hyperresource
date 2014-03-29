@@ -106,8 +106,8 @@ class HyperResource
 
     ## Returns the hostmasks which match the given url, sorted best match
     ## first.
-    def get_possible_masks_for_host(host, masks=nil)
-      masks ||= [host]  ## exact match first
+    def get_possible_masks_for_host(host, port=80, masks=nil)
+      masks ||= ["#{host}:#{port}", host]  ## exact matches first
       host_parts = host.split('.')
 
       if host_parts.count < 2
@@ -115,15 +115,17 @@ class HyperResource
       else
         parent_domain = host_parts[1..-1].join('.')
         masks << '*.' + parent_domain
-        get_possible_masks_for_host(parent_domain, masks)
+        get_possible_masks_for_host(parent_domain, port, masks)
       end
     end
 
     ## Returns hostmasks from our config which match the given url.
     def matching_masks_for_url(url)
       return ['*'] if !url || @cfg.keys.count == 1
-      url_host = URI(url.to_s).host
-      get_possible_masks_for_host(url_host) & cfg.keys
+      uri = URI(url.to_s)
+      host = uri.host
+      port = uri.port
+      get_possible_masks_for_host(host, port) & cfg.keys
     end
 
   end

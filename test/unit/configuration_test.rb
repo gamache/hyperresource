@@ -134,19 +134,28 @@ describe HyperResource::Configuration do
     it 'generates correct hostmasks' do
       cfg = HyperResource::Configuration.new
       masks = cfg.send(:get_possible_masks_for_host, 'www4.us.example.com')
-      masks.must_equal ["www4.us.example.com", "*.us.example.com",
-                        "*.example.com", "*.com", "*"]
+      masks.must_equal ["www4.us.example.com:80",
+                        "www4.us.example.com",
+                        "*.us.example.com",
+                        "*.example.com",
+                        "*.com",
+                        "*"]
     end
   end
 
   describe '#matching_masks_for_url' do
     it 'returns existing hostmasks' do
       cfg = HyperResource::Configuration.new
+      cfg.set('www4.us.example.com:12345', 'a', 'b')
       cfg.set('www4.us.example.com', 'a', 'b')
       cfg.set('*.example.com', 'a', 'b')
       cfg.set('*', 'a', 'b')
-      masks = cfg.send(:matching_masks_for_url, 'http://www4.us.example.com')
-      masks.must_equal ["www4.us.example.com", "*.example.com", "*"]
+      cfg.set('something', 'y', 'z')
+      masks = cfg.send(:matching_masks_for_url, 'http://www4.us.example.com:12345')
+      masks.must_equal ["www4.us.example.com:12345",
+                        "www4.us.example.com",
+                        "*.example.com",
+                        "*"]
     end
   end
 
