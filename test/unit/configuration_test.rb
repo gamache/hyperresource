@@ -77,6 +77,23 @@ describe HyperResource::Configuration do
     end
   end
 
+  describe '#config' do
+    it 'works' do
+      cfg = HyperResource::Configuration.new
+      cfg.set('test1', 'y', 'z')
+      cfg.config(
+        '*'           => {'a' => 'b'},
+        'example.com' => {'a' => 'c', 'd' => 'e'}
+      )
+
+      cfg.send(:cfg).must_equal(
+        'test1'       => {'y' => 'z'},
+        '*'           => {'a' => 'b'},
+        'example.com' => {'a' => 'c', 'd' => 'e'}
+      )
+    end
+  end
+
   describe '#get_for_url' do
     it 'returns exact matches' do
       cfg = HyperResource::Configuration.new
