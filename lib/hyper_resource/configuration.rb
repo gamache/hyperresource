@@ -38,6 +38,16 @@ class HyperResource
       initialize_copy(merge(new))
     end
 
+    ## Applies a given Hash of configurations on top of this one.
+    def config(hash)
+      merge!(self.class.new(hash))
+    end
+
+    ## Returns this object as a Hash.
+    def as_hash
+      clone.send(:cfg)
+    end
+
     ## Returns the value for a particular hostmask and key, or nil if not
     ## present.
     def get(mask, key)

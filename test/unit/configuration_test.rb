@@ -60,7 +60,21 @@ describe HyperResource::Configuration do
       cfg1.get('test2', 'c').must_equal 'd'
       cfg1.get('test3', 'f').must_equal 'g'
     end
+  end
 
+  describe '#as_hash' do
+    it 'works' do
+      cfg = HyperResource::Configuration.new
+      cfg.set('test1', 'a', {'b' => 1})
+      cfg.set('test2', 'c', 'd')
+
+      hash = cfg.as_hash
+      hash['test1']['a'].must_equal({'b' => 1})
+      hash['test2']['c'].must_equal('d')
+
+      hash['test1']['a']['b'] = 2
+      cfg.get('test1', 'a')['b'].must_equal 1
+    end
   end
 
   describe '#get_for_url' do
