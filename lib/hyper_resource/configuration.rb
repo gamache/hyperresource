@@ -1,4 +1,5 @@
 require 'uri'
+require 'urlmask'
 
 class HyperResource
 
@@ -121,11 +122,16 @@ class HyperResource
 
     ## Returns hostmasks from our config which match the given url.
     def matching_masks_for_url(url)
+      url = url.to_s
       return ['*'] if !url || @cfg.keys.count == 1
-      uri = URI(url.to_s)
-      host = uri.host
-      port = uri.port
-      get_possible_masks_for_host(host, port) & cfg.keys
+      @masks ||= {} ## key = mask string, value = URLMask
+      cfg.keys.each {|key| @masks[key] ||= URLMask.new(key) }
+
+      ## Test for matches, and sort by score.
+      scores = {}
+      cfg.keys.each {|key| scores[key] = @masks[key].match(url) }
+      scores = scores.select{|k,v| v} # remove nils
+      scores.keys.sort_by{|k| [-scores[k], -k.length]} ## TODO length is cheesy
     end
 
   end

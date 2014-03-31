@@ -21,33 +21,19 @@ module HyperResource::Modules
     module ClassMethods
       # @private
       def _hr_class_attributes
-        [ :root,             ## e.g. 'https://example.com/api/v1'
-          #:auth,             ## e.g. {:basic => ['username', 'password']}
-          #:headers,          ## e.g. {'Accept' => 'application/vnd.example+json'}
-          #:namespace,        ## e.g. 'ExampleAPI', or the class ExampleAPI itself
-          #:adapter,          ## subclass of HR::Adapter
-          #:faraday_options   ## e.g. {:request => {:timeout => 30}}
-        ]
+        [ :root ]
       end
 
       # @private
       def _hr_attributes
         [ :root,
           :href,
-          #:auth,
-          #:headers,
-          #:namespace,
-          #:adapter,
-          #:faraday_options,
-
           :request,
           :response,
           :body,
-
           :attributes,
           :links,
           :objects,
-
           :loaded
         ]
       end

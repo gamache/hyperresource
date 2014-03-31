@@ -40,6 +40,8 @@ class HyperResource
       end
 
       ## Sets the auth config hash for this resource.
+      ## Currently only the format `{:basic => ['username', 'password']}`
+      ## is supported.
       def auth=(v)
         cfg_set(:auth, v)
       end
