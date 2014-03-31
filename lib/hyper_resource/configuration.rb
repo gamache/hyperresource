@@ -130,7 +130,7 @@ class HyperResource
       ## Test for matches, and sort by score.
       scores = {}
       cfg.keys.each {|key| scores[key] = @masks[key].match(url) }
-      scores = scores.select{|k,v| v} # remove nils
+      scores = Hash[ scores.select{|k,v| v} ] # remove nils
       scores.keys.sort_by{|k| [-scores[k], -k.length]} ## TODO length is cheesy
     end
 
