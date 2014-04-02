@@ -1,6 +1,7 @@
 require 'faraday'
 require 'uri'
 require 'json'
+require 'digest/md5'
 
 class HyperResource
   module Modules
