@@ -24,12 +24,28 @@ class HyperResource
       self.class.new.send(:initialize_copy, self)
     end
 
-    ## Merges a given Configuration with this one.
+    ## Merges a given Configuration with this one.  Deep-merges config
+    ## attributes correctly.
     def merge(new)
       merged_cfg = {}
       new_cfg = new.send(:cfg)
+
       (new_cfg.keys | cfg.keys).each do |mask|
-        merged_cfg[mask] = (cfg[mask] || {}).merge(new_cfg[mask] || {})
+        new_cfg_attrs = new_cfg[mask] || {}
+        cfg_attrs = cfg[mask] || {}
+        merged_cfg[mask] = {}
+
+        ## Do a hash merge when it makes sense, except when it doesn't.
+        (new_cfg_attrs.keys | cfg_attrs.keys).each do |attr|
+          if !(%w(namespace adapter).include?(attr)) &&
+             ((!cfg_attrs[attr] || cfg_attrs[attr].kind_of?(Hash)) &&
+              (!new_cfg_attrs[attr] || new_cfg_attrs[attr].kind_of?(Hash)))
+            merged_cfg[mask][attr] =
+              (cfg_attrs[attr] || {}).merge(new_cfg_attrs[attr] || {})
+          else
+            merged_cfg[mask][attr] = new_cfg_attrs[attr] || cfg_attrs[attr]
+          end
+        end
       end
       self.class.new(merged_cfg)
     end
@@ -86,7 +102,7 @@ class HyperResource
       old.send(:cfg).each do |mask, old_subcfg|
         new_subcfg = {}
         old_subcfg.each do |key, value|
-          if value.respond_to?(:clone) && !['adapter'].include?(key)
+          if value.kind_of?(Array) || value.kind_of?(Hash)
             value = value.clone
           end
           new_subcfg[key] = value
