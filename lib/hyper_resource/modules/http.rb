@@ -85,7 +85,16 @@ class HyperResource
       ## resource will be blessed into its "proper" class, if
       ## +self.class.namespace != nil+.
       def get
-        response = faraday_connection.get(self.href || '')
+        ## Adding default_attributes to URL query params is not automatic
+        mask = FuzzyURL.new(self.url || '')
+        query_str = mask[:query] || ''
+        query_attrs = Hash[ query_str.split('&').map{|p| p.split('=')} ]
+        attrs = (self.resource.default_attributes || {}).merge(query_attrs)
+        attrs_str = attrs.inject([]){|pairs,(k,v)| pairs<<"#{k}=#{v}"}.join('&')
+        if attrs_str != ''
+          mask = FuzzyURL.new(mask.to_hash.merge(:query => attrs_str))
+        end
+        response = faraday_connection.get(mask.to_s)
         new_resource_from_response(response)
       end
 
@@ -101,6 +110,7 @@ class HyperResource
       ## the response resource.
       def post(attrs=nil)
         attrs ||= self.resource.attributes
+        attrs = (self.resource.default_attributes || {}).merge(attrs)
         response = faraday_connection.post do |req|
           req.body = self.resource.adapter.serialize(attrs)
         end
@@ -120,6 +130,7 @@ class HyperResource
       ## instead.
       def put(attrs=nil)
         attrs ||= self.resource.attributes
+        attrs = (self.resource.default_attributes || {}).merge(attrs)
         response = faraday_connection.put do |req|
           req.body = self.resource.adapter.serialize(attrs)
         end
@@ -131,6 +142,7 @@ class HyperResource
       ## uses those instead.
       def patch(attrs=nil)
         attrs ||= self.resource.attributes.changed_attributes
+        attrs = (self.resource.default_attributes || {}).merge(attrs)
         response = faraday_connection.patch do |req|
           req.body = self.resource.adapter.serialize(attrs)
         end
@@ -149,7 +161,7 @@ class HyperResource
       ## headers (including auth).  Threadsafe.
       def faraday_connection(url=nil)
         rsrc = self.resource
-        url ||= URI.join(rsrc.root, self.href || '')
+        url ||= self.url
         headers = rsrc.headers_for_url(url) || {}
         auth = rsrc.auth_for_url(url) || {}
 

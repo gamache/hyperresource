@@ -5,9 +5,12 @@ require 'json'
 class LiveTestServer < Sinatra::Base
 
   get '/' do
+    params = request.env['rack.request.query_hash']
+    json_params = JSON.dump(params)
     headers['Content-type'] = 'application/vnd.example.v1+hal+json;type=Root'
     <<-EOT
       { "name": "whatever API",
+        "sent_params": #{json_params},
         "_links": {
           "curies": [{
             "name": "whatever",

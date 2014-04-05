@@ -7,7 +7,7 @@ require File.expand_path('../live_test_server.rb', __FILE__)
 HR_TEST_PORT_1 = ENV['HR_TEST_PORT']   || ENV['HR_TEST_PORT_1'] || 25491
 HR_TEST_PORT_2 = ENV['HR_TEST_PORT_2'] || (HR_TEST_PORT_1.to_i + 1)
 
-unless !!ENV['NO_LIVE']
+unless ENV['NO_LIVE']
 
   describe HyperResource do
     class WhateverAPI < HyperResource; end
@@ -45,7 +45,7 @@ unless !!ENV['NO_LIVE']
               raise e
             end
             sleep 0.2
-            retry
+            retry if retries > 0
           end
         else
           @api.get rescue sleep(0.2) and retry  # block until server is ready
@@ -101,6 +101,13 @@ unless !!ENV['NO_LIVE']
 
           root.widgets.must_be_instance_of WhateverAPI::Root::Link
           root.widgets.first.class.to_s.must_equal 'WhateverAPI::Widget'
+        end
+
+        it 'sends default_attributes' do
+          api = make_new_api_resource
+          api.default_attributes = {:a => 'b'}
+          root = api.get
+          root.sent_params.must_equal({'a' => 'b'})
         end
 
         it 'can update (DEPRECATED)' do

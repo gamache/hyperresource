@@ -1,5 +1,5 @@
 require 'uri'
-require 'urlmask'
+require 'FuzzyURL'
 
 class HyperResource
 
@@ -140,8 +140,8 @@ class HyperResource
     def matching_masks_for_url(url)
       url = url.to_s
       return ['*'] if !url || @cfg.keys.count == 1
-      @masks ||= {} ## key = mask string, value = URLMask
-      cfg.keys.each {|key| @masks[key] ||= URLMask.new(key) }
+      @masks ||= {} ## key = mask string, value = FuzzyURL
+      cfg.keys.each {|key| @masks[key] ||= FuzzyURL.new(key) }
 
       ## Test for matches, and sort by score.
       scores = {}

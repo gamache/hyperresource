@@ -83,7 +83,7 @@ class HyperResource
     ## or `href` are malformed.
     def url
       begin
-        URI.join(self.resource.root, self.href)
+        URI.join(self.resource.root, self.href.to_s).to_s
       rescue StandardError
         nil
       end
