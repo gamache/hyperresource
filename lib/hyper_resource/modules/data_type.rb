@@ -1,3 +1,5 @@
+require 'debugger'
+
 class HyperResource
   module Modules
     module DataType
@@ -24,11 +26,11 @@ class HyperResource
         ## Args are :resource, :link, :response, :body, :url.
         # @private
         def get_data_type_class(args)
-          pp url = args[:url] || args[:link].url
+          url = args[:url] || args[:link].url
           namespace = args[:resource].namespace_for_url(url.to_s)
-          pp namespace || "no namespace bish"
+          namespace || "no namespace bish"
+          #debugger
           return self unless namespace
-          pp "had a namespace #{namespace}"
 
           ## Make sure namespace class exists
           namespace_str = sanitize_class_name(namespace.to_s)
@@ -42,8 +44,8 @@ class HyperResource
 
           ## If there's no identifiable data type, return the namespace class.
           type = get_data_type(args)
+          #debugger
           return ns_class unless type
-          puts "got a data type #{type}"
 
           ## Make sure data type class exists
           type = type[0,1].upcase + type[1..-1]  ## capitalize

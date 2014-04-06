@@ -63,8 +63,9 @@ public
     self.faraday_options = opts[:faraday_options] if opts[:faraday_options]
     self.auth            = opts[:auth]            if opts[:auth]
 
-    self.headers   = DEFAULT_HEADERS.merge(self.class.headers || {}).
-                                    merge(opts[:headers]     || {})
+    self.headers = DEFAULT_HEADERS.
+                     merge(self.class.headers || {}).
+                     merge(opts[:headers]     || {})
 
     self.namespace = opts[:namespace] if opts[:namespace]
     if !self.namespace && self.class != HyperResource
@@ -117,7 +118,8 @@ public
                                              :url => url,
                                              :response => response,
                                              :body => body)
-    new_rsrc = new_class.new(:root => old_rsrc.root, :href => href)
+    new_rsrc = new_class.new(:root => old_rsrc.root,
+                             :href => href)
     new_rsrc.hr_config = old_rsrc.hr_config.clone
     new_rsrc.response = response
     new_rsrc.body = body

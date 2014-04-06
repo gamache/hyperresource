@@ -139,8 +139,9 @@ class HyperResource
           self.class.hr_config.get_for_url(self.url, key)
       end
 
+      ## Sets a config key-value pair for this resource.
       def cfg_set(key, value)
-        hr_config.set_for_url(self.url, key, value)
+        hr_config.set_for_url(url.to_s, key, value)
       end
 
     public

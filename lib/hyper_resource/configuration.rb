@@ -84,11 +84,14 @@ class HyperResource
       subconfig_for_url(url)[key.to_s]
     end
 
-    ## Sets a key and value pair, using the given URL's hostname as the
-    ## hostmask.
+    ## Sets a key and value pair, using the given URL as the basis of the
+    ## hostmask.  Path, query, and fragment are ignored.
     def set_for_url(url, key, value)
-      #host = URI(url).host rescue '*'
-      set(url, key, value)
+      furl = FuzzyURL.new(url || '*')
+      furl.path = nil
+      furl.query = nil
+      furl.fragment = nil
+      set(furl.to_s, key, value)
     end
 
   private

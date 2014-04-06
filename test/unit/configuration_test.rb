@@ -125,8 +125,8 @@ describe HyperResource::Configuration do
     it 'works' do
       cfg = HyperResource::Configuration.new
       cfg.set_for_url('http://example.com', 'a', 'b')
-      cfg.get('example.com', 'a').must_equal 'b'
-      cfg.get_for_url('http://example.com', 'a').must_equal 'b'
+      cfg.get_for_url('example.com', 'a').must_equal 'b'
+      cfg.get('http://example.com', 'a').must_equal 'b'
     end
   end
 

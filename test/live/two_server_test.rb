@@ -1,12 +1,6 @@
 require 'test_helper'
-require 'debugger'
 require 'sinatra'
 require 'json'
-
-launched_servers = false
-server_one = nil
-server_two = nil
-
 
 if ENV['NO_LIVE']
   puts "Skipping live tests."
@@ -15,6 +9,11 @@ elsif RUBY_VERSION[0..2] == '1.8'
   puts "Live tests don't run on Ruby 1.8; skipping."
   exit
 end
+
+
+launched_servers = false
+server_one = nil
+server_two = nil
 
 PORT_ONE = ENV['TEST_PORT_ONE'] || 42774
 PORT_TWO = ENV['TEST_PORT_TWO'] || 42775
@@ -59,7 +58,6 @@ class APIEcosystem < HyperResource
 end
 
 MiniTest::Unit.after_tests do
-  puts "killin time"
   server_one.kill
   server_two.kill
 end
@@ -68,7 +66,6 @@ describe 'APIEcosystem' do
   launched_servers = false
   before do
     unless launched_servers
-      puts "launchin time"
       server_one = Thread.new do
         Rack::Handler::WEBrick.run(
           ServerOne.new,

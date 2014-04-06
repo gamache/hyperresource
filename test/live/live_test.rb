@@ -29,14 +29,14 @@ describe HyperResource do
         Rack::Handler::WEBrick.run(
           LiveTestServer.new,
           :Port => HR_TEST_PORT,
-          #:AccessLog => [],
-          #:Logger => WEBrick::Log::new("/dev/null", 7)
+          :AccessLog => [],
+          :Logger => WEBrick::Log::new("/dev/null", 7)
         )
       end
 
       retries = 5
       begin
-        @api = HyperResource.new(root: "http://localhost:#{HR_TEST_PORT}").get
+        HyperResource.new(root: "http://localhost:#{HR_TEST_PORT}").get
       rescue Exception => e
         if ENV['DEBUG']
           puts "#{e.class}: #{e}" if ENV['DEBUG']
@@ -135,14 +135,14 @@ public
     it 'can post without implicitly performing a get' do
       link = make_new_api_resource.post_only_widgets
       widget = link.post(:name => 'Cool Widget brah')
-      pp widget.body
       widget.class.to_s.must_equal 'WhateverAPI::PostOnlyWidget'
       widget.name.must_equal "Cool Widget brah"
     end
 
     it 'passes headers to sub-objects' do
-      make_new_api_resource.headers['X-Type'] = 'Foobar'
-      root = make_new_api_resource.get
+      rsrc = make_new_api_resource
+      rsrc.headers['X-Type'] = 'Foobar'
+      root = rsrc.get
       widget = root.widgets.get.first
       widget.headers['X-Type'].must_equal 'Foobar'
     end
@@ -210,7 +210,7 @@ public
 
     describe 'configuration testing' do
       before do
-        make_new_api_resource_short = WhateverAPI.new(
+        @new_api_resource_short = WhateverAPI.new(
           :root => "http://localhost:#{HR_TEST_PORT}/",
           :faraday_options => {
             :request => {:timeout => 0.001}
@@ -219,7 +219,7 @@ public
       end
 
       it 'accepts custom timeout parameters' do
-        p = proc { make_new_api_resource_short.get.slow_widgets.first }
+        p = proc { @new_api_resource_short.get.slow_widgets.first }
         if defined?(Faraday::TimeoutError)
           p.must_raise(Faraday::TimeoutError)
         elsif defined?(Faraday::Error::TimeoutError)
@@ -230,7 +230,7 @@ public
       end
 
       it 'passes the configuration to subclasses' do
-        api_short_child = make_new_api_resource_short.get
+        api_short_child = @new_api_resource_short.get
         api_short_child.faraday_options[:request][:timeout].must_equal 0.001
       end
     end
