@@ -15,8 +15,8 @@ launched_servers = false
 server_one = nil
 server_two = nil
 
-PORT_ONE = ENV['TEST_PORT_ONE'] || 12345 #42774
-PORT_TWO = ENV['TEST_PORT_TWO'] || 23456 #42775
+PORT_ONE = ENV['TEST_PORT_ONE'] || 42774
+PORT_TWO = ENV['TEST_PORT_TWO'] || 42775
 
 class ServerOne < Sinatra::Base
   get '/' do

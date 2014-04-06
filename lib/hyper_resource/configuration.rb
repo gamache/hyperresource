@@ -156,3 +156,4 @@ class HyperResource
   end
 
 end
+
