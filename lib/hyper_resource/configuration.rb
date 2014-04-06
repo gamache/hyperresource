@@ -87,8 +87,8 @@ class HyperResource
     ## Sets a key and value pair, using the given URL's hostname as the
     ## hostmask.
     def set_for_url(url, key, value)
-      host = URI(url).host rescue '*'
-      set(host, key, value)
+      #host = URI(url).host rescue '*'
+      set(url, key, value)
     end
 
   private
@@ -139,7 +139,7 @@ class HyperResource
     ## Returns hostmasks from our config which match the given url.
     def matching_masks_for_url(url)
       url = url.to_s
-      return ['*'] if !url || @cfg.keys.count == 1
+      return ['*'] if !url || cfg.keys.count == 1
       @masks ||= {} ## key = mask string, value = FuzzyURL
       cfg.keys.each {|key| @masks[key] ||= FuzzyURL.new(key) }
 

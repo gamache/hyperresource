@@ -57,13 +57,16 @@ public
     self.root = opts[:root] if opts[:root]
     self.href = opts[:href] if opts[:href]
 
-    self.auth = opts[:auth] if opts[:auth]
-    self.namespace = opts[:namespace] if opts[:namespace]
+    self.hr_config = self.class.hr_config.clone
+
+    self.adapter         = opts[:adapter]         if opts[:adapter]
+    self.faraday_options = opts[:faraday_options] if opts[:faraday_options]
+    self.auth            = opts[:auth]            if opts[:auth]
+
     self.headers   = DEFAULT_HEADERS.merge(self.class.headers || {}).
                                     merge(opts[:headers]     || {})
-    self.faraday_options = opts[:faraday_options] ||
-                               self.class.faraday_options || {}
 
+    self.namespace = opts[:namespace] if opts[:namespace]
     if !self.namespace && self.class != HyperResource
       self.namespace = self.class.namespace || self.class.to_s
     end
@@ -93,9 +96,6 @@ public
     self.objects    = self.class::Objects.new(self)
 
     self.loaded     = false
-
-    self.adapter    = opts[:adapter] || self.class.adapter ||
-                      HyperResource::Adapter::HAL_JSON
   end
 
 

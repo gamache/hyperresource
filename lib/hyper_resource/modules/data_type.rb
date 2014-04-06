@@ -24,12 +24,11 @@ class HyperResource
         ## Args are :resource, :link, :response, :body, :url.
         # @private
         def get_data_type_class(args)
-          type = get_data_type(args)
-          return self unless type
-
-          url = args[:url] || args[:link].url
-          namespace = args[:resource].namespace_for_url(url)
+          pp url = args[:url] || args[:link].url
+          namespace = args[:resource].namespace_for_url(url.to_s)
+          pp namespace || "no namespace bish"
           return self unless namespace
+          pp "had a namespace #{namespace}"
 
           ## Make sure namespace class exists
           namespace_str = sanitize_class_name(namespace.to_s)
@@ -37,8 +36,14 @@ class HyperResource
             ns_class = eval(namespace_str) rescue nil
             if !ns_class
               Object.module_eval("class #{namespace_str} < #{self}; end")
+              ns_class = eval(namespace_str)
             end
           end
+
+          ## If there's no identifiable data type, return the namespace class.
+          type = get_data_type(args)
+          return ns_class unless type
+          puts "got a data type #{type}"
 
           ## Make sure data type class exists
           type = type[0,1].upcase + type[1..-1]  ## capitalize

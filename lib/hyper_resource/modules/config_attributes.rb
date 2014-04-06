@@ -82,12 +82,14 @@ class HyperResource
 
       ## Returns the adapter class for this resource.
       def adapter
-        cfg_get(:adapter)
+        cfg_get(:adapter) ||
+          HyperResource::Adapter::HAL_JSON
       end
 
       ## Returns the adapter class for the given url.
       def adapter_for_url(url)
-        self.hr_config.get_for_url(url, :adapter)
+        self.hr_config.get_for_url(url, :adapter) ||
+          HyperResource::Adapter::HAL_JSON
       end
 
       ## Sets the adapter class for this resource.
@@ -213,12 +215,13 @@ class HyperResource
 
         ## Returns the adapter class for this resource class.
         def adapter
-          cfg_get(:adapter)
+          cfg_get(:adapter) || HyperResource::Adapter::HAL_JSON
         end
 
         ## Returns the adapter class for the given url.
         def adapter_for_url(url)
-          self.hr_config.get_for_url(url, :adapter)
+          self.hr_config.get_for_url(url, :adapter) ||
+            HyperResource::Adapter::HAL_JSON
         end
 
         ## Sets the adapter class for this resource class.

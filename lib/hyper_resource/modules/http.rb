@@ -9,7 +9,7 @@ class HyperResource
   ## `root` or `href` are malformed.
   def url
     begin
-      URI.join(self.root, self.href).to_s
+      URI.join(self.root, (self.href || '')).to_s
     rescue StandardError
       nil
     end
@@ -86,15 +86,15 @@ class HyperResource
       ## +self.class.namespace != nil+.
       def get
         ## Adding default_attributes to URL query params is not automatic
-        mask = FuzzyURL.new(self.url || '')
-        query_str = mask[:query] || ''
+        url = FuzzyURL.new(self.url || '')
+        query_str = url[:query] || ''
         query_attrs = Hash[ query_str.split('&').map{|p| p.split('=')} ]
         attrs = (self.resource.default_attributes || {}).merge(query_attrs)
         attrs_str = attrs.inject([]){|pairs,(k,v)| pairs<<"#{k}=#{v}"}.join('&')
         if attrs_str != ''
-          mask = FuzzyURL.new(mask.to_hash.merge(:query => attrs_str))
+          url = FuzzyURL.new(url.to_hash.merge(:query => attrs_str))
         end
-        response = faraday_connection.get(mask.to_s)
+        response = faraday_connection.get(url.to_s)
         new_resource_from_response(response)
       end
 
@@ -192,11 +192,12 @@ class HyperResource
       def new_resource_from_response(response)
         status = response.status
         is_success = (status / 100 == 2)
+        adapter = self.resource.adapter || HyperResource::Adapter::HAL_JSON
 
         body = nil
         begin
           if response.body
-            body = self.resource.adapter.deserialize(response.body)
+            body = adapter.deserialize(response.body)
           end
         rescue StandardError => e
           if is_success
