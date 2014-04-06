@@ -15,8 +15,8 @@ launched_servers = false
 server_one = nil
 server_two = nil
 
-PORT_ONE = ENV['TEST_PORT_ONE'] || 42774
-PORT_TWO = ENV['TEST_PORT_TWO'] || 42775
+PORT_ONE = ENV['TEST_PORT_ONE'] || 12345 #42774
+PORT_TWO = ENV['TEST_PORT_TWO'] || 23456 #42775
 
 class ServerOne < Sinatra::Base
   get '/' do
@@ -115,10 +115,13 @@ describe 'APIEcosystem' do
       root_two.class.to_s.must_equal 'ServerTwoAPI'
     end
 
+    it 'can go back and forth' do
+      root_one = APIEcosystem.new(:root => "http://localhost:#{PORT_ONE}").get
+      root_two = root_one.server_two.server_one.server_two.get
+      root_two.class.to_s.must_equal 'ServerTwoAPI'
+    end
+
   end
 
-
-
 end
-
 

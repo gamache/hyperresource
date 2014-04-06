@@ -1,5 +1,3 @@
-require 'debugger'
-
 class HyperResource
   module Modules
     module DataType
@@ -29,7 +27,6 @@ class HyperResource
           url = args[:url] || args[:link].url
           namespace = args[:resource].namespace_for_url(url.to_s)
           namespace || "no namespace bish"
-          #debugger
           return self unless namespace
 
           ## Make sure namespace class exists
@@ -44,7 +41,6 @@ class HyperResource
 
           ## If there's no identifiable data type, return the namespace class.
           type = get_data_type(args)
-          #debugger
           return ns_class unless type
 
           ## Make sure data type class exists
