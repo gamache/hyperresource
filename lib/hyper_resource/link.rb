@@ -1,6 +1,5 @@
 require 'uri_template'
 require 'weakref'
-
 require 'hyper_resource/modules/http'
 
 class HyperResource
