@@ -25,8 +25,8 @@ class HyperResource
 
     # @private
     def []=(attr, value)
-      return self[attr] if self[attr] == value
-      _hr_mark_changed(attr) 
+      return self[attr] if self.has_key?(attr.to_s) && self[attr] == value
+      _hr_mark_changed(attr)
       super(attr.to_s, value)
     end
 

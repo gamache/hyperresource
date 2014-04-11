@@ -49,15 +49,12 @@ class HyperResource
 
 
       ## Returns the headers hash for this resource.
-      ## We do this by merging all applicable header configs.
+      ## This is done by merging all applicable header configs.
       def headers
         matching_masks = self.hr_config.matching_masks_for_url(self.url)
         matching_masks.inject({}) do |hash, mask|
           hash.merge(self.hr_config.get(mask, 'headers') || {})
         end
-
-
-        #cfg_get(:headers)
       end
 
       ## Returns the headers hash for the given url.

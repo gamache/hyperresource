@@ -199,7 +199,7 @@ public
     if method[-1,1] == '='
       return attributes[method[0..-2]] = args.first if attributes[method[0..-2]]
     else
-      return attributes[method] if attributes && attributes[method]
+      return attributes[method] if attributes && attributes.has_key?(method.to_s)
       return objects[method] if objects && objects[method]
       if links && links[method]
         if args.count > 0
