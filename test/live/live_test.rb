@@ -139,14 +139,6 @@ public
       widget.name.must_equal "Cool Widget brah"
     end
 
-    it 'passes headers to sub-objects' do
-      rsrc = make_new_api_resource
-      rsrc.headers['X-Type'] = 'Foobar'
-      root = rsrc.get
-      widget = root.widgets.get.first
-      widget.headers['X-Type'].must_equal 'Foobar'
-    end
-
     it 'caches headers separately across instances' do
       api1 = HyperResource.new(
         :root => "http://localhost:#{HR_TEST_PORT}/conditional_widgets"

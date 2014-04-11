@@ -94,6 +94,21 @@ class HyperResource
       set(furl.to_s, key, value)
     end
 
+
+    ## Returns hostmasks from our config which match the given url.
+    def matching_masks_for_url(url)
+      url = url.to_s
+      return ['*'] if !url || cfg.keys.count == 1
+      @masks ||= {} ## key = mask string, value = FuzzyURL
+      cfg.keys.each {|key| @masks[key] ||= FuzzyURL.new(key) }
+
+      ## Test for matches, and sort by score.
+      scores = {}
+      cfg.keys.each {|key| scores[key] = @masks[key].match(url) }
+      scores = Hash[ scores.select{|k,v| v} ] # remove nils
+      scores.keys.sort_by{|k| [-scores[k], -k.length]} ## TODO length is cheesy
+    end
+
   private
 
     def cfg
@@ -139,21 +154,6 @@ class HyperResource
       end
     end
 
-    ## Returns hostmasks from our config which match the given url.
-    def matching_masks_for_url(url)
-      url = url.to_s
-      return ['*'] if !url || cfg.keys.count == 1
-      @masks ||= {} ## key = mask string, value = FuzzyURL
-      cfg.keys.each {|key| @masks[key] ||= FuzzyURL.new(key) }
-
-      ## Test for matches, and sort by score.
-      scores = {}
-      cfg.keys.each {|key| scores[key] = @masks[key].match(url) }
-      scores = Hash[ scores.select{|k,v| v} ] # remove nils
-      scores.keys.sort_by{|k| [-scores[k], -k.length]} ## TODO length is cheesy
-    end
-
   end
-
 end
 

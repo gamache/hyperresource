@@ -1,6 +1,8 @@
 require 'test_helper'
 require 'sinatra'
 require 'json'
+require File.expand_path('../two_test_servers.rb', __FILE__)
+
 
 if ENV['NO_LIVE']
   puts "Skipping live tests."
@@ -14,48 +16,6 @@ end
 launched_servers = false
 server_one = nil
 server_two = nil
-
-PORT_ONE = ENV['TEST_PORT_ONE'] || 42774
-PORT_TWO = ENV['TEST_PORT_TWO'] || 42775
-
-class ServerOne < Sinatra::Base
-  get '/' do
-    params = request.env['rack.request.query_hash']
-    headers['Content-Type'] = 'application/hal+json'
-    <<-EOT
-      { "name": "Server One",
-        "sent_params": #{JSON.dump(params)},
-        "_links": {
-          "self":       {"href": "http://localhost:#{PORT_ONE}/"},
-          "server_two": {"href": "http://localhost:#{PORT_TWO}/"}
-        }
-      }
-    EOT
-  end
-end
-
-class ServerTwo < Sinatra::Base
-  get '/' do
-    params = request.env['rack.request.query_hash']
-    headers['Content-Type'] = 'application/hal+json'
-    <<-EOT
-      { "name": "Server Two",
-        "sent_params": #{JSON.dump(params)},
-        "_links": {
-          "self":       {"href": "http://localhost:#{PORT_TWO}/"},
-          "server_one": {"href": "http://localhost:#{PORT_ONE}/"}
-        }
-      }
-    EOT
-  end
-end
-
-class APIEcosystem < HyperResource
-  self.config(
-    "localhost:#{PORT_ONE}" => {"namespace" => "ServerOneAPI"},
-    "localhost:#{PORT_TWO}" => {"namespace" => "ServerTwoAPI"}
-  )
-end
 
 MiniTest::Unit.after_tests do
   server_one.kill
@@ -103,16 +63,43 @@ describe 'APIEcosystem' do
   end
 
 
+  class APIEcosystem < HyperResource
+    self.config(
+      "localhost:#{PORT_ONE}" => {
+        "namespace"          => "ServerOneAPI",
+        "default_attributes" => {"server" => "1"},
+        "headers"            => {"X-Server" => "1"},
+        "auth"               => {:basic => ["server_one", ""]},
+        "faraday_options"    => {:request => {:timeout => 1}},
+      },
+      "localhost:#{PORT_TWO}" => {
+        "namespace"          => "ServerTwoAPI",
+        "default_attributes" => {"server" => "2"},
+        "headers"            => {"X-Server" => "2"},
+        "auth"               => {:basic => ["server_two", ""]},
+        "faraday_options"    => {:request => {:timeout => 2}},
+      }
+    )
+  end
+
   describe 'live tests' do
 
-    it 'loads the ServerOne root resource into its proper namespace' do
+    it 'uses the right config for server one' do
       root_one = APIEcosystem.new(:root => "http://localhost:#{PORT_ONE}").get
       root_one.class.to_s.must_equal 'ServerOneAPI'
+      root_one.sent_params.must_equal({"server" => "1"})
+      root_one.headers['X-Server'].must_equal "1"
+      root_one.auth.must_equal({:basic => ["server_one", ""]})
+      root_one.faraday_options.must_equal({:request => {:timeout => 1}})
     end
 
-    it 'loads the ServerTwo root resource into its proper namespace' do
+    it 'uses the right config for server two' do
       root_two = APIEcosystem.new(:root => "http://localhost:#{PORT_TWO}").get
       root_two.class.to_s.must_equal 'ServerTwoAPI'
+      root_two.sent_params.must_equal({"server" => "2"})
+      root_two.headers['X-Server'].must_equal "2"
+      root_two.auth.must_equal({:basic => ["server_two", ""]})
+      root_two.faraday_options.must_equal({:request => {:timeout => 2}})
     end
 
     it 'can go back and forth' do
