@@ -63,7 +63,7 @@ class HyperResource
     end
 
     def []=(attr, value) # @private
-      return self[attr] if self[attr] == value
+      return self[attr] if self.has_key?(attr.to_s) && self[attr] == value
       _hr_mark_changed(attr) 
       super(attr.to_s, value)
     end
@@ -76,7 +76,7 @@ class HyperResource
 
     def method_missing(method, *args) # @private
       method = method.to_s
-      if self[method]
+      if has_key?(method)
         self[method]
       elsif method[-1,1] == '='
         self[method[0..-2]] = args.first
