@@ -1,5 +1,5 @@
 require 'uri'
-require 'FuzzyURL'
+require 'fuzzyurl'
 
 class HyperResource
 
