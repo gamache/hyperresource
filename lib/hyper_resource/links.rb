@@ -1,5 +1,3 @@
-require 'weakref'
-
 class HyperResource
 
   ## HyperResource::Links is a modified Hash that permits lookup

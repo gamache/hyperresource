@@ -1,5 +1,4 @@
 require 'uri_template'
-require 'weakref'
 require 'hyper_resource/modules/http'
 
 class HyperResource
@@ -36,19 +35,8 @@ class HyperResource
     ## Default HTTP method for implicit loading.
     attr_accessor :default_method
 
-    ## A weak reference (`WeakRef`) to the resource from which this link
-    ## originates.  Resource object must still be in scope.
-    def resource
-      ## This is a WeakRef so that HyperResource objects don't leak.
-      @rsrc_ref
-    end
-
-    # @private
-    def resource=(rsrc)
-      ## Use a WeakRef so that HyperResource objects don't leak.
-      real_rsrc = rsrc.is_a?(WeakRef) ? rsrc.__getobj__ : rsrc
-      @rsrc_ref = WeakRef.new(real_rsrc)
-    end
+    ## The resource from which this link originates.
+    attr_accessor :resource
 
     ## Returns a link based on the given resource and link specification
     ## hash.  `link_spec` keys are: `href` (string, required), `templated`

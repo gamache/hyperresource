@@ -162,8 +162,64 @@ user.full_name
 ```
 
 Don't worry if your API uses some other mechanism to indicate resource data
-type; you can override the `.get_data_type_from_response` method and
+type; you can override the `.get_data_type` method and
 implement your own logic.
+
+## Configuration for Multiple Hosts
+
+HyperResource supports the concept of different APIs connected in one
+ecosystem by providing a mechanism to scope configuration parameters by
+a URL mask.  This allows a simple way to provide separate
+authentication, headers, etc. to different services which link to each
+other.
+
+As a toy example, consider two servers.  `http://localhost:12345/` returns:
+
+```json
+{ "name": "Server One",
+  "_links": {
+    "self":       {"href": "http://localhost:12345/"},
+    "server_two": {"href": "http://localhost:23456/"}
+  }
+}
+```
+
+And `http://localhost:23456/` returns:
+
+```json
+{ "name": "Server Two",
+  "_links": {
+    "self":       {"href": "http://localhost:23456/"},
+    "server_one": {"href": "http://localhost:12345/"}
+  }
+}
+```
+
+The following configuration would ensure proper namespacing of the two
+servers' response objects:
+
+```ruby
+class APIEcosystem < HyperResource
+  self.config(
+    "localhost:12345" => {"namespace" => "ServerOneAPI"},
+    "localhost:23456" => {"namespace" => "ServerTwoAPI"}
+  )
+end
+
+root_one = APIEcosystem.new(root: ‘http://localhost:12345’).get
+root_one.name      # => ‘Server One’
+root_one.url       # => ‘http://localhost:12345’
+root_one.namespace # => ServerOneAPI
+
+root_two = root_one.server_two.get
+root_two.name      # => ‘Server Two’
+root_two.url       # => ‘http://localhost:23456’
+root_two.namespace # => ServerTwoAPI
+```
+
+Fuzzy matching of URL masks is provided by the
+[FuzzyURL](https://github.com/gamache/fuzzyurl/) gem; check there for
+full documentation of URL mask syntax.
 
 ## Error Handling
 

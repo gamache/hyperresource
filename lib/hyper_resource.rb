@@ -105,7 +105,7 @@ public
   # @private
   def self.new_from(args)
     link = args[:link]
-    resource = args[:resource] || link.resource.__getobj__  ## TODO refactor
+    resource = args[:resource] || link.resource
     href = args[:href] || link.href
     url = args[:url] || URI.join(resource.root, href || '')
     response = args[:response]
