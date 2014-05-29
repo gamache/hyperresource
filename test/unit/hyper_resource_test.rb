@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe HyperResource do
   before do
-    @rsrc = HyperResource.new
+    @rsrc = HyperResource.new(:root => 'http://example.com', :href => '/obj1/')
     @rsrc.adapter.apply(HAL_BODY, @rsrc)
   end
 
@@ -43,6 +43,13 @@ describe HyperResource do
 
     it 'supports map' do
       @rsrc.map(&:attr3).must_equal ['val3', 'val5']
+    end
+  end
+
+  describe '#to_link' do
+    it 'converts into a link' do
+      link = @rsrc.send :to_link
+      link.href.must_equal @rsrc.href
     end
   end
 

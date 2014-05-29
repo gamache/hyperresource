@@ -1,4 +1,5 @@
 class HyperResource
-  VERSION = '0.2.4'
-  VERSION_DATE = '2014-04-02'
+  VERSION = '0.9.0'
+  VERSION_DATE = '2014-05-29'
 end
+

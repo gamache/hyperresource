@@ -19,39 +19,27 @@ module HyperResource::Modules
     end
 
     module ClassMethods
-
-      def _hr_class_attributes # @private
-        [ :root,             ## e.g. 'https://example.com/api/v1'
-          :auth,             ## e.g. {:basic => ['username', 'password']}
-          :headers,          ## e.g. {'Accept' => 'application/vnd.example+json'}
-          :namespace,        ## e.g. 'ExampleAPI', or the class ExampleAPI itself
-          :adapter,          ## subclass of HR::Adapter
-          :faraday_options   ## e.g. {:request => {:timeout => 30}}
-        ]
+      # @private
+      def _hr_class_attributes
+        [ :root ]
       end
 
-      def _hr_attributes # @private
+      # @private
+      def _hr_attributes
         [ :root,
           :href,
-          :auth,
-          :headers,
-          :namespace,
-          :adapter,
-          :faraday_options,
-
           :request,
           :response,
           :body,
-
           :attributes,
           :links,
           :objects,
-
           :loaded
         ]
       end
 
       ## Inheritable class attribute, kinda like in Rails.
+      # @private
       def _hr_class_attribute(*names)
         names.map(&:to_sym).each do |name|
           instance_eval <<-EOT
@@ -68,6 +56,7 @@ module HyperResource::Modules
       end
 
       ## Instance attributes which fall back to class attributes.
+      # @private
       def _hr_fallback_attribute(*names)
         names.map(&:to_sym).each do |name|
           class_eval <<-EOT

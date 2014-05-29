@@ -67,13 +67,13 @@ stub_connection = Faraday.new do |builder|
     stub.get('/404') {[
       404,
       {'Content-type' => 'application/vnd.dummy.v1+hal+json;type=Error'},
-      '{"error": "Not found", "_links": {"root":"/"}}'
+      '{"error": "Not found", "_links": {"root":{"href":"/"}}}'
     ]}
 
     stub.get('/500') {[
       500,
       {'Content-type' => 'application/vnd.dummy.v1+hal+json;type=Error'},
-      '{"error": "Internal server error", "_links": {"root":"/"}}'
+      '{"error": "Internal server error", "_links": {"root":{"href":"/"}}}'
     ]}
 
     stub.get('/garbage') {[
@@ -85,15 +85,18 @@ stub_connection = Faraday.new do |builder|
 end
 
 describe HyperResource::Modules::HTTP do
-  class DummyAPI < HyperResource; end
+  class DummyAPI < HyperResource
+    class Link < HyperResource::Link
+    end
+  end
 
   before do
-    DummyAPI.any_instance.stubs(:faraday_connection).returns(stub_connection)
+    DummyAPI::Link.any_instance.stubs(:faraday_connection).returns(stub_connection)
   end
 
   describe 'GET' do
     it 'works at a basic level' do
-      hr = DummyAPI.new(:root => '/')
+      hr = DummyAPI.new(:root => 'http://example.com/')
       root = hr.get
       root.wont_be_nil
       root.must_be_kind_of HyperResource
@@ -103,7 +106,7 @@ describe HyperResource::Modules::HTTP do
     end
 
     it 'raises client error' do
-      hr = DummyAPI.new(:root => '/', :href => '404')
+      hr = DummyAPI.new(:root => 'http://example.com/', :href => '404')
       begin
         hr.get
         assert false # shouldn't get here
@@ -113,7 +116,7 @@ describe HyperResource::Modules::HTTP do
     end
 
     it 'raises server error' do
-      hr = DummyAPI.new(:root => '/', :href => '500')
+      hr = DummyAPI.new(:root => 'http://example.com/', :href => '500')
       begin
         hr.get
         assert false # shouldn't get here
@@ -123,7 +126,7 @@ describe HyperResource::Modules::HTTP do
     end
 
     it 'raises response error' do
-      hr = DummyAPI.new(:root => '/', :href => 'garbage')
+      hr = DummyAPI.new(:root => 'http://example.com/', :href => 'garbage')
       begin
         hr.get
         assert false # shouldn't get here

@@ -1,15 +1,18 @@
 require 'hyper_resource/attributes'
+require 'hyper_resource/configuration'
 require 'hyper_resource/exceptions'
 require 'hyper_resource/link'
 require 'hyper_resource/links'
 require 'hyper_resource/objects'
-require 'hyper_resource/response'
 require 'hyper_resource/version'
 
 require 'hyper_resource/adapter'
 require 'hyper_resource/adapter/hal_json'
 
+require 'hyper_resource/modules/data_type'
+require 'hyper_resource/modules/deprecations'
 require 'hyper_resource/modules/http'
+require 'hyper_resource/modules/config_attributes'
 require 'hyper_resource/modules/internal_attributes'
 
 require 'rubygems' if RUBY_VERSION[0..2] == '1.8'
@@ -21,7 +24,9 @@ require 'pp'
 
 class HyperResource
 
-  include HyperResource::Modules::HTTP
+  include HyperResource::Modules::ConfigAttributes
+  include HyperResource::Modules::DataType
+  include HyperResource::Modules::Deprecations
   include HyperResource::Modules::InternalAttributes
   include Enumerable
 
@@ -49,16 +54,23 @@ public
   ##                   such as +{request: {timeout: 30}}+.
   ##
   def initialize(opts={})
-    return init_from_resource(opts) if opts.kind_of?(HyperResource)
+    self.root = opts[:root] if opts[:root]
+    self.href = opts[:href] if opts[:href]
 
-    self.root       = opts[:root] || self.class.root
-    self.href       = opts[:href] || ''
-    self.auth       = (self.class.auth || {}).merge(opts[:auth] || {})
-    self.namespace  = opts[:namespace] || self.class.namespace
-    self.headers    = DEFAULT_HEADERS.merge(self.class.headers || {}).
-                                      merge(opts[:headers]     || {})
-    self.faraday_options = opts[:faraday_options] ||
-                               self.class.faraday_options || {}
+    self.hr_config = self.class.hr_config.clone
+
+    self.adapter         = opts[:adapter]         if opts[:adapter]
+    self.faraday_options = opts[:faraday_options] if opts[:faraday_options]
+    self.auth            = opts[:auth]            if opts[:auth]
+
+    self.headers = DEFAULT_HEADERS.
+                     merge(self.class.headers || {}).
+                     merge(opts[:headers]     || {})
+
+    self.namespace = opts[:namespace] if opts[:namespace]
+    if !self.namespace && self.class != HyperResource
+      self.namespace = self.class.namespace || self.class.to_s
+    end
 
     ## There's a little acrobatics in getting Attributes, Links, and Objects
     ## into the correct subclass.
@@ -83,11 +95,41 @@ public
     self.attributes = self.class::Attributes.new(self)
     self.links      = self.class::Links.new(self)
     self.objects    = self.class::Objects.new(self)
-
     self.loaded     = false
+  end
 
-    self.adapter    = opts[:adapter] || self.class.adapter ||
-                      HyperResource::Adapter::HAL_JSON
+
+
+  ## Creates a new resource given args :link, :resource, :href, :response, :url,
+  ## and :body.  Either :link or (:resource and :href and :url) are required.
+  # @private
+  def self.new_from(args)
+    link = args[:link]
+    resource = args[:resource] || link.resource
+    href = args[:href] || link.href
+    url = args[:url] || URI.join(resource.root, href || '')
+    response = args[:response]
+    body = args[:body] || {}
+
+    old_rsrc = resource
+    new_class = old_rsrc.get_data_type_class(:resource => old_rsrc,
+                                             :link => link,
+                                             :url => url,
+                                             :response => response,
+                                             :body => body)
+    new_rsrc = new_class.new(:root => old_rsrc.root,
+                             :href => href)
+    new_rsrc.hr_config = old_rsrc.hr_config.clone
+    new_rsrc.response = response
+    new_rsrc.body = body
+    new_rsrc.adapter.apply(body, new_rsrc)
+    new_rsrc.loaded = true
+    new_rsrc
+  end
+
+  # @private
+  def new_from(args)
+    self.class.new_from(args)
   end
 
 
@@ -143,15 +185,20 @@ public
 
   ## method_missing will load this resource if not yet loaded, then
   ## attempt to delegate to +attributes+, then +objects+, then +links+.
-  ## Override with care.
+  ## Override with extreme care.
   def method_missing(method, *args)
-    self.get unless self.loaded
+    ## If not loaded, load and retry.
+    unless loaded
+      return self.get.send(method, *args)
+    end
 
+
+    ## Otherwise, try to match against attributes, then objects, then links.
     method = method.to_s
     if method[-1,1] == '='
       return attributes[method[0..-2]] = args.first if attributes[method[0..-2]]
     else
-      return attributes[method] if attributes && attributes[method]
+      return attributes[method] if attributes && attributes.has_key?(method.to_s)
       return objects[method] if objects && objects[method]
       if links && links[method]
         if args.count > 0
@@ -165,6 +212,16 @@ public
     raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
   end
 
+  ## respond_to? is patched to return +true+ if +method_missing+ would
+  ## successfully delegate a method call to +attributes+, +links+, or
+  ## +objects+.
+  def respond_to?(method, *args)
+    return true if self.links && self.links.respond_to?(method)
+    return true if self.attributes && self.attributes.respond_to?(method)
+    return true if self.objects && self.objects.respond_to?(method)
+    super
+  end
+
 
   def inspect # @private
     "#<#{self.class}:0x#{"%x" % self.object_id} @root=#{self.root.inspect} "+
@@ -172,127 +229,13 @@ public
     "@namespace=#{self.namespace.inspect} ...>"
   end
 
-  ## +response_body+, +response_object+, and +deserialized_response+
-  ##  are deprecated in favor of +body+.  (Sorry. Naming things is hard.)
-  def response_body # @private
-    _hr_deprecate('HyperResource#response_body is deprecated. '+
-                  'Please use HyperResource#body instead.')
-    body
-  end
-  def response_object # @private
-    _hr_deprecate('HyperResource#response_object is deprecated. '+
-                  'Please use HyperResource#body instead.')
-    body
-  end
-  def deserialized_response # @private
-    _hr_deprecate('HyperResource#deserialized_response is deprecated. '+
-                  'Please use HyperResource#body instead.')
-    body
+  def self.user_agent # @private
+    "HyperResource #{HyperResource::VERSION}"
   end
 
-
-
-  ## Return a new HyperResource based on this object and a given href.
-  def _hr_new_from_link(href) # @private
-    self.class.new(:root            => self.root,
-                   :auth            => self.auth,
-                   :headers         => self.headers,
-                   :namespace       => self.namespace,
-                   :faraday_options => self.faraday_options,
-                   :href            => href)
+  def user_agent # @private
+    self.class.user_agent
   end
 
-
-  ## Returns the class into which the given response should be cast.
-  ## If the object is not loaded yet, or if +namespace+ is
-  ## not set, returns +self+.
-  ##
-  ## Otherwise, +response_class+ uses +get_data_type_from_response+ to
-  ## determine subclass name, glues it to the given namespace, and
-  ## creates the class if it's not there yet. E.g., given a namespace of
-  ## +FooAPI+ and a response content-type of
-  ## "application/vnd.foocorp.fooapi.v1+json;type=User", this should
-  ## return +FooAPI::User+ (even if +FooAPI::User+ hadn't existed yet).
-  def self.response_class(response, namespace)
-    if self.to_s == 'HyperResource'
-      return self unless namespace
-    end
-
-    namespace ||= self.to_s
-
-    type_name = self.get_data_type_from_response(response)
-    return self unless type_name
-
-    class_name = "#{namespace}::#{type_name}"
-    class_name.gsub!(/[^_0-9A-Za-z:]/, '')  ## sanitize class_name
-
-    ## Return data type class if it exists
-    klass = eval(class_name) rescue :sorry_dude
-    return klass if klass.is_a?(Class)
-
-    ## Data type class didn't exist -- create namespace (if necessary),
-    ## then the data type class
-    if namespace != ''
-      nsc = eval(namespace) rescue :bzzzzzt
-      unless nsc.is_a?(Class)
-        Object.module_eval "class #{namespace} < #{self}; end"
-      end
-    end
-    Object.module_eval "class #{class_name} < #{namespace}; end"
-    eval(class_name)
-  end
-
-  def _hr_response_class # @private
-    self.namespace ||= self.class.to_s unless self.class.to_s=='HyperResource'
-    self.class.response_class(self.response, self.namespace)
-  end
-
-
-  ## Inspects the given Faraday::Response, and returns a string describing
-  ## this resource's data type.
-  ##
-  ## By default, this method looks for a +type=...+ modifier in the
-  ## response's +Content-type+ and returns that value, capitalized.
-  ##
-  ## Override this method in a subclass to alter HyperResource's behavior.
-  def self.get_data_type_from_response(response)
-    return nil unless response
-    return nil unless content_type = response['content-type']
-    return nil unless m=content_type.match(/;\s* type=([0-9A-Za-z:]+)/x)
-    m[1][0,1].upcase + m[1][1..-1]
-  end
-
-  ## Uses +HyperResource.get_response_data_type+ to determine the proper
-  ## data type for this object.  Override to change behavior (though you
-  ## probably just want to override the class method).
-  def get_data_type_from_response
-    self.class.get_data_type_from_response(self.response)
-  end
-
-private
-
-  ## Return this object, "cast" into its proper response class.
-  def to_response_class
-    response_class = self._hr_response_class
-    return self if self.class == response_class
-    response_class.new(self)
-  end
-
-  ## Use the given resource's data to initialize this one.
-  def init_from_resource(resource)
-    (self.class._hr_attributes - [:attributes, :links, :objects]).each do |attr|
-      self.send("#{attr}=".to_sym, resource.send(attr))
-    end
-    self.adapter.apply(self.body, self)
-  end
-
-
-  ## Show a deprecation message.
-  def self._hr_deprecate(message) # @private
-    STDERR.puts "#{message} (called from #{caller[2]})"
-  end
-
-  def _hr_deprecate(*args) # @private
-    self.class._hr_deprecate(*args)
-  end
 end
+

@@ -1,17 +1,19 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'mocha/setup'
-
-require 'hyper_resource'
+#require 'debugger'
+require 'hyperresource'
 
 HAL_BODY = {
   'attr1' => 'val1',
   'attr2' => 'val2',
+  'attr3' => nil,
   '_links' => {
     'curies' => [
-      { 'name' => 'foo', 
-        'templated' => true, 
-        'href' => 'http://example.com/api/rels/{rel}' }
+      { 'name' => 'foo',
+        'templated' => true,
+        'href' => 'http://example.com/api/rels/{rel}'
+      }
     ],
     'self' => {'href' => '/obj1/'},
     'foo:foobars' => [

@@ -1,59 +1,100 @@
 require 'uri_template'
+require 'hyper_resource/modules/http'
 
-class HyperResource::Link
-  attr_accessor :base_href,
-                :name,
-                :templated,
-                :params,
-                :parent_resource
+class HyperResource
 
-  ## Returns true if this link is templated.
-  def templated?; templated end
+  ## HyperResource::Link is an object to represent a hyperlink and its
+  ## URL or body parameters, and to encapsulate HTTP calls involving this
+  ## link.  Links are typically created by HyperResource, not by end users.
+  ##
+  ## HTTP method calls return the response as a HyperResource (or subclass)
+  ## object.  Calling an unrecognized method on a link will automatically
+  ## load the resource pointed to by this link, and repeat the method call
+  ## on the resource object.
+  ##
+  ## A HyperResource::Link requires the resource it is based upon to remain
+  ## in scope.  In practice this is rarely a problem, as links are almost
+  ## always accessed through the resource object.
 
-  def initialize(resource=nil, link_spec={})
-    self.parent_resource = resource || HyperResource.new
-    self.base_href = link_spec['href']
-    self.name = link_spec['name']
-    self.templated = !!link_spec['templated']
-    self.params    = link_spec['params'] || {}
-  end
+  class Link
 
-  ## Returns this link's href, applying any URI template params.
-  def href
-    if self.templated?
-      filtered_params = self.parent_resource.outgoing_uri_filter(params)
-      URITemplate.new(self.base_href).expand(filtered_params)
-    else
-      self.base_href
+    include HyperResource::Modules::HTTP
+
+    ## The literal href of this link; may be templated.
+    attr_accessor :base_href
+
+    ## An optional name describing this link.
+    attr_accessor :name
+
+    ## `true` if this link's href is a URI Template, `false` otherwise.
+    attr_accessor :templated
+
+    ## A hash of URL or request body parameters.
+    attr_accessor :params
+
+    ## Default HTTP method for implicit loading.
+    attr_accessor :default_method
+
+    ## The resource from which this link originates.
+    attr_accessor :resource
+
+    ## Returns a link based on the given resource and link specification
+    ## hash.  `link_spec` keys are: `href` (string, required), `templated`
+    ## (boolean), `params` (hash), and `default_method` (string, default
+    ## `"get"`).
+    def initialize(resource, link_spec={})
+      unless link_spec.kind_of?(Hash)
+        raise ArgumentError, "link_spec must be a Hash (got #{link_spec.inspect})"
+      end
+      link_spec = Hash[ link_spec.map{|(k,v)| [k.to_s, v]} ] ## stringify keys
+
+      self.resource = resource
+      self.base_href = link_spec['href']
+      self.name = link_spec['name']
+      self.templated = !!link_spec['templated']
+      self.params = link_spec['params'] || {}
+      self.default_method = link_spec['method'] || 'get'
     end
-  end
 
-  ## Returns a new scope with the given params; that is, returns a copy of
-  ## itself with the given params applied.
-  def where(params)
-    params = Hash[ params.map{|(k,v)| [k.to_s, v]} ]
-    self.class.new(self.parent_resource,
-                   'href' => self.base_href,
-                   'name' => self.name,
-                   'templated' => self.templated,
-                   'params' => self.params.merge(params))
-  end
+    ## Returns this link's href, applying any URI template params.
+    def href
+      if self.templated
+        filtered_params = self.resource.outgoing_uri_filter(params)
+        URITemplate.new(self.base_href).expand(filtered_params)
+      else
+        self.base_href
+      end
+    end
 
-  ## Returns a HyperResource representing this link
-  def resource
-    parent_resource._hr_new_from_link(self.href)
-  end
+    ## Returns this link's fully resolved URL, or nil if `resource.root`
+    ## or `href` are malformed.
+    def url
+      begin
+        URI.join(self.resource.root, self.href.to_s).to_s
+      rescue StandardError
+        nil
+      end
+    end
 
-  ## Delegate HTTP methods to the resource.
-  def get(*args);    self.resource.get(*args)    end
-  def post(*args);   self.resource.post(*args)   end
-  def patch(*args);  self.resource.patch(*args)  end
-  def put(*args);    self.resource.put(*args)    end
-  def delete(*args); self.resource.delete(*args) end
+    ## Returns a new scope with the given params; that is, returns a copy of
+    ## itself with the given params applied.
+    def where(params)
+      params = Hash[ params.map{|(k,v)| [k.to_s, v]} ]
+      self.class.new(self.resource,
+                     'href' => self.base_href,
+                     'name' => self.name,
+                     'templated' => self.templated,
+                     'params' => self.params.merge(params),
+                     'method' => self.default_method)
+    end
 
-  ## If we were called with a method we don't know, load this resource
-  ## and pass the message along.  This achieves implicit loading.
-  def method_missing(method, *args)
-    self.get.send(method, *args)
+    ## Unrecognized methods invoke an implicit load of the resource pointed
+    ## to by this link.  The method call is then repeated on the returned
+    ## resource.
+    def method_missing(method, *args)
+      self.send(default_method || :get).send(method, *args)
+    end
+
   end
 end
+

@@ -5,7 +5,7 @@ describe HyperResource::Attributes do
 
   describe 'accessors' do
     before do
-      @rsrc = TestAPI.new
+      @rsrc = TestAPI.new(:root => 'http://example.com')
       @rsrc.adapter.apply(HAL_BODY, @rsrc)
       @attrs = @rsrc.attributes
     end
@@ -13,6 +13,10 @@ describe HyperResource::Attributes do
     it "provides access to all attributes" do
       @attrs.attr1.must_equal 'val1'
       @attrs.attr2.must_equal 'val2'
+    end
+
+    it 'supports null attributes' do
+      @attrs.attr3.must_equal nil
     end
 
     it 'leaves _links and _embedded alone' do

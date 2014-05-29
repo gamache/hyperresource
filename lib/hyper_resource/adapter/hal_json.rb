@@ -21,10 +21,10 @@ class HyperResource
 
         def apply(response, resource, opts={})
           if !response.kind_of?(Hash)
-            raise ArgumentError, "'response' argument must be a Hash"
+            raise ArgumentError, "'response' argument must be a Hash (got #{response.inspect})"
           end
           if !resource.kind_of?(HyperResource)
-            raise ArgumentError, "'resource' argument must be a HyperResource"
+            raise ArgumentError, "'resource' argument must be a HyperResource (got #{resource.inspect})"
           end
 
           apply_objects(response, resource)
@@ -40,54 +40,38 @@ class HyperResource
 
         def apply_objects(resp, rsrc)
           return unless resp['_embedded']
-          rc = rsrc.class
-          rsrc.objects = rc::Objects.new(rsrc)
           objs = rsrc.objects
 
           resp['_embedded'].each do |name, collection|
             if collection.is_a? Hash
-              r = rc.new(:root => rsrc.root,
-                         :headers => rsrc.headers,
-                         :namespace => rsrc.namespace)
-              r.body = collection
-              objs[name] = apply(collection, r)
+              objs[name] =
+                rsrc.new_from(:resource => rsrc,
+                              :body => collection,
+                              :href => collection['_links']['self']['href'] )
             else
               objs[name] = collection.map do |obj|
-                r = rc.new(:root => rsrc.root,
-                           :headers => rsrc.headers,
-                           :namespace => rsrc.namespace)
-                r.body = obj
-                apply(obj, r)
+                rsrc.new_from(:resource => rsrc,
+                              :body => obj,
+                              :href => obj['_links']['self']['href'] )
               end
             end
           end
-
-          objs._hr_create_methods!
         end
 
 
         def apply_links(resp, rsrc)
           return unless resp['_links']
-          rsrc.links = rsrc._hr_response_class::Links.new(rsrc)
           links = rsrc.links
 
           resp['_links'].each do |rel, link_spec|
-            keys = [rel]
-            if m=rel.match(/.+:(.+)/)
-              keys << m[1]
-            end
-            keys.each do |key|
-              if link_spec.is_a? Array
-                links[key] = link_spec.map do |link|
-                  new_link_from_spec(rsrc, link)
-                end
-              else
-                links[key] = new_link_from_spec(rsrc, link_spec)
+            if link_spec.is_a? Array
+              links[rel] = link_spec.map do |link|
+                new_link_from_spec(rsrc, link)
               end
+            else
+              links[rel] = new_link_from_spec(rsrc, link_spec)
             end
           end
-
-          links._hr_create_methods!
         end
 
         def new_link_from_spec(resource, link_spec)
@@ -96,8 +80,6 @@ class HyperResource
 
 
         def apply_attributes(resp, rsrc)
-          rsrc.attributes = rsrc._hr_response_class::Attributes.new(rsrc)
-
           given_attrs = resp.reject{|k,v| %w(_links _embedded).include?(k)}
           filtered_attrs = rsrc.incoming_body_filter(given_attrs)
 
@@ -106,7 +88,6 @@ class HyperResource
           end
 
           rsrc.attributes._hr_clear_changed
-          rsrc.attributes._hr_create_methods!
         end
 
       end

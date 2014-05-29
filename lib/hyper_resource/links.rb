@@ -1,52 +1,53 @@
 class HyperResource
-  class Links < Hash
-    attr_accessor :_resource
 
+  ## HyperResource::Links is a modified Hash that permits lookup
+  ## of a link by its link relation (rel), or an abbreviation thereof.
+  ## It also provides read access through `method_missing`.
+  ## It is typically created by HyperResource, not by end users.
+  ##
+  ## For example, a link with rel `someapi:widgets` is accessible
+  ## by any of `self.widgets`, `self['widgets']`, `self[:widgets]`, and
+  ## `self['someapi:widgets'].
+  class Links < Hash
+
+    # @private
     def initialize(resource=nil)
-     self._resource = resource || HyperResource.new
+      ## We used to store the resource, but we didn't need to.  Now we don't.
     end
 
-    ## Creates accessor methods in self.class and self._resource.class.
-    ## Protects against method creation into HyperResource::Links and
-    ## HyperResource classes.  Just subclasses, please!
-    def _hr_create_methods!(opts={}) # @private
-      return if self.class.to_s == 'HyperResource::Links'
-      return if self._resource.class.to_s == 'HyperResource'
-      return if self.class.send(
-        :class_variable_defined?, :@@_hr_created_links_methods)
+    ## Stores a link for future retrieval by its link rel or abbreviations
+    ## thereof.
+    def []=(rel, link)
+      rel = rel.to_s
 
-      self.keys.each do |attr|
-        attr_sym = attr.to_sym
-        self.class.send(:define_method, attr_sym) do |*args|
-          if args.count > 0
-            self[attr].where(*args)
-          else
-            self[attr]
-          end
-        end
+      ## Every link must appear under its literal name.
+      names = [rel]
 
-        ## Don't stomp on _resource's methods
-        unless _resource.respond_to?(attr_sym)
-          _resource.class.send(:define_method, attr_sym) do |*args|
-            links.send(attr_sym, *args)
-          end
-        end
+      ## Extract 'foo' from e.g. 'http://example.com/foo',
+      ## 'http://example.com/url#foo', 'somecurie:foo'.
+      if m=rel.match(%r{[:/#](.+)})
+        names << m[1]
       end
 
-      self.class.send(:class_variable_set, :@@_hr_created_links_methods, true)
+      ## Underscore all non-word characters.
+      underscored_names = names.map{|n| n.gsub(/[^a-zA-Z_]/, '_')}
+      names = (names + underscored_names).uniq
+
+      ## Register this link under every name we've come up with.
+      names.each do |name|
+        super(name, link)
+      end
     end
 
-    def []=(attr, value) # @private
-      super(attr.to_s, value)
+    ## Retrieves a link by its rel.
+    def [](rel)
+      super(rel.to_s)
     end
 
-    def [](key) # @private
-      return super(key.to_s) if self.has_key?(key.to_s)
-      return super(key.to_sym) if self.has_key?(key.to_sym)
-      nil
-    end
-
-    def method_missing(method, *args) # @private
+    ## Provides links.somelink(:a => b) to links.somelink.where(:a => b)
+    ## expansion.
+    # @private
+    def method_missing(method, *args)
       unless self[method]
         raise NoMethodError, "undefined method `#{method}' for #{self.inspect}"
       end
@@ -58,6 +59,11 @@ class HyperResource
       end
     end
 
+    # @private
+    def respond_to?(method, *args)
+      return true if self.has_key?(method.to_s)
+      super
+    end
   end
 end
 

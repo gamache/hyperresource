@@ -26,10 +26,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'uri_template', '>= 0.5.2'
   s.add_dependency 'faraday',      '>= 0.8.6'
   s.add_dependency 'json'
+  s.add_dependency 'fuzzyurl', '0.2.2'
 
   s.add_development_dependency 'rake',      '>= 10.0.4'
   s.add_development_dependency 'minitest',  '>= 4.7.0'
   s.add_development_dependency 'mocha',     '>= 0.13.3'
   s.add_development_dependency 'sinatra',   '>= 1.4.0'
+  #s.add_development_dependency 'debugger'
 end
 
