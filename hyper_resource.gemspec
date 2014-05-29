@@ -32,6 +32,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest',  '>= 4.7.0'
   s.add_development_dependency 'mocha',     '>= 0.13.3'
   s.add_development_dependency 'sinatra',   '>= 1.4.0'
-  s.add_development_dependency 'debugger'
+  #s.add_development_dependency 'debugger'
 end
 
