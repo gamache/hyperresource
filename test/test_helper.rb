@@ -7,6 +7,7 @@ require 'hyperresource'
 HAL_BODY = {
   'attr1' => 'val1',
   'attr2' => 'val2',
+  'attr3' => nil,
   '_links' => {
     'curies' => [
       { 'name' => 'foo',

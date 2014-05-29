@@ -17,7 +17,7 @@ launched_servers = false
 server_one = nil
 server_two = nil
 
-MiniTest::Unit.after_tests do
+MiniTest.after_run do
   server_one.kill
   server_two.kill
 end

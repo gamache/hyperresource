@@ -40,7 +40,7 @@ class HyperResource
     # @private
     def method_missing(method, *args)
       method = method.to_s
-      if self[method]
+      if self.has_key?(method)
         self[method]
       elsif method[-1,1] == '='
         self[method[0..-2]] = args.first

@@ -18,7 +18,7 @@ HR_TEST_PORT = ENV['HR_TEST_PORT'] || 25491
 
 class WhateverAPI < HyperResource; end
 
-MiniTest::Unit.after_tests do
+MiniTest.after_run do
   server_thread.kill
 end
 

@@ -15,6 +15,10 @@ describe HyperResource::Attributes do
       @attrs.attr2.must_equal 'val2'
     end
 
+    it 'supports null attributes' do
+      @attrs.attr3.must_equal nil
+    end
+
     it 'leaves _links and _embedded alone' do
       assert_raises NoMethodError do
         @attrs._links
