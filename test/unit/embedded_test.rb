@@ -27,4 +27,50 @@ describe "Embedded Resources" do
     hyper.adapter.apply(body, hyper)
     hyper.foo.href.must_equal 'http://example.com/'
   end
+
+  it 'supports an array of embedded resources with no "_links" property' do
+    hyper = TestAPI.new
+    body = { "_embedded" => {
+               "foo" => [
+                  {}
+               ]
+             }
+           }
+    hyper.adapter.apply(body, hyper)
+    hyper.foo.first.href.must_be_nil
+  end
+
+  it 'supports an embedded resource with no "_links" property' do
+    hyper = TestAPI.new
+    body = { "_embedded" => {
+               "foo" =>
+                  {}
+             }
+           }
+    hyper.adapter.apply(body, hyper)
+    hyper.foo.href.must_be_nil
+  end
+
+  it 'supports an array of embedded resources with no "self" link' do
+    hyper = TestAPI.new
+    body = { "_embedded" => {
+               "foo" => [
+                 {"_links" => {"bar" => {"href" => "http://example.com/"}}}
+               ]
+             }
+           }
+    hyper.adapter.apply(body, hyper)
+    hyper.foo.first.href.must_be_nil
+  end
+
+  it 'supports an embedded resource with no "self" link' do
+    hyper = TestAPI.new
+    body = { "_embedded" => {
+               "foo" =>
+                 {"_links" => {"bar" => {"href" => "http://example.com/"}}}
+             }
+           }
+    hyper.adapter.apply(body, hyper)
+    hyper.foo.href.must_be_nil
+  end
 end
