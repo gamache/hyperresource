@@ -54,6 +54,7 @@ class HyperResource
       self.templated = !!link_spec['templated']
       self.params = link_spec['params'] || {}
       self.default_method = link_spec['method'] || 'get'
+      @headers = link_spec['headers'] || {}
     end
 
     ## Returns this link's href, applying any URI template params.
@@ -85,7 +86,28 @@ class HyperResource
                      'name' => self.name,
                      'templated' => self.templated,
                      'params' => self.params.merge(params),
-                     'method' => self.default_method)
+                     'method' => self.default_method,
+                     'headers' => @headers)
+    end
+
+    ## When called with a hash, returns a new scope with the given headers;
+    ## that is, returns a copy of itself with the given headers applied.
+    ## These headers will be merged with `resource.headers` at request time.
+    ##
+    ## When called with no arguments, returns the headers for this link.
+    def headers(*args)
+      if args.count == 0
+        @headers
+      else
+        self.class.new(self.resource,
+                       'href' => self.base_href,
+                       'name' => self.name,
+                       'templated' => self.templated,
+                       'params' => self.params,
+                       'method' => self.default_method,
+                       'headers' => @headers.merge(args[0]))
+
+      end
     end
 
     ## Unrecognized methods invoke an implicit load of the resource pointed

@@ -22,6 +22,12 @@ class HyperResource
     to_link.get
   end
 
+  ## Performs a GET request to this resource's URL, and returns a
+  ## `Faraday::Response` object representing the response.
+  def get_response
+    to_link.get_response
+  end
+
   ## Performs a POST request to this resource's URL, sending all of
   ## `attributes` as a request body unless an `attrs` Hash is given.
   ## Returns a new resource representing the response.
@@ -29,11 +35,25 @@ class HyperResource
     to_link.post(attrs)
   end
 
+  ## Performs a POST request to this resource's URL, sending all of
+  ## `attributes` as a request body unless an `attrs` Hash is given.
+  ## Returns a `Faraday::Response` object representing the response.
+  def post_response(attrs=nil)
+    to_link.post_response(attrs)
+  end
+
   ## Performs a PUT request to this resource's URL, sending all of
   ## `attributes` as a request body unless an `attrs` Hash is given.
   ## Returns a new resource representing the response.
   def put(*args)
     to_link.put(*args)
+  end
+
+  ## Performs a PUT request to this resource's URL, sending all of
+  ## `attributes` as a request body unless an `attrs` Hash is given.
+  ## Returns a `Faraday::Response` object representing the response.
+  def put_response(*args)
+    to_link.put_response(*args)
   end
 
   ## Performs a PATCH request to this resource's URL, sending
@@ -44,10 +64,24 @@ class HyperResource
     self.to_link.patch(*args)
   end
 
+  ## Performs a PATCH request to this resource's URL, sending
+  ## `attributes.changed_attributes` as a request body
+  ## unless an `attrs` Hash is given.
+  ## Returns a `Faraday::Response` object representing the response.
+  def patch_response(*args)
+    self.to_link.patch_response(*args)
+  end
+
   ## Performs a DELETE request to this resource's URL.  Returns a new
   ## resource representing the response.
-  def delete(*args)
-    to_link.delete(*args)
+  def delete
+    to_link.delete
+  end
+
+  ## Performs a DELETE request to this resource's URL.
+  ## Returns a `Faraday::Response` object representing the response.
+  def delete_response
+    to_link.delete_response
   end
 
   ## Creates a Link representing this resource.  Used for HTTP delegation.
@@ -85,6 +119,13 @@ class HyperResource
       ## resource will be blessed into its "proper" class, if
       ## +self.class.namespace != nil+.
       def get
+        new_resource_from_response(self.get_response)
+      end
+
+      ## Performs a GET request on the given link, and returns the
+      ## response as a `Faraday::Response` object.
+      ## Does not parse the response as a `HyperResource` object.
+      def get_response
         ## Adding default_attributes to URL query params is not automatic
         url = FuzzyURL.new(self.url || '')
         query_str = url[:query] || ''
@@ -94,8 +135,7 @@ class HyperResource
         if attrs_str != ''
           url = FuzzyURL.new(url.to_hash.merge(:query => attrs_str))
         end
-        response = faraday_connection.get(url.to_s)
-        new_resource_from_response(response)
+        faraday_connection.get(url.to_s)
       end
 
       ## By default, calls +post+ with the given arguments. Override to
@@ -109,15 +149,22 @@ class HyperResource
       ## POSTs the given attributes to this resource's href, and returns
       ## the response resource.
       def post(attrs=nil)
+        new_resource_from_response(post_response(attrs))
+      end
+
+      ## POSTs the given attributes to this resource's href, and returns the
+      ## response as a `Faraday::Response` object.
+      ## Does not parse the response as a `HyperResource` object.
+      def post_response(attrs=nil)
         attrs ||= self.resource.attributes
         attrs = (self.resource.default_attributes || {}).merge(attrs)
         response = faraday_connection.post do |req|
           req.body = self.resource.adapter.serialize(attrs)
         end
-        new_resource_from_response(response)
+        response
       end
 
-      ## By default, calls +puwt+ with the given arguments.  Override to
+      ## By default, calls +put+ with the given arguments.  Override to
       ## change this behavior.
       def update(*args)
         _hr_deprecate('HyperResource::Link#update is deprecated. Please use '+
@@ -129,30 +176,50 @@ class HyperResource
       ## the response resource.  If attributes are given, +put+ uses those
       ## instead.
       def put(attrs=nil)
+        new_resource_from_response(put_response(attrs))
+      end
+
+      ## PUTs this resource's attributes to this resource's href, and returns
+      ## the response as a `Faraday::Response` object.
+      ## Does not parse the response as a `HyperResource` object.
+      def put_response(attrs=nil)
         attrs ||= self.resource.attributes
         attrs = (self.resource.default_attributes || {}).merge(attrs)
         response = faraday_connection.put do |req|
           req.body = self.resource.adapter.serialize(attrs)
         end
-        new_resource_from_response(response)
+        response
       end
 
       ## PATCHes this resource's changed attributes to this resource's href,
       ## and returns the response resource.  If attributes are given, +patch+
       ## uses those instead.
       def patch(attrs=nil)
+        new_resource_from_response(patch_response(attrs))
+      end
+
+      ## PATCHes this resource's changed attributes to this resource's href,
+      ## and returns the response as a `Faraday::Response` object.
+      ## Does not parse the response as a `HyperResource` object.
+      def patch_response(attrs=nil)
         attrs ||= self.resource.attributes.changed_attributes
         attrs = (self.resource.default_attributes || {}).merge(attrs)
         response = faraday_connection.patch do |req|
           req.body = self.resource.adapter.serialize(attrs)
         end
-        new_resource_from_response(response)
+        response
       end
 
       ## DELETEs this resource's href, and returns the response resource.
       def delete
-        response = faraday_connection.delete
-        new_resource_from_response(response)
+        new_resource_from_response(delete_response)
+      end
+
+      ## DELETEs this resource's href, and returns the response as a
+      ## `Faraday::Response` object.
+      ## Does not parse the response as a `HyperResource` object.
+      def delete_response
+        faraday_connection.delete
       end
 
     private
@@ -162,7 +229,7 @@ class HyperResource
       def faraday_connection(url=nil)
         rsrc = self.resource
         url ||= self.url
-        headers = rsrc.headers_for_url(url) || {}
+        headers = (rsrc.headers_for_url(url) || {}).merge(self.headers)
         auth = rsrc.auth_for_url(url) || {}
 
         key = ::Digest::MD5.hexdigest({

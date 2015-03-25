@@ -136,5 +136,11 @@ describe HyperResource::Modules::HTTP do
       end
     end
 
+    it 'does get_response' do
+      hr = DummyAPI.new(:root => 'http://example.com/')
+      root = hr.get_response
+      root.wont_be_nil
+      root.must_be_kind_of Faraday::Response
+    end
   end
 end
