@@ -45,14 +45,12 @@ class HyperResource
 
           ## Make sure data type class exists
           type = type[0,1].upcase + type[1..-1]  ## capitalize
-          data_type_str = sanitize_class_name("#{namespace_str}::#{type}")
-          data_type_class = eval(data_type_str) rescue nil
-          if !data_type_class
+          sanitized_type = sanitize_class_name(type)
+          data_type_str = "#{namespace_str}::#{sanitized_type}"
+          unless ns_class.constants.include?(sanitized_type.to_sym)
             Object.module_eval("class #{data_type_str} < #{namespace_str}; end")
-            data_type_class = eval(data_type_str)
           end
-
-          data_type_class
+          eval(data_type_str)
         end
 
         ## Given a body Hash and a response Faraday::Response, detect and
