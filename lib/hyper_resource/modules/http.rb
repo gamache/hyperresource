@@ -262,17 +262,18 @@ class HyperResource
         adapter = self.resource.adapter || HyperResource::Adapter::HAL_JSON
 
         body = nil
-        begin
-          if response.body
-            body = adapter.deserialize(response.body)
-          end
-        rescue StandardError => e
-          if is_success
-            raise HyperResource::ResponseError.new(
-              "Error when deserializing response body",
-              :response => response,
-              :cause => e
-            )
+        unless empty_body?(response.body)
+          begin
+              body = adapter.deserialize(response.body)
+          rescue StandardError => e
+            if is_success
+              raise HyperResource::ResponseError.new(
+                        "Error when deserializing response body",
+                        :response => response,
+                        :cause => e
+                    )
+            end
+
           end
         end
 
@@ -299,6 +300,12 @@ class HyperResource
                                                  :body => body)
 
         end
+      end
+
+      def empty_body?(body)
+        return true if body.nil?
+        return true if body.respond_to?(:empty?) && body.empty?
+        false
       end
 
     end

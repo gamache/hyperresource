@@ -64,6 +64,25 @@ stub_connection = Faraday.new do |builder|
       ''
     ]}
 
+    # from Rack specs 'Content-type' => 'application/vnd.dummy.v1+hal+json'
+    stub.get('/204_with_nil_body') {[
+        204,
+        {},
+        nil
+    ]}
+    stub.get('/204_with_empty_string_body') {[
+        204,
+        {},
+        ''
+    ]}
+
+    stub.get('/204_with_empty_hash_body') {[
+        204,
+        {},
+        {}
+    ]}
+
+
     stub.get('/404') {[
       404,
       {'Content-type' => 'application/vnd.dummy.v1+hal+json;type=Error'},
@@ -113,6 +132,48 @@ describe HyperResource::Modules::HTTP do
       rescue HyperResource::ClientError => e
         e.response.wont_be_nil
       end
+    end
+
+    it 'Accepts response without a body (example status 204 with nil body)' do
+      hr = DummyAPI.new(:root => 'http://example.com/', :href => '204_with_nil_body')
+      root = hr.get
+      root.wont_be_nil
+      root.links.must_be_empty
+      root.attributes.must_be_empty
+      root.objects.must_be_empty
+      root.must_be_kind_of HyperResource
+      root.must_be_instance_of DummyAPI
+
+      root.response.status.must_equal 204
+      root.response.body.must_be_nil
+    end
+
+    it 'Accepts response without a body (example status 204 with empty string body)' do
+      hr = DummyAPI.new(:root => 'http://example.com/', :href => '204_with_empty_string_body')
+      root = hr.get
+      root.wont_be_nil
+      root.links.must_be_empty
+      root.attributes.must_be_empty
+      root.objects.must_be_empty
+      root.must_be_kind_of HyperResource
+      root.must_be_instance_of DummyAPI
+
+      root.response.status.must_equal 204
+      root.response.body.must_equal('')
+    end
+
+    it 'Accepts response without a body (example status 204 with empty hash body)' do
+      hr = DummyAPI.new(:root => 'http://example.com/', :href => '204_with_empty_hash_body')
+      root = hr.get
+      root.wont_be_nil
+      root.links.must_be_empty
+      root.attributes.must_be_empty
+      root.objects.must_be_empty
+      root.must_be_kind_of HyperResource
+      root.must_be_instance_of DummyAPI
+
+      root.response.status.must_equal 204
+      root.response.body.must_equal({})
     end
 
     it 'raises server error' do
