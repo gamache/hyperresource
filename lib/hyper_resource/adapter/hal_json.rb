@@ -44,15 +44,17 @@ class HyperResource
 
           resp['_embedded'].each do |name, collection|
             if collection.is_a? Hash
+              href = collection['_links']['self']['href'] rescue nil
               objs[name] =
                 rsrc.new_from(:resource => rsrc,
                               :body => collection,
-                              :href => collection['_links']['self']['href'] )
+                              :href => href)
             else
               objs[name] = collection.map do |obj|
+                href = obj['_links']['self']['href'] rescue nil
                 rsrc.new_from(:resource => rsrc,
                               :body => obj,
-                              :href => obj['_links']['self']['href'] )
+                              :href => href)
               end
             end
           end

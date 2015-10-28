@@ -106,7 +106,7 @@ public
   def self.new_from(args)
     link = args[:link]
     resource = args[:resource] || link.resource
-    href = args[:href] || link.href
+    href = args[:href] || link.href rescue nil
     url = args[:url] || URI.join(resource.root, href || '')
     response = args[:response]
     body = args[:body] || {}
