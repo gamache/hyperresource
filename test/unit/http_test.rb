@@ -89,6 +89,12 @@ stub_connection = Faraday.new do |builder|
       '{"error": "Not found", "_links": {"root":{"href":"/"}}}'
     ]}
 
+    stub.get('/405_without_body') {[
+        405,
+        {'Content-type' => 'application/vnd.dummy.v1+hal+json;type=Error'},
+        '""'
+    ]}
+
     stub.get('/500') {[
       500,
       {'Content-type' => 'application/vnd.dummy.v1+hal+json;type=Error'},
@@ -174,6 +180,17 @@ describe HyperResource::Modules::HTTP do
 
       root.response.status.must_equal 204
       root.response.body.must_equal({})
+    end
+
+    it 'raises client error and accepts empty body for a status 405' do
+      hr = DummyAPI.new(:root => 'http://example.com/', :href => '405_without_body')
+      begin
+        hr.get
+        assert false # shouldn't get here
+      rescue HyperResource::ClientError => e
+        e.response.wont_be_nil
+        e.response.status.must_equal 405
+      end
     end
 
     it 'raises server error' do

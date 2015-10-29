@@ -305,6 +305,7 @@ class HyperResource
       def empty_body?(body)
         return true if body.nil?
         return true if body.respond_to?(:empty?) && body.empty?
+        return true if body.class == String && body  =~ /^['"]+$/ # special case for status code with optional body, example Grape API with status 405
         false
       end
 
