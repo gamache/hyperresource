@@ -242,10 +242,11 @@ Many thanks to the people who've sent pull requests and improved this code:
 * James Martelletti ([@jmartelletti](https://github.com/jmartelletti))
 * Frank Macreery ([@fancyremarker](https://github.com/fancyremarker))
 * Chris Rollock ([@Sastafer](https://github.com/Sastafer))
+* Pieter Vanmeerbeek ([@pvmeerbe](https://github.com/pvmeerbe))
 
 ## Authorship and License
 
-Copyright 2013-2014 Pete Gamache, [pete@gamache.org](mailto:pete@gamache.org).
+Copyright 2013-2015 Pete Gamache, [pete@gamache.org](mailto:pete@gamache.org).
 
 Released under the MIT License.  See LICENSE.txt.
 
