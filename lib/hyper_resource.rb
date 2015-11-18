@@ -196,7 +196,7 @@ public
     ## Otherwise, try to match against attributes, then objects, then links.
     method = method.to_s
     if method[-1,1] == '='
-      return attributes[method[0..-2]] = args.first if attributes[method[0..-2]]
+      return attributes[method[0..-2]] = args.first if attributes && attributes.has_key?(method[0..-2])
     else
       return attributes[method] if attributes && attributes.has_key?(method.to_s)
       return objects[method] if objects && objects[method]

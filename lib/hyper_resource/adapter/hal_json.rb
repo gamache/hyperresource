@@ -31,7 +31,8 @@ class HyperResource
           apply_links(response, resource)
           apply_attributes(response, resource)
           resource.loaded = true
-          resource.href = response['_links']['self']['href'] rescue nil
+          new_href =  response['_links']['self']['href'] rescue nil
+          resource.href = new_href unless new_href.nil? && resource.href
           resource
         end
 
