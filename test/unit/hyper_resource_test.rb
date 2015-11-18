@@ -19,6 +19,11 @@ describe HyperResource do
       @rsrc.attr1.must_equal :foo
     end
 
+    it 'uses method_missing on :attr= methods for attributes with nil value' do
+      @rsrc.attr3 = :foo
+      @rsrc.attr3.must_equal :foo
+    end
+
     it 'uses method_missing on :link methods' do
       @rsrc.self.must_be_instance_of HyperResource::Link
       @rsrc.links.self.must_be_instance_of HyperResource::Link
