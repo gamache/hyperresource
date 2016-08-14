@@ -30,7 +30,7 @@ class HyperResource
       end
 
       ## Underscore all non-word characters.
-      underscored_names = names.map{|n| n.gsub(/[^a-zA-Z_]/, '_')}
+      underscored_names = names.map{|n| n.gsub(/[^[:word:]]/, '_')}
       names = (names + underscored_names).uniq
 
       ## Register this link under every name we've come up with.
